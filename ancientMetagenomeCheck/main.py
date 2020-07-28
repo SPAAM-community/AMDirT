@@ -1,5 +1,5 @@
 import pandas as pd
-from ancientMetagenomeCheck.exeptions import DatasetValidationError, DuplicateError
+from ancientMetagenomeCheck.exceptions import DatasetValidationError, DuplicateError
 
 def check_validity(standards, dataset):
     """Check validity of AncientMetagenomeDir dataset
