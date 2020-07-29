@@ -19,11 +19,11 @@ def get_version(rel_path):
 
 
 setup(
-    name='ancientMetagenomeCheck',
-    version=get_version("ancientMetagenomeCheck/__init__.py"),
+    name='ancientMetagenomeDirCheck',
+    version=get_version("ancientMetagenomeDirCheck/__init__.py"),
     description='Performs validity check of ancientMetagenomeDir datasets',
     long_description=open("README.md").read(),
-    url='https://github.com/maxibor/ancientMetagenomeCheck',
+    url='https://github.com/maxibor/ancientMetagenomeDirCheck',
     long_description_content_type="text/markdown",
     license='GNU-GPLv3',
     python_requires=">=3.6",
@@ -31,10 +31,10 @@ setup(
         'click',
         'pandas'
     ],
-    packages=find_packages(include=['ancientMetagenomeCheck']),
+    packages=find_packages(include=['ancientMetagenomeDirCheck']),
     entry_points={
         'console_scripts': [
-            'ancientMetagenomeCheck = ancientMetagenomeCheck.cli:cli'
+            'ancientMetagenomeDirCheck = ancientMetagenomeDirCheck.cli:cli'
         ]
     }
 )

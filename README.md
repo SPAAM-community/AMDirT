@@ -1,4 +1,4 @@
-# AncientMetagenomeCheck
+# AncientMetagenomeDirCheck
 
 A python package to check AncientMetagenomeDir.
 
@@ -10,5 +10,5 @@ Currently performs two checks:
 ## Install
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/maxibor/ancientMetagenomeCheck.git
+pip install --upgrade --force-reinstall git+https://github.com/maxibor/ancientMetagenomeDirCheck.git
 ```
