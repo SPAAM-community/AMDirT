@@ -10,5 +10,5 @@ Currently performs two checks:
 ## Install
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/maxibor/ancientMetagenomeDirCheck.git
+pip install --upgrade --force-reinstall git+https://github.com/SPAAM-workshop/AncientMetagenomeDirCheck.git
 ```
