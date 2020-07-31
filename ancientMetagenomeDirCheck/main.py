@@ -14,6 +14,12 @@ def check_validity(dataset, schema):
 
     validate(instance=dt_json, schema=json_schema)
 
+def check_duplicates(dataset):
+    dt = pd.read_csv(dataset, sep="\t")
+    if dt.duplicated().sum() != 0:
+        message = f"{dt[dt.duplicated()]} line is duplicated"
+        raise(DuplicateError(message))
 
 def run_tests(dataset, schema):
     check_validity(dataset, schema)
+    check_duplicates(dataset)

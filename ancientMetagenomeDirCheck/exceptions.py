@@ -19,3 +19,7 @@ class DuplicateError(Error):
     Attributes:
         message -- explanation of the error
     """
+
+    def __init__(self, message):
+        self.message = message
+    
