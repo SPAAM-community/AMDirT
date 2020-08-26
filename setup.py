@@ -27,7 +27,7 @@ setup(
     long_description_content_type="text/markdown",
     license="GNU-GPLv3",
     python_requires=">=3.6",
-    install_requires=["click", "pandas", "jsonschema"],
+    install_requires=["click", "pandas", "jsonschema", "rich"],
     packages=find_packages(include=["ancientMetagenomeDirCheck"]),
     entry_points={
         "console_scripts": [
