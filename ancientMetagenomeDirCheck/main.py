@@ -4,6 +4,7 @@ from jsonschema import Draft7Validator
 from io import StringIO
 from ancientMetagenomeDirCheck.exceptions import DatasetValidationError, DuplicateError
 import sys
+from rich import print
 
 
 def check_validity(dataset, schema):
@@ -21,7 +22,7 @@ def check_validity(dataset, schema):
         print("Validation Errors were found")
         for error in errors:
             err_column = list(error.path)[-1]
-            print("- ", error.message, f"in column {err_column}")
+            print(f"[red]{error.message}[/red] in column [blue]{err_column}[/blue]")
         raise (DatasetValidationError("DatasetValidationError"))
 
 
@@ -37,5 +38,5 @@ def run_tests(dataset, schema):
         check_duplicates(dataset)
         check_validity(dataset, schema)
     except (DatasetValidationError, DuplicateError) as e:
-        print(e)
+        print(f"[red]{e}[/red]")
         sys.exit(1)
