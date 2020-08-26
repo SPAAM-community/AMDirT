@@ -23,13 +23,28 @@ def check_validity(dataset, schema):
     if len(errors) > 0:
         table = Table(title="Validation Errors were found")
         table.add_column("Offending value", justify="right", style="red", no_wrap=True)
-        table.add_column("Error", style="magenta")
+        table.add_column("Line number", style="red")
         table.add_column("Column", justify="right", style="cyan")
+        table.add_column("Error", style="magenta")
+        lines = []
         for error in errors:
             err_column = list(error.path)[-1]
-            table.add_row(str(error.instance), error.message, str(err_column))
+            err_line = ", ".join(
+                [str(i + 2) for i in dt[dt[err_column] == error.instance].index.values]
+            )
+            lines.append(
+                [str(error.instance), err_line, str(err_column), error.message]
+            )
+
+        # remove duplicate lines
+        b_set = set(tuple(x) for x in lines)
+        b = [list(x) for x in b_set]
+
+        for l in b:
+            table.add_row(*l)
         console = Console()
         console.print(table)
+
         raise (DatasetValidationError("DatasetValidationError"))
 
 
@@ -44,6 +59,7 @@ def run_tests(dataset, schema):
     try:
         check_duplicates(dataset)
         check_validity(dataset, schema)
+        print("[green]All is good, no errors were found ![/green]")
     except (DatasetValidationError, DuplicateError) as e:
         print(f"[red]{e}[/red]")
         sys.exit(1)
