@@ -5,6 +5,8 @@ from io import StringIO
 from ancientMetagenomeDirCheck.exceptions import DatasetValidationError, DuplicateError
 import sys
 from rich import print
+from rich.console import Console
+from rich.table import Table
 
 
 def check_validity(dataset, schema):
@@ -19,10 +21,15 @@ def check_validity(dataset, schema):
     for error in sorted(v.iter_errors(dt_json), key=str):
         errors.append(error)
     if len(errors) > 0:
-        print("Validation Errors were found")
+        table = Table(title="Validation Errors were found")
+        table.add_column("Offending value", justify="right", style="red", no_wrap=True)
+        table.add_column("Error", style="magenta")
+        table.add_column("Column", justify="right", style="cyan")
         for error in errors:
             err_column = list(error.path)[-1]
-            print(f"[red]{error.message}[/red] in column [blue]{err_column}[/blue]")
+            table.add_row(str(error.instance), error.message, str(err_column))
+        console = Console()
+        console.print(table)
         raise (DatasetValidationError("DatasetValidationError"))
 
 
