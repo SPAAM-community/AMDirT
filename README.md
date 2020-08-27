@@ -2,9 +2,17 @@
 
 A python package to check AncientMetagenomeDir.
 
-AncientMetagenomeDirCheck will verify the dataset against the json schema
+AncientMetagenomeDirCheck will verify a dataset against, in tabular format, a json schema.
 
 ## Install
+
+### From PyPI using pip
+
+```bash
+pip install ancientcetagenomedircheck
+```
+
+### The latest development version, directly from GitHub
 
 ```bash
 pip install --upgrade --force-reinstall git+https://github.com/SPAAM-workshop/AncientMetagenomeDirCheck.git
