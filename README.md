@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4003826.svg)](https://doi.org/10.5281/zenodo.4003826)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4003826.svg)](https://doi.org/10.5281/zenodo.4003826) [![PyPI version](https://badge.fury.io/py/ancientMetagenomeDirCheck.svg)](https://pypi.org/project/ancientMetagenomeDirCheck)
 
 # AncientMetagenomeDirCheck
 
