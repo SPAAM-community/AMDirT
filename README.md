@@ -2,7 +2,7 @@
 
 A python package to check AncientMetagenomeDir.
 
-AncientMetagenomeDirCheck will verify a dataset against, in tabular format, a json schema.
+AncientMetagenomeDirCheck will verify a dataset, in tabular format, against a json schema.
 
 ## Install
 
