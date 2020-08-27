@@ -23,7 +23,7 @@ setup(
     version=get_version("ancientMetagenomeDirCheck/__init__.py"),
     description="Performs validity check of ancientMetagenomeDir datasets",
     long_description=open("README.md").read(),
-    url="https://github.com/maxibor/ancientMetagenomeDirCheck",
+    url="https://github.com/SPAAM-workshop/ancientMetagenomeDirCheck",
     long_description_content_type="text/markdown",
     license="GNU-GPLv3",
     python_requires=">=3.6",
