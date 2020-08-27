@@ -9,7 +9,7 @@ AncientMetagenomeDirCheck will verify a dataset, in tabular format, against a js
 ### From PyPI using pip
 
 ```bash
-pip install ancientcetagenomedircheck
+pip install ancientMetagenomeDirCheck
 ```
 
 ### The latest development version, directly from GitHub
