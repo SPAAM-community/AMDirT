@@ -8,6 +8,13 @@ from pathlib import Path
 @click.version_option(__version__)
 @click.argument("dataset", type=click.Path(exists=True))
 @click.argument("schema", type=click.Path(exists=True))
+@click.option("-v", "--validity", is_flag=True, help="Turn off schema checking")
+@click.option(
+    "-d", "--duplicate", is_flag=True, help="Turn off line duplicate checking"
+)
+@click.option(
+    "-a", "--accession", is_flag=True, help="Turn off accession duplicate checking"
+)
 def cli(no_args_is_help=True, **kwargs):
     """\b
     ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
