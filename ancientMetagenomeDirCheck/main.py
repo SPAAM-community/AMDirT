@@ -126,11 +126,14 @@ def check_accession_duplicates(dataset):
         raise (DuplicateError(message))
 
 
-def run_tests(dataset, schema):
+def run_tests(dataset, schema, validity, duplicate, accession):
     try:
-        check_duplicates(dataset)
-        check_accession_duplicates(dataset)
-        check_validity(dataset, schema)
+        if not duplicate:
+            check_duplicates(dataset)
+        if not accession:
+            check_accession_duplicates(dataset)
+        if not validity:
+            check_validity(dataset, schema)
         print("[green]All is good, no errors were found ![/green]")
     except (DatasetValidationError, DuplicateError) as e:
         print(f"[red]{e}[/red]")

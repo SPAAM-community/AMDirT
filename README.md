@@ -29,12 +29,15 @@ Usage: ancientMetagenomeDirCheck [OPTIONS] DATASET SCHEMA
   ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
   Author: Maxime Borry
   Contact: <borry[at]shh.mpg.de>
-  Homepage & Documentation: github.com/maxibor/ancientMetagenomeDirCheck
+  Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
 
   DATASET: path to tsv file of dataset to check
   SCHEMA: path to JSON schema file
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  --version        Show the version and exit.
+  -v, --validity   Turn off schema checking.
+  -d, --duplicate  Turn off line duplicate checking.
+  -a, --accession  Turn off accession duplicate checking.
+  --help           Show this message and exit.
 ```
