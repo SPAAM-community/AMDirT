@@ -57,6 +57,7 @@ def check_validity(dataset, schema):
     v = Draft7Validator(json_schema)
     errors = []
     for error in sorted(v.iter_errors(dt_json), key=str):
+        print(vars(error))
         errors.append(error)
     if len(errors) > 0:
         table = Table(title="Validation Errors were found")
@@ -64,16 +65,19 @@ def check_validity(dataset, schema):
         table.add_column("Line number", style="red")
         table.add_column("Column", justify="right", style="cyan")
         table.add_column("Error", style="magenta")
+        table.add_column("Column help message", style='green')
         lines = []
         for error in errors:
             err_column = list(error.path)[-1]
+            help_message = error.schema['description']
             if "enum" in error.schema:
                 if len(error.schema["enum"]) > 3:
                     error.message = f"'{error.instance}' is not an accepted value.\nPlease check {json_schema['items']['properties'][err_column]['$ref']}"
             err_line = str(error.path[0]+2)
             lines.append(
-                [str(error.instance), err_line, str(err_column), error.message]
+                [str(error.instance), err_line, str(err_column), error.message, help_message]
             )
+            
 
         # remove duplicate lines
         b_set = set(tuple(x) for x in lines)
