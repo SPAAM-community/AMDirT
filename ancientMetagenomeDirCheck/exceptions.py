@@ -22,4 +22,14 @@ class DuplicateError(Error):
 
     def __init__(self, message):
         self.message = message
+
+class ColumnDifferenceError(Error):
+    """Exception raised for errors due to missing/added columns
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
     

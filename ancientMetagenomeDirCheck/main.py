@@ -2,11 +2,40 @@ import pandas as pd
 import json
 from jsonschema import Draft7Validator
 from io import StringIO
-from ancientMetagenomeDirCheck.exceptions import DatasetValidationError, DuplicateError
+from ancientMetagenomeDirCheck.exceptions import DatasetValidationError, DuplicateError, ColumnDifferenceError
 import sys
 from rich import print
 from rich.console import Console
 from rich.table import Table
+
+
+def check_extra_missing_columns(dataset, schema):
+    """Check if there are extra or missing column in dataset
+
+    Args:
+        dataset (str): Path to dataset in tsv format
+        schema (str): path to json schema
+    Raises:
+        ColumnDifferenceError: If dataset has extra or missing columns compared to schema
+    """    
+
+    dt = pd.read_csv(dataset, sep="\t")
+    dt_json = json.load((StringIO(dt.to_json(orient="records"))))
+
+    with open(schema, "r") as j:
+        json_schema = json.load(j)
+
+    required_columns = json_schema['items']['required']
+    present_columns = list(dt.columns)
+    missing_columns = list(set(required_columns) - set(present_columns))
+    extra_columns = list(set(present_columns) - set(required_columns))
+    if len(missing_columns) > 0:
+        message = f"The required column(s) {', '.join(missing_columns)} is/are missing"
+        raise ColumnDifferenceError(message)
+    if len(extra_columns) > 0:
+        message = f"Additional column(s) {', '.join(extra_columns)} not allowed"
+        raise ColumnDifferenceError(message)
+
 
 
 def check_validity(dataset, schema):
@@ -126,6 +155,7 @@ def check_accession_duplicates(dataset):
 
 def run_tests(dataset, schema, validity, duplicate, accession):
     try:
+        check_extra_missing_columns(dataset, schema)
         if not duplicate:
             check_duplicates(dataset)
         if not accession:
@@ -133,6 +163,6 @@ def run_tests(dataset, schema, validity, duplicate, accession):
         if not validity:
             check_validity(dataset, schema)
         print("[green]All is good, no errors were found ![/green]")
-    except (DatasetValidationError, DuplicateError) as e:
+    except (DatasetValidationError, DuplicateError, ColumnDifferenceError) as e:
         print(f"[red]{e}[/red]")
         sys.exit(1)
