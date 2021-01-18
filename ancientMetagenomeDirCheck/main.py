@@ -41,9 +41,7 @@ def check_validity(dataset, schema):
             if "enum" in error.schema:
                 if len(error.schema["enum"]) > 3:
                     error.message = f"'{error.instance}' is not an accepted value.\nPlease check {json_schema['items']['properties'][err_column]['$ref']}"
-            err_line = ", ".join(
-                [str(i + 2) for i in dt[dt[err_column] == error.instance].index.values]
-            )
+            err_line = str(error.path[0]+2)
             lines.append(
                 [str(error.instance), err_line, str(err_column), error.message]
             )
