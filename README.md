@@ -4,7 +4,7 @@
 
 A python package to check AncientMetagenomeDir.
 
-AncientMetagenomeDirCheck will verify a dataset, in tabular format, against a json schema.
+AncientMetagenomeDirCheck will verify a dataset, in tabular format, against a json schema (and some other checks...).
 
 ## Install
 
@@ -35,9 +35,12 @@ Usage: ancientMetagenomeDirCheck [OPTIONS] DATASET SCHEMA
   SCHEMA: path to JSON schema file
 
 Options:
-  --version        Show the version and exit.
-  -v, --validity   Turn off schema checking.
-  -d, --duplicate  Turn off line duplicate checking.
-  -a, --accession  Turn off accession duplicate checking.
-  --help           Show this message and exit.
+  --version                       Show the version and exit.
+  -v, --validity                  Turn on schema checking.
+  -d, --duplicate                 Turn on line duplicate line checking.
+  -i, --doi                       Turn on DOI duplicate checking.
+  -m, --markdown                  Output is in markdown format
+  -dc, --duplicated_entries TEXT  Commma separated list of columns to check
+                                  for duplicated entries
+  --help                          Show this message and exit.
 ```
