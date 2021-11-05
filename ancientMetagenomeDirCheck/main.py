@@ -22,6 +22,7 @@ def check_extra_missing_columns(dataset, schema):
     Args:
         dataset (str): Path to dataset in tsv format
         schema (str): path to json schema
+        markdown(bool): format ouput in markdown
     Returns:
         (str): If dataset has extra or missing columns compared to schema
     """
@@ -100,9 +101,7 @@ def check_validity(dataset, schema):
 
         for l in b:
             table.add_row(*l)
-        console = Console()
-        console.print(table)
-        return "DatasetValidationError"
+        return ["DatasetValidationError", table]
 
 
 def check_duplicates(dataset):
@@ -118,7 +117,7 @@ def check_duplicates(dataset):
     if dt.duplicated().sum() != 0:
         message = f"Duplication Error\n{dt[dt.duplicated()]} line is duplicated"
         print(message)
-        return "DuplicatedRowError"
+        return ["DuplicatedRowError"]
 
 
 def check_duplicates_in_column(dataset, column_names):
@@ -169,9 +168,7 @@ def check_duplicates_in_column(dataset, column_names):
                 )
                 error_counter += 1
     if error_counter > 0:
-        console = Console()
-        console.print(table)
-        return "DuplicateEntryError"
+        return ["DuplicateEntryError", table]
 
 
 def check_DOI_duplicates(dataset):
@@ -200,32 +197,40 @@ def check_DOI_duplicates(dataset):
             )
             error_counter += 1
     if error_counter > 0:
-        console = Console()
-        console.print(table)
         message = "DuplicateDOIError, make sure each project has a single DOI"
-        return "DuplicateDOIError"
+        return ["DuplicateDOIError", table]
 
 
-def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries):
+def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, markdown):
 
-    error_list = list()
+    print(f"Checking {dataset} against schema {schema}")
+
+    check_list = []
+    table_list = []
+    error_list = []
+
     danger_style = Style(color="red", blink=True)
-    console = Console()
     ok_style = Style(color="green")
+    console = Console()
+
     try:
-        error_list.append(check_extra_missing_columns(dataset, schema))
+        check_list.append(check_extra_missing_columns(dataset, schema))
         if duplicate:
-            error_list.append(check_duplicates(dataset))
+            check_list.append(check_duplicates(dataset))
         if doi:
-            error_list.append(check_DOI_duplicates(dataset))
+            check_list.append(check_DOI_duplicates(dataset))
         if duplicated_entries:
-            error_list.append(
+            check_list.append(
                 check_duplicates_in_column(dataset, duplicated_entries.split(","))
             )
         if validity:
-            error_list.append(check_validity(dataset, schema))
-        error_list = list(filter(None.__ne__, error_list))
+            check_list.append(check_validity(dataset, schema))
+
+        check_list = list(filter(None.__ne__, check_list))
+        [error_list.append(i[0]) for i in check_list]
+        [table_list.append(i[1]) for i in check_list if len(i) > 1]
         error_list = ["* `" + i + "`\n" for i in error_list]
+
         if len(error_list) > 0:
             raise DatasetValidationError(
                 f"**The following type of errors were found**:\n{''.join(error_list)}"
@@ -234,7 +239,18 @@ def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries):
             md = Markdown("**All is good, no errors were found !**")
             console.print(md, style=ok_style)
     except DatasetValidationError as e:
+        if markdown:
+            print(
+                "\n **Errors were found, please unfold below to see errors:**\n\n <details>\n\n```"
+            )
+
+        for table in table_list:
+            console.print(table)
+
         md = Markdown(str(e))
         console.print(md, style=danger_style)
+
+        if markdown:
+            print("```\n</details>")
 
         sys.exit(1)

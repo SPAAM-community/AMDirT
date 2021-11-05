@@ -13,6 +13,7 @@ from pathlib import Path
     "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
 )
 @click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
+@click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.option(
     "-dc",
     "--duplicated_entries",
