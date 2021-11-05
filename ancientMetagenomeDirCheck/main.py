@@ -2,7 +2,11 @@ import pandas as pd
 import json
 from jsonschema import Draft7Validator
 from io import StringIO
-from ancientMetagenomeDirCheck.exceptions import DatasetValidationError, DuplicateError, ColumnDifferenceError
+from ancientMetagenomeDirCheck.exceptions import (
+    DatasetValidationError,
+    DuplicateError,
+    ColumnDifferenceError,
+)
 import sys
 from rich import print
 from rich.console import Console
@@ -17,7 +21,7 @@ def check_extra_missing_columns(dataset, schema):
         schema (str): path to json schema
     Raises:
         ColumnDifferenceError: If dataset has extra or missing columns compared to schema
-    """    
+    """
 
     dt = pd.read_csv(dataset, sep="\t")
     dt_json = json.load((StringIO(dt.to_json(orient="records"))))
@@ -25,7 +29,7 @@ def check_extra_missing_columns(dataset, schema):
     with open(schema, "r") as j:
         json_schema = json.load(j)
 
-    required_columns = json_schema['items']['required']
+    required_columns = json_schema["items"]["required"]
     present_columns = list(dt.columns)
     missing_columns = list(set(required_columns) - set(present_columns))
     extra_columns = list(set(present_columns) - set(required_columns))
@@ -35,7 +39,6 @@ def check_extra_missing_columns(dataset, schema):
     if len(extra_columns) > 0:
         message = f"Additional column(s) {', '.join(extra_columns)} not allowed"
         raise ColumnDifferenceError(message)
-
 
 
 def check_validity(dataset, schema):
@@ -61,23 +64,34 @@ def check_validity(dataset, schema):
         errors.append(error)
     if len(errors) > 0:
         table = Table(title="Validation Errors were found")
-        table.add_column("Offending value", justify="right", style="red", no_wrap=True)
+        table.add_column(
+            "Offending value",
+            justify="right",
+            style="red",
+            no_wrap=True,
+            overflow="fold",
+        )
         table.add_column("Line number", style="red")
         table.add_column("Column", justify="right", style="cyan")
-        table.add_column("Error", style="magenta")
-        table.add_column("Column help message", style='green')
+        table.add_column("Error", style="magenta", overflow="fold")
+        table.add_column("Column help message", style="green", overflow="fold")
         lines = []
         for error in errors:
             err_column = list(error.path)[-1]
-            help_message = error.schema['description']
+            help_message = error.schema["description"]
             if "enum" in error.schema:
                 if len(error.schema["enum"]) > 3:
                     error.message = f"'{error.instance}' is not an accepted value.\nPlease check {json_schema['items']['properties'][err_column]['$ref']}"
-            err_line = str(error.path[0]+2)
+            err_line = str(error.path[0] + 2)
             lines.append(
-                [str(error.instance), err_line, str(err_column), error.message, help_message]
+                [
+                    str(error.instance),
+                    err_line,
+                    str(err_column),
+                    error.message,
+                    help_message,
+                ]
             )
-            
 
         # remove duplicate lines
         b_set = set(tuple(x) for x in lines)
@@ -138,7 +152,7 @@ def check_accession_duplicates(dataset):
                     else:
                         duplicate_entries[acc].append(nb + 2)
 
-        table = Table(title="Duplicate accessions numbers were found")
+        table = Table(title="Duplicate accessions numbers were found", overflow="fold")
         table.add_column(
             "Accession number", justify="right", style="cyan", no_wrap=True
         )
