@@ -1,5 +1,6 @@
 class Error(Exception):
     """Base class for exceptions in this module."""
+
     pass
 
 
@@ -13,6 +14,7 @@ class DatasetValidationError(Error):
     def __init__(self, message):
         self.message = message
 
+
 class DuplicateError(Error):
     """Exception raised for errors due to duplicates in standards
 
@@ -23,6 +25,18 @@ class DuplicateError(Error):
     def __init__(self, message):
         self.message = message
 
+
+class DOIDuplicateError(Error):
+    """Exception raised for errors due to duplicates in standards
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
+
+
 class ColumnDifferenceError(Error):
     """Exception raised for errors due to missing/added columns
 
@@ -32,4 +46,3 @@ class ColumnDifferenceError(Error):
 
     def __init__(self, message):
         self.message = message
-    
