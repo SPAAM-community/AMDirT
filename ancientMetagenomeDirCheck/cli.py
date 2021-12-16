@@ -1,11 +1,26 @@
 import click
 from ancientMetagenomeDirCheck import __version__
-from ancientMetagenomeDirCheck.main import run_tests
+from ancientMetagenomeDirCheck.test_dataset.main import run_tests
+from ancientMetagenomeDirCheck.filter.run_streamlit import run_app
 from pathlib import Path
 
 
-@click.command()
+@click.group()
 @click.version_option(__version__)
+def cli(no_args_is_help=True, **kwargs):
+    """\b
+    ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
+    Author: Maxime Borry
+    Contact: <borry[at]shh.mpg.de>
+    Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
+    \b
+    DATASET: path to tsv file of dataset to check
+    SCHEMA: path to JSON schema file
+    """
+    pass
+
+
+@cli.command()
 @click.argument("dataset", type=click.Path(exists=True))
 @click.argument("schema", type=click.Path(exists=True))
 @click.option("-v", "--validity", is_flag=True, help="Turn on schema checking.")
@@ -20,17 +35,20 @@ from pathlib import Path
     type=str,
     help="Commma separated list of columns to check for duplicated entries",
 )
-def cli(no_args_is_help=True, **kwargs):
+def test_dataset(no_args_is_help=True, **kwargs):
     """\b
-    ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
-    Author: Maxime Borry
-    Contact: <borry[at]shh.mpg.de>
-    Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
+    Run validity check of ancientMetagenomeDir datasets
     \b
     DATASET: path to tsv file of dataset to check
     SCHEMA: path to JSON schema file
     """
     run_tests(**kwargs)
+
+
+@cli.command()
+def filter(no_args_is_help=True, **kwargs):
+    """Launch interactive filtering tool"""
+    run_app(**kwargs)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import pandas as pd
 import json
 from jsonschema import Draft7Validator
 from io import StringIO
-from ancientMetagenomeDirCheck.exceptions import (
+from ancientMetagenomeDirCheck.test_dataset.exceptions import (
     DatasetValidationError,
     DuplicateError,
     DOIDuplicateError,
