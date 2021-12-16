@@ -34,6 +34,9 @@ setup(
         "rich",
         "streamlit",
         "streamlit-aggrid",
+        "xmltodict",
+        "numpy",
+        "requests",
     ],
     packages=find_packages(include=["ancientMetagenomeDirCheck"]),
     entry_points={

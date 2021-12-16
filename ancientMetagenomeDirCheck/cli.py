@@ -46,6 +46,7 @@ def test_dataset(no_args_is_help=True, **kwargs):
 
 
 @cli.command()
+@click.option("-c", "--config", type=click.Path(exists=True), help="Config file to use")
 def filter(no_args_is_help=True, **kwargs):
     """Launch interactive filtering tool"""
     run_app(**kwargs)
