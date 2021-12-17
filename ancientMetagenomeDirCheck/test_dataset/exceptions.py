@@ -46,3 +46,14 @@ class ColumnDifferenceError(Error):
 
     def __init__(self, message):
         self.message = message
+
+
+class ParsingError(Error):
+    """Exception raised for parsing errors
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message

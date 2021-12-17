@@ -7,6 +7,7 @@ from ancientMetagenomeDirCheck.test_dataset.exceptions import (
     DuplicateError,
     DOIDuplicateError,
     ColumnDifferenceError,
+    ParsingError,
 )
 import sys
 from rich import print
@@ -14,6 +15,25 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.style import Style
 from rich.table import Table
+
+
+def parse_dataset(dataset):
+    """Parse dataset
+
+    Args:
+        dataset (str): Path to dataset in tsv format
+    Returns:
+        (pd.dataframe): If dataset is correctly parsed, None otherwise
+        (rich table): parsing errors if not correcly parsed, None otherwise
+    """
+    try:
+        dt = pd.read_csv(dataset, sep="\t")
+    except pd.errors.ParserError as e:
+        table = Table(title=f"Table parsing errors were found")
+        table.add_column("Error", style="cyan")
+        table.add_row(str(e))
+        return None, table
+    return dt, None
 
 
 def check_extra_missing_columns(dataset, schema):
@@ -26,15 +46,13 @@ def check_extra_missing_columns(dataset, schema):
     Returns:
         (str): If dataset has extra or missing columns compared to schema
     """
-
-    dt = pd.read_csv(dataset, sep="\t")
-    dt_json = json.load((StringIO(dt.to_json(orient="records"))))
+    dt_json = json.load((StringIO(dataset.to_json(orient="records"))))
 
     with open(schema, "r") as j:
         json_schema = json.load(j)
 
     required_columns = json_schema["items"]["required"]
-    present_columns = list(dt.columns)
+    present_columns = list(dataset.columns)
     missing_columns = list(set(required_columns) - set(present_columns))
     extra_columns = list(set(present_columns) - set(required_columns))
     if len(missing_columns) > 0:
@@ -57,8 +75,8 @@ def check_validity(dataset, schema):
         (str): If dataset is not validated by schema
 
     """
-    dt = pd.read_csv(dataset, sep="\t")
-    dt_json = json.load((StringIO(dt.to_json(orient="records"))))
+
+    dt_json = json.load((StringIO(dataset.to_json(orient="records"))))
 
     with open(schema, "r") as j:
         json_schema = json.load(j)
@@ -113,9 +131,10 @@ def check_duplicates(dataset):
         (str): If duplicate lines are found
 
     """
-    dt = pd.read_csv(dataset, sep="\t")
-    if dt.duplicated().sum() != 0:
-        message = f"Duplication Error\n{dt[dt.duplicated()]} line is duplicated"
+    if dataset.duplicated().sum() != 0:
+        message = (
+            f"Duplication Error\n{dataset[dataset.duplicated()]} line is duplicated"
+        )
         print(message)
         return ["DuplicatedRowError"]
 
@@ -180,9 +199,8 @@ def check_DOI_duplicates(dataset):
         DuplicateError: If duplicate lines are found
 
     """
-    dt = pd.read_csv(dataset, sep="\t")
-    project_dois = dt.groupby("project_name")["publication_doi"].unique()
-    doi_unique = dt.groupby("project_name")["publication_doi"].nunique()
+    project_dois = dataset.groupby("project_name")["publication_doi"].unique()
+    doi_unique = dataset.groupby("project_name")["publication_doi"].nunique()
     table = Table(title="Duplicate DOIs  were found")
     table.add_column("Project_name", justify="right", style="cyan", no_wrap=True)
     table.add_column("number DOIs", style="magenta")
@@ -213,18 +231,21 @@ def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, mar
     ok_style = Style(color="green")
     console = Console()
 
+    dt, PotentialParsingError = parse_dataset(dataset)
+    if PotentialParsingError is not None:
+        table_list.append(PotentialParsingError)
     try:
-        check_list.append(check_extra_missing_columns(dataset, schema))
+        check_list.append(check_extra_missing_columns(dt, schema))
         if duplicate:
-            check_list.append(check_duplicates(dataset))
+            check_list.append(check_duplicates(dt))
         if doi:
-            check_list.append(check_DOI_duplicates(dataset))
+            check_list.append(check_DOI_duplicates(dt))
         if duplicated_entries:
             check_list.append(
-                check_duplicates_in_column(dataset, duplicated_entries.split(","))
+                check_duplicates_in_column(dt, duplicated_entries.split(","))
             )
         if validity:
-            check_list.append(check_validity(dataset, schema))
+            check_list.append(check_validity(dt, schema))
 
         check_list = list(filter(None.__ne__, check_list))
         [error_list.append(i[0]) for i in check_list]
@@ -238,7 +259,7 @@ def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, mar
         else:
             md = Markdown("**All is good, no errors were found !**")
             console.print(md, style=ok_style)
-    except DatasetValidationError as e:
+    except (DatasetValidationError, AttributeError) as e:
         if markdown:
             print(
                 "\n **Errors were found, please unfold below to see errors:**\n\n <details>\n\n```"

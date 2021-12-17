@@ -3,6 +3,8 @@ import requests
 import xmltodict
 from numpy import where
 import pandas as pd
+import streamlit as st
+
 
 pd.options.mode.chained_assignment = None
 
@@ -71,12 +73,14 @@ def get_filename(path_string, prepend_exp=False):
         return fwd, "NA"
 
 
-def prepare_eager_table(samples, libraries):
+@st.cache()
+def prepare_eager_table(samples, libraries, table_name):
     """Prepare nf-core/eager tsv input table
 
     Args:
         sample (pd.dataFrame): selected samples table
         library (pd.dataFrame): library table
+        table_name (str): Name of the table
     """
 
     stacked_samples = (
@@ -88,9 +92,15 @@ def prepare_eager_table(samples, libraries):
         .rename(columns={0: "archive_accession"})
         .join(samples.drop("archive_accession", axis=1))
     )
-
+    if table_name in [
+        "ancientmetagenome-environmental",
+        "ancientmetagenome-anthropogenic",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
     libraries = libraries.merge(
-        stacked_samples[["archive_accession", "sample_host"]],
+        stacked_samples[sel_col],
         left_on="archive_sample_accession",
         right_on="archive_accession",
     )
@@ -116,6 +126,10 @@ def prepare_eager_table(samples, libraries):
     )
     selected_libraries["BAM"] = "NA"
     print(selected_libraries.columns)
+    if table_name == "ancientmetagenome-environmental":
+        selected_libraries["sample_host"] = "environmental"
+    elif table_name == "ancientmetagenome-anthropogenic":
+        selected_libraries["sample_host"] = "human"
     col2keep = [
         "sample_name",
         "archive_run_accession",
@@ -141,12 +155,13 @@ def prepare_eager_table(samples, libraries):
     return selected_libraries
 
 
-def prepare_accession_table(samples, libraries):
+def prepare_accession_table(samples, libraries, table_name):
     """Get accession lists for samples and libraries
 
     Args:
         samples (pd.dataFrame): selected samples table
         libraries (pd.dataFrame): library table
+        table_name (str): Name of the table
     """
 
     stacked_samples = (
@@ -158,9 +173,15 @@ def prepare_accession_table(samples, libraries):
         .rename(columns={0: "archive_accession"})
         .join(samples.drop("archive_accession", axis=1))
     )
-
+    if table_name in [
+        "ancientmetagenome-environmental",
+        "ancientmetagenome-anthropogenic",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
     libraries = libraries.merge(
-        stacked_samples[["archive_accession", "sample_host"]],
+        stacked_samples[sel_col],
         left_on="archive_sample_accession",
         right_on="archive_accession",
     )
@@ -168,3 +189,43 @@ def prepare_accession_table(samples, libraries):
     selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     return selected_libraries["archive_accession"].to_frame()
+
+
+def is_merge_size_zero(samples, library, table_name):
+    """
+    Checks if intersection of samples and libraries table is not null
+
+    Args:
+        samples(pd.dataFrame): selected samples table
+        libraries (pd.dataFrame): library table
+        table_name (str): Name of the table
+    """
+
+    if samples.shape[0] == 0 or library.shape[0] == 0:
+        return True
+    stacked_samples = (
+        samples["archive_accession"]
+        .str.split(",", expand=True)
+        .stack()
+        .reset_index(level=0)
+        .set_index("level_0")
+        .rename(columns={0: "archive_accession"})
+        .join(samples.drop("archive_accession", axis=1))
+    )
+
+    if table_name in [
+        "ancientmetagenome-environmental",
+        "ancientmetagenome-anthropogenic",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
+    library_selected = library.merge(
+        stacked_samples[sel_col],
+        left_on="archive_sample_accession",
+        right_on="archive_accession",
+    )
+
+    if samples.shape[0] != 0 and library_selected.shape[0] == 0:
+        return True
+    return False

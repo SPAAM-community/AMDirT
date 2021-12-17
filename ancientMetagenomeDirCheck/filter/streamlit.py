@@ -1,3 +1,4 @@
+from numpy import ALLOW_THREADS
 import streamlit as st
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
@@ -8,7 +9,15 @@ import os
 from ancientMetagenomeDirCheck.filter.utils import (
     prepare_eager_table,
     prepare_accession_table,
+    is_merge_size_zero,
 )
+
+if "compute" not in st.session_state:
+    st.session_state.compute = False
+if "table_name" not in st.session_state:
+    st.session_state.table_name = None
+if "filtered" not in st.session_state:
+    st.session_state.filtered = False
 
 
 def parse_args():
@@ -24,10 +33,12 @@ def parse_args():
 args = parse_args()
 
 
-st.image(
-    "https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/spaam-AncientMetagenomeDir_socialmedia.png"
+st.markdown(
+    """
+<p style="text-align:center;"><img src="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/spaam-AncientMetagenomeDir_socialmedia.png" alt="logo" width="200"></p>
+""",
+    unsafe_allow_html=True,
 )
-st.markdown("# AncientMetagenomeDir filtering tool")
 
 with open(args.config) as c:
     tables = json.load(c)
@@ -36,68 +47,79 @@ with open(args.config) as c:
 
 # Sidebar
 with st.sidebar:
+    st.write("# AncientMetagenomeDir filtering tool")
     st.write("## Select a table")
     options = ["No table selected"] + list(samples.keys())
-    table_name = st.selectbox(label="", options=options)
+    st.session_state.table_name = st.selectbox(label="", options=options)
 
-if table_name != "No table selected":
+if st.session_state.table_name != "No table selected":
     # Main content
-    st.write(f"Displayed table: {table_name}")
+    st.write(f"Displayed table: {st.session_state.table_name}")
     df = pd.read_csv(
-        samples[table_name],
+        samples[st.session_state.table_name],
         sep="\t",
     )
     library = pd.read_csv(
-        libraries[table_name],
+        libraries[st.session_state.table_name],
         sep="\t",
     )
 
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(
-        groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True
+        groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=False
     )
     gridOptions = gb.build()
 
-    df_mod = AgGrid(
-        df,
-        gridOptions=gridOptions,
-        data_return_mode="filtered",
-        update_mode="filtering_changed",
+    with st.form("Samples table") as f:
+        df_mod = AgGrid(
+            df,
+            gridOptions=gridOptions,
+            data_return_mode="filtered",
+            update_mode="filtering_changed",
+        )
+        if st.form_submit_button("Give me my data") or st.session_state.filtered:
+            st.session_state.compute = True
+            st.session_state.filtered = True
+
+    merge_is_zero = is_merge_size_zero(
+        df_mod["data"], library, st.session_state.table_name
     )
 
-    stacked_samples = (
-        df_mod["data"]["archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(df_mod["data"].drop("archive_accession", axis=1))
-    )
+    if merge_is_zero:
+        st.error("No libraries could be retrieved")
+    if df_mod["data"].shape[0] == df.shape[0] and st.session_state.compute:
+        st.session_state.filtered = False
+        st.markdown("**All samples selected, are you sure to continue?**")
+        if st.button("Yes, continue"):
+            st.session_state.filtered = True
+    if (
+        st.session_state.compute
+        and st.session_state.filtered
+        and not merge_is_zero
+        and df_mod["data"].shape[0] != 0
+    ):
 
-    library_selected = library.merge(
-        stacked_samples[["archive_accession", "sample_host"]],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
-    )
-
-    # st.write(library_selected)
-
-    if st.button("Give me my data"):
-        eager_table = prepare_eager_table(df_mod["data"], library)
-        accession_table = prepare_accession_table(df_mod["data"], library)
-
-        st.write("## Eager Table")
-        st.write(eager_table)
+        st.session_state.filtered = False
 
         st.download_button(
             label="Download Eager table CSV",
-            data=eager_table.to_csv(sep="\t").encode("utf-8"),
+            data=prepare_eager_table(
+                df_mod["data"], library, st.session_state.table_name
+            )
+            .to_csv(sep="\t")
+            .encode("utf-8"),
             file_name="ancientMetagenomeDir_eager_input.csv",
         )
 
         st.download_button(
-            label="Download accesion table TSV",
-            data=accession_table.to_csv(sep="\t").encode("utf-8"),
+            label="Download accession table TSV",
+            data=prepare_accession_table(
+                df_mod["data"], library, st.session_state.table_name
+            )
+            .to_csv(sep="\t")
+            .encode("utf-8"),
             file_name="ancientMetagenomeDir_accession_table.csv",
         )
+        if st.button("Reset app"):
+            st.session_state.compute = False
+            st.session_state.table_name = "No table selected"
