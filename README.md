@@ -17,7 +17,7 @@ pip install ancientMetagenomeDirCheck
 ### The latest development version, directly from GitHub
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/SPAAM-workshop/AncientMetagenomeDirCheck.git
+pip install --upgrade --force-reinstall git+https://github.com/SPAAM-workshop/AncientMetagenomeDirCheck.git@dev
 ```
 
 ## Documentation
