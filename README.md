@@ -28,7 +28,7 @@ Usage: ancientMetagenomeDirCheck [OPTIONS] COMMAND [ARGS]...
 
   ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
   Author: Maxime Borry
-  Contact: <borry[at]shh.mpg.de>
+  Contact: <maxime_borry[at]eva.mpg.de>
   Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
 
   DATASET: path to tsv file of dataset to check

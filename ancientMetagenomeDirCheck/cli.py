@@ -11,7 +11,7 @@ def cli(no_args_is_help=True, **kwargs):
     """\b
     ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
     Author: Maxime Borry
-    Contact: <borry[at]shh.mpg.de>
+    Contact: <maxime_borry[at]eva.mpg.de>
     Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
     \b
     DATASET: path to tsv file of dataset to check
