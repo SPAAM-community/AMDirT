@@ -45,5 +45,5 @@ setup(
         ]
     },
     include_package_data=True,
-    package_data={"tables.json": ["filter/tables.json"]},
+    package_data={"": ["filter/tables.json"]},
 )
