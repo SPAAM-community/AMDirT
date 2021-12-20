@@ -45,7 +45,7 @@ with open(args.config) as c:
 with st.sidebar:
     st.markdown(
         """
-<p style="text-align:center;"><img src="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/spaam-AncientMetagenomeDir_socialmedia.png" alt="logo" width="100%"></p>
+<p style="text-align:center;"><img src="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/spaam-AncientMetagenomeDir_logo_lightmode.svg" alt="logo" width="50%"></p>
 """,
         unsafe_allow_html=True,
     )
