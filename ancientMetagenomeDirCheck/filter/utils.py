@@ -34,7 +34,6 @@ def get_colour_chemistry(instrument):
 def get_experiment_accession(run_accession):
     resp = requests.get(f"https://www.ebi.ac.uk/ena/browser/api/xml/{run_accession}")
     tree = xmltodict.parse(resp.content.decode())
-    print(run_accession)
     return tree["RUN_SET"]["RUN"]["EXPERIMENT_REF"]["@accession"]
 
 
@@ -62,7 +61,6 @@ def get_filename(path_string, prepend_exp=False):
         fwd = fwd.split("/")[-1]
     if prepend_exp:
         run_accession = fwd.split(".")[0].split("_")[0]
-        # print(run_accession)
         exp_accession = get_experiment_accession(run_accession)
     try:
         if prepend_exp:
@@ -74,17 +72,18 @@ def get_filename(path_string, prepend_exp=False):
 
 
 @st.cache()
-def prepare_eager_table(samples, libraries, table_name):
+def prepare_eager_table(samples, libraries, table_name, supported_archives):
     """Prepare nf-core/eager tsv input table
 
     Args:
         sample (pd.dataFrame): selected samples table
         library (pd.dataFrame): library table
         table_name (str): Name of the table
+        supported_archives (list): list of supported archives
     """
-
     stacked_samples = (
-        samples["archive_accession"]
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
         .str.split(",", expand=True)
         .stack()
         .reset_index(level=0)
@@ -92,6 +91,7 @@ def prepare_eager_table(samples, libraries, table_name):
         .rename(columns={0: "archive_accession"})
         .join(samples.drop("archive_accession", axis=1))
     )
+
     if table_name in [
         "ancientmetagenome-environmental",
         "ancientmetagenome-anthropogenic",
@@ -155,17 +155,19 @@ def prepare_eager_table(samples, libraries, table_name):
     return selected_libraries
 
 
-def prepare_accession_table(samples, libraries, table_name):
+def prepare_accession_table(samples, libraries, table_name, supported_archives):
     """Get accession lists for samples and libraries
 
     Args:
         samples (pd.dataFrame): selected samples table
         libraries (pd.dataFrame): library table
         table_name (str): Name of the table
+        supported_archives (list): list of supported archives
     """
 
     stacked_samples = (
-        samples["archive_accession"]
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
         .str.split(",", expand=True)
         .stack()
         .reset_index(level=0)

@@ -44,4 +44,6 @@ setup(
             "ancientMetagenomeDirCheck = ancientMetagenomeDirCheck.cli:cli"
         ]
     },
+    include_package_data=True,
+    package_data={"tables.json": ["filter/tables.json"]},
 )
