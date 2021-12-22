@@ -14,8 +14,6 @@ def cli(no_args_is_help=True, **kwargs):
     Contact: <maxime_borry[at]eva.mpg.de>
     Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
     \b
-    DATASET: path to tsv file of dataset to check
-    SCHEMA: path to JSON schema file
     """
     pass
 
