@@ -112,6 +112,18 @@ if st.session_state.table_name != "No table selected":
 
         if st.session_state.force_validation:
             st.download_button(
+                label="Download accession TSV table (e.g. for nf-core/fetchngs)",
+                data=prepare_accession_table(
+                    pd.DataFrame(df_mod["selected_rows"]),
+                    library,
+                    st.session_state.table_name,
+                    supported_archives,
+                )
+                .to_csv(sep="\t", header=False, index=False)
+                .encode("utf-8"),
+                file_name="ancientMetagenomeDir_accession_table.csv",
+            )
+            st.download_button(
                 label="Download Eager TSV table ",
                 data=prepare_eager_table(
                     pd.DataFrame(df_mod["selected_rows"]),
@@ -122,18 +134,6 @@ if st.session_state.table_name != "No table selected":
                 .to_csv(sep="\t")
                 .encode("utf-8"),
                 file_name="ancientMetagenomeDir_eager_input.csv",
-            )
-            st.download_button(
-                label="Download accession TSV table",
-                data=prepare_accession_table(
-                    pd.DataFrame(df_mod["selected_rows"]),
-                    library,
-                    st.session_state.table_name,
-                    supported_archives,
-                )
-                .to_csv(sep="\t", header=False, index=False)
-                .encode("utf-8"),
-                file_name="ancientMetagenomeDir_accession_table.csv",
             )
             if st.button("Reset app"):
                 st.session_state.compute = False
