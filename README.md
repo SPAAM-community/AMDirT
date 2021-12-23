@@ -1,50 +1,47 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4003826.svg)](https://doi.org/10.5281/zenodo.4003826) [![PyPI version](https://badge.fury.io/py/ancientMetagenomeDirCheck.svg)](https://pypi.org/project/ancientMetagenomeDirCheck)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4003826.svg)](https://doi.org/10.5281/zenodo.4003826) [![PyPI version](https://badge.fury.io/py/AMDirT.svg)](https://pypi.org/project/AMDirT)
 
-# AncientMetagenomeDirCheck
+# AMDirT
 
-A python package to check AncientMetagenomeDir.
-
-AncientMetagenomeDirCheck will verify a dataset, in tabular format, against a json schema (and some other checks...).
+AMDirT: [AncientMetagenomeDir](https://github.com/spaAM-community/ancientmetagenomedir) Toolkit
 
 ## Install
 
 ### From PyPI using pip
 
 ```bash
-pip install ancientMetagenomeDirCheck
+pip install AMDirT
 ```
 
 ### The latest development version, directly from GitHub
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/spaAM-community/AncientMetagenomeDirCheck.git@dev
+pip install --upgrade --force-reinstall git+https://github.com/spaAM-community/AMDirT.git@dev
 ```
 
 ## Documentation
 
 ```bash
-$ ancientMetagenomeDirCheck --help
-Usage: ancientMetagenomeDirCheck [OPTIONS] COMMAND [ARGS]...
+AMDirT --help
+Usage: AMDirT [OPTIONS] COMMAND [ARGS]...
 
-  ancientMetagenomeDirCheck: Performs validity check of ancientMetagenomeDir datasets
+  AMDirT: Performs validity check of ancientMetagenomeDir datasets
   Author: Maxime Borry
   Contact: <maxime_borry[at]eva.mpg.de>
-  Homepage & Documentation: github.com/spaam-workshop/ancientMetagenomeDirCheck
+  Homepage & Documentation: github.com/spaam-workshop/AMDirT
 
-  DATASET: path to tsv file of dataset to check
-  SCHEMA: path to JSON schema file
 
 Options:
   --version  Show the version and exit.
   --help     Show this message and exit.
 
 Commands:
+  convert       Converts filtered samples and libraries tables to eager...
   filter        Launch interactive filtering tool
   test-dataset  Run validity check of ancientMetagenomeDir datasets...
 ```
 ```bash
-$ ancientMetagenomeDirCheck test-dataset --help
-Usage: ancientMetagenomeDirCheck test-dataset [OPTIONS] DATASET SCHEMA
+$ AMDirT test-dataset --help
+Usage: AMDirT test-dataset [OPTIONS] DATASET SCHEMA
 
   Run validity check of ancientMetagenomeDir datasets
 
@@ -62,11 +59,26 @@ Options:
   --help                          Show this message and exit.
 ```
 ```bash
-$ ancientMetagenomeDirCheck filter --help
-Usage: ancientMetagenomeDirCheck filter [OPTIONS]
+$ AMDirT filter --help
+Usage: AMDirT filter [OPTIONS]
 
   Launch interactive filtering tool
 
 Options:
-  -c, --config PATH  Config file to use
+  -t, --tables PATH  JSON file listing AncientMetagenomeDir tables
+  --help             Show this message and exit.
+```
+```bash
+$ AMDirT convert --help
+Usage: AMDirT convert [OPTIONS] SAMPLES TABLE_NAME
+
+  Converts filtered samples and libraries tables to eager and fetchNGS input tables
+
+  SAMPLES: path to filted samples tsv file
+  TABLE_NAME: name of table to convert
+
+Options:
+  -t, --tables PATH       JSON file listing AncientMetagenomeDir tables
+  -o, --output DIRECTORY  conversion output directory
+  --help                  Show this message and exit.
 ```

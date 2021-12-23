@@ -4,9 +4,14 @@ import xmltodict
 from numpy import where
 import pandas as pd
 import streamlit as st
-
+import pkg_resources
 
 pd.options.mode.chained_assignment = None
+
+
+def get_json_path(rel_path="../assets/tables.json"):
+    path = pkg_resources.resource_filename(__name__, rel_path)
+    return path
 
 
 def get_colour_chemistry(instrument):
@@ -125,7 +130,6 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
         selected_libraries["library_layout"] == "SINGLE", "SE", "PE"
     )
     selected_libraries["BAM"] = "NA"
-    print(selected_libraries.columns)
     if table_name == "ancientmetagenome-environmental":
         selected_libraries["sample_host"] = "environmental"
     elif table_name == "ancientmetagenome-anthropogenic":

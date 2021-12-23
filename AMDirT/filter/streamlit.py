@@ -7,16 +7,16 @@ import argparse
 import sys
 import json
 import os
-from ancientMetagenomeDirCheck.filter.utils import (
+from AMDirT.filter.utils import (
     prepare_eager_table,
     prepare_accession_table,
     is_merge_size_zero,
 )
 
 st.set_page_config(
-    page_title="AncientMetagenomeDirCheck Filter",
+    page_title="AMDirT Filter",
     page_icon="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/dev/assets/images/spaam-AncientMetagenomeDir_logo_mini.png",
-    layout='wide'
+    layout="wide",
 )
 
 supported_archives = ["ENA", "SRA"]
@@ -55,7 +55,7 @@ with st.sidebar:
 """,
         unsafe_allow_html=True,
     )
-    st.write("# AncientMetagenomeDir filtering tool")
+    st.write("# [AMDirT](https://github.com/SPAAM-community/AMDirT) filtering tool")
     st.write("## Select a table")
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="", options=options)
@@ -125,12 +125,12 @@ if st.session_state.table_name != "No table selected":
                     st.session_state.table_name,
                     supported_archives,
                 )
-                .to_csv(sep="\t")
+                .to_csv(sep="\t", index=False)
                 .encode("utf-8"),
                 file_name="ancientMetagenomeDir_eager_input.csv",
             )
             st.download_button(
-                label="Download accession TSV table",
+                label="Download accession TSV table for fetchNGS",
                 data=prepare_accession_table(
                     pd.DataFrame(df_mod["selected_rows"]),
                     library,

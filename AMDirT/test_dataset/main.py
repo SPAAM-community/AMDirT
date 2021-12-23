@@ -2,7 +2,7 @@ import pandas as pd
 import json
 from jsonschema import Draft7Validator
 from io import StringIO
-from ancientMetagenomeDirCheck.test_dataset.exceptions import (
+from AMDirT.test_dataset.exceptions import (
     DatasetValidationError,
     DuplicateError,
     DOIDuplicateError,
@@ -15,6 +15,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.style import Style
 from rich.table import Table
+import logging
 
 
 def parse_dataset(dataset):
@@ -57,11 +58,11 @@ def check_extra_missing_columns(dataset, schema):
     extra_columns = list(set(present_columns) - set(required_columns))
     if len(missing_columns) > 0:
         message = f"The required column(s) {', '.join(missing_columns)} is/are missing"
-        print(message)
+        logging.info(message)
         return "MissingColumnError"
     if len(extra_columns) > 0:
         message = f"Additional column(s) {', '.join(extra_columns)} not allowed"
-        print(message)
+        logging.info(message)
         return "UnwantedColumnError"
 
 
@@ -135,7 +136,7 @@ def check_duplicates(dataset):
         message = (
             f"Duplication Error\n{dataset[dataset.duplicated()]} line is duplicated"
         )
-        print(message)
+        logging.info(message)
         return ["DuplicatedRowError"]
 
 
@@ -221,7 +222,7 @@ def check_DOI_duplicates(dataset):
 
 def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, markdown):
 
-    print(f"Checking {dataset} against schema {schema}")
+    logging.info(f"Checking {dataset} against schema {schema}")
 
     check_list = []
     table_list = []
@@ -258,20 +259,20 @@ def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, mar
             )
         else:
             md = Markdown("**All is good, no errors were found !**")
-            console.print(md, style=ok_style)
+            console.logging.info(md, style=ok_style)
     except (DatasetValidationError, AttributeError) as e:
         if markdown:
-            print(
+            logging.info(
                 "\n **Errors were found, please unfold below to see errors:**\n\n <details>\n\n```"
             )
 
         for table in table_list:
-            console.print(table)
+            console.logging.info(table)
 
         md = Markdown(str(e))
-        console.print(md, style=danger_style)
+        console.logging.info(md, style=danger_style)
 
         if markdown:
-            print("```\n</details>")
+            logging.info("```\n</details>")
 
         sys.exit(1)
