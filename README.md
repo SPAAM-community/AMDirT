@@ -2,7 +2,7 @@
 
 # AMDirT
 
-AMDirT: [AncientMetagenomeDir](https://github.com/spaAM-community/ancientmetagenomedir) Toolkit
+**AMDirT**: [**A**ncient**M**etagenome**Dir**](https://github.com/spaAM-community/ancientmetagenomedir) **T**oolkit
 
 ## Install
 
