@@ -4,7 +4,6 @@ from streamlit import cli as stcli
 from pathlib import Path
 from AMDirT.filter.utils import get_json_path
 
-
 def run_app(tables=None):
     directory = Path(__file__).parent.resolve()
     app = "streamlit.py"
@@ -15,5 +14,5 @@ def run_app(tables=None):
     app_path = f"{directory}/{app}"
 
     sys.argv = ["streamlit", "run", app_path, "--", "--config", config_path]
-    logging.info("To close app, press on your keyboard: Ctrl+C")
+    logging.info("\n[AMDirT] To close app, press on your keyboard: ctrl+c\n")
     sys.exit(stcli.main())
