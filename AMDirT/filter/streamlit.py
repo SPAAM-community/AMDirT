@@ -118,7 +118,7 @@ if st.session_state.table_name != "No table selected":
 
         if st.session_state.force_validation:
             st.download_button(
-                label="Download Eager TSV table ",
+                label="Download nf-core/eager input TSV",
                 data=prepare_eager_table(
                     pd.DataFrame(df_mod["selected_rows"]),
                     library,
@@ -130,7 +130,7 @@ if st.session_state.table_name != "No table selected":
                 file_name="ancientMetagenomeDir_eager_input.csv",
             )
             st.download_button(
-                label="Download accession TSV table for fetchNGS",
+                label="Download nf-core/fetchNGS input accession list",
                 data=prepare_accession_table(
                     pd.DataFrame(df_mod["selected_rows"]),
                     library,
