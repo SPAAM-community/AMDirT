@@ -4,7 +4,7 @@ from AMDirT import __version__
 from AMDirT.test_dataset.main import run_tests
 from AMDirT.filter.run_streamlit import run_app
 from AMDirT.convert.main import run_convert
-from AMDirT.filter.utils import get_json_path
+from AMDirT.core.utils import get_json_path
 from json import load
 from pathlib import Path
 

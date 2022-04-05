@@ -2,7 +2,7 @@ import logging
 import sys
 from streamlit import cli as stcli
 from pathlib import Path
-from AMDirT.filter.utils import get_json_path
+from AMDirT.core.utils import get_json_path
 
 
 def run_app(tables=None):

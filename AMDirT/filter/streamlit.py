@@ -7,7 +7,7 @@ import argparse
 import sys
 import json
 import os
-from AMDirT.filter.utils import (
+from AMDirT.core.utils import (
     prepare_eager_table,
     prepare_accession_table,
     is_merge_size_zero,
