@@ -1,5 +1,5 @@
 from sys import path
-from AMDirT.filter.utils import (
+from AMDirT.core.utils import (
     prepare_accession_table,
     prepare_eager_table,
     is_merge_size_zero,
