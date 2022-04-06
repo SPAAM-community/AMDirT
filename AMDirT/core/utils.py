@@ -194,6 +194,7 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
     return selected_libraries
 
 
+@st.cache()
 def prepare_accession_table(samples, libraries, table_name, supported_archives):
     """Get accession lists for samples and libraries
 
@@ -229,7 +230,20 @@ def prepare_accession_table(samples, libraries, table_name, supported_archives):
     select_libs = list(stacked_samples["archive_accession"])
     selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
-    return selected_libraries["archive_accession"].to_frame().drop_duplicates()
+    # Downloading with curl instead of fetchngs
+    urls = set(selected_libraries["download_links"])
+    links = set()
+    for u in urls:
+        for s in u.split(";"):
+            links.add(s)
+    dl_script = "#!/usr/bin/env bash\n"
+    for l in links:
+        dl_script += f"curl -L ftp://{l} -o {l.split('/')[-1]}\n"
+
+    return {
+        "df": selected_libraries["archive_accession"].to_frame().drop_duplicates(),
+        "script": dl_script,
+    }
 
 
 @st.cache()
