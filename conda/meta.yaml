@@ -1,0 +1,46 @@
+{% set name = "AMDirT" %}
+{% set version = "1.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/SPAAM-community/AMDirT/archive/{{ version }}.tar.gz
+  sha256: 47830cabc7ded86785db836d1af968133a568bfdaacfebd66c5dca8c4360b40e
+
+build:
+  entry_points:
+    - ancientMetagenomeDirCheck = ancientMetagenomeDirCheck.cli:cli
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - click
+    - jsonschema
+    - pandas
+    - python >=3.6
+    - rich
+
+test:
+  imports:
+    - ancientMetagenomeDirCheck
+  commands:
+    - pip check
+    - ancientMetagenomeDirCheck --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/SPAAM-workshop/ancientMetagenomeDirCheck
+  license: GPL-3.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - jasmezz
