@@ -124,7 +124,7 @@ if st.session_state.table_name != "No table selected":
         if st.session_state.force_validation:
             if st.session_state.dl_method == "fetchngs":
                 st.download_button(
-                    label="Download accession TSV table for fetchNGS",
+                    label="Download nf-core/fetchNGS input accession list",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
@@ -137,7 +137,7 @@ if st.session_state.table_name != "No table selected":
                 )
             else:
                 st.download_button(
-                    label="Download Curl download script",
+                    label="Download Curl sample download script",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
@@ -147,7 +147,7 @@ if st.session_state.table_name != "No table selected":
                     file_name="ancientMetagenomeDir_curl_download_script.sh",
                 )
             st.download_button(
-                label="Download Eager TSV table ",
+                label="Download nf-core/eager input TSV",
                 data=prepare_eager_table(
                     pd.DataFrame(df_mod["selected_rows"]),
                     library,
