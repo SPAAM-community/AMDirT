@@ -1,3 +1,4 @@
+import imp
 from os import path
 import requests
 import xmltodict
@@ -5,6 +6,7 @@ from numpy import where
 import pandas as pd
 import streamlit as st
 import pkg_resources
+import logging
 
 pd.options.mode.chained_assignment = None
 
@@ -40,6 +42,39 @@ def get_experiment_accession(run_accession):
     resp = requests.get(f"https://www.ebi.ac.uk/ena/browser/api/xml/{run_accession}")
     tree = xmltodict.parse(resp.content.decode())
     return tree["RUN_SET"]["RUN"]["EXPERIMENT_REF"]["@accession"]
+
+
+def get_study_table(study_accession):
+    url = (
+        "https://www.ebi.ac.uk/ena/portal/api/filereport"
+        f"?accession={study_accession}&result=read_run&fields="
+        "run_accession,"
+        "scientific_name,"
+        "center_name,"
+        "library_layout,"
+        "library_strategy,"
+        "instrument_platform,"
+        "submitted_ftp,"
+        "submitted_md5,"
+        "submitted_bytes,"
+        "submitted_format,"
+        "fastq_ftp"
+    )
+    print(url)
+    return pd.read_csv(url, sep="\t")
+
+
+def doi2bib(doi):
+    """
+    Return a bibTeX string of metadata for a given DOI.
+    """
+
+    url = "http://doi.org/" + doi
+
+    headers = {"accept": "application/x-bibtex"}
+    r = requests.get(url, headers=headers)
+
+    return r.text
 
 
 def get_filename(path_string, prepend_exp=False):
@@ -195,6 +230,22 @@ def prepare_accession_table(samples, libraries, table_name, supported_archives):
     selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     return selected_libraries["archive_accession"].to_frame()
+
+
+@st.cache()
+def prepare_bibtex_file(samples):
+    dois = set()
+    dois_set = set(list(samples["publication_doi"]))
+    print(dois_set)
+    for doi in dois_set:
+        try:
+            dois.add(doi2bib(doi))
+        except Exception as e:
+            logging.info(e)
+            pass
+
+    dois_string = "\n".join(list(dois))
+    return dois_string
 
 
 def is_merge_size_zero(samples, library, table_name):

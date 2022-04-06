@@ -8,6 +8,7 @@ import sys
 import json
 import os
 from AMDirT.core.utils import (
+    prepare_bibtex_file,
     prepare_eager_table,
     prepare_accession_table,
     is_merge_size_zero,
@@ -140,6 +141,11 @@ if st.session_state.table_name != "No table selected":
                 .to_csv(sep="\t", header=False, index=False)
                 .encode("utf-8"),
                 file_name="ancientMetagenomeDir_accession_table.csv",
+            )
+            st.download_button(
+                label="Download Citations as BibTex",
+                data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
+                file_name="ancientMetagenomeDir_citations.bib",
             )
             if st.button("Reset app"):
                 st.session_state.compute = False
