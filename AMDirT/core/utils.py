@@ -229,14 +229,14 @@ def prepare_accession_table(samples, libraries, table_name, supported_archives):
     select_libs = list(stacked_samples["archive_accession"])
     selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
-    return selected_libraries["archive_accession"].to_frame()
+    return selected_libraries["archive_accession"].to_frame().drop_duplicates()
 
 
 @st.cache()
 def prepare_bibtex_file(samples):
     dois = set()
     dois_set = set(list(samples["publication_doi"]))
-    print(dois_set)
+    dois_set.add("10.1038/s41597-021-00816-y")
     for doi in dois_set:
         try:
             dois.add(doi2bib(doi))
