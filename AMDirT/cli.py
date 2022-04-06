@@ -74,20 +74,21 @@ def filter(no_args_is_help=True, **kwargs):
     "-t",
     "--tables",
     type=click.Path(exists=True),
-    help="JSON file listing AncientMetagenomeDir tables",
+    help="(Optional) JSON file listing AncientMetagenomeDir tables",
 )
 @click.option(
     "-o",
     "--output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
-    default=None,
+    default=".",
+    show_default=True,
     help="conversion output directory",
 )
 def convert(no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager and fetchNGS input tables
     \b
-    SAMPLES: path to filted samples tsv file
+    SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
     """
     run_convert(**kwargs)
