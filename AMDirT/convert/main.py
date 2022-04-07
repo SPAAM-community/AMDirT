@@ -11,7 +11,7 @@ import logging
 import pandas as pd
 
 
-def run_convert(samples, table_name, tables, output):
+def run_convert(samples, table_name, tables, output="."):
     supported_archives = ["ENA", "SRA"]
     if tables is None:
         table_path = get_json_path()
@@ -24,6 +24,7 @@ def run_convert(samples, table_name, tables, output):
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
     logging.info("Preparing Eager table")
+    
     eager_table = prepare_eager_table(
         samples=samples,
         libraries=libraries,
