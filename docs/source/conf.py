@@ -19,8 +19,8 @@ from AMDirT import __version__
 # -- Project information -----------------------------------------------------
 
 project = "AMDirT"
-copyright = "2021, Maxime Borry"
-author = "Maxime Borry"
+copyright = "2022, Maxime Borry"
+author = "Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov"
 
 # The full version, including alpha/beta/rc tags
 release = __version__
