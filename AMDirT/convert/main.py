@@ -20,7 +20,7 @@ def run_convert(samples, table_name, tables, output):
     if table_name not in table_list:
         logging.info(f"Table '{table_name}' not found in {table_list}")
 
-    #libraries = pd.read_csv(table_list["libraries"][table_name], sep="\t")
+    #fixme
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
     eager_table = prepare_eager_table(
