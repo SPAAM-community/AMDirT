@@ -24,7 +24,7 @@ def cli(no_args_is_help=True, **kwargs):
     AMDirT: Performs validity check of ancientMetagenomeDir datasets
     Authors: Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov
     Contact: <maxime_borry[at]eva.mpg.de>
-    Homepage & Documentation: github.com/spaam-workshop/AMDirT
+    Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
     """
     pass
