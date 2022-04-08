@@ -23,7 +23,7 @@ setup(
     version=get_version("AMDirT/__init__.py"),
     description="AMDirT: AncientMetagenomeDir Toolkit",
     long_description=open("README.md").read(),
-    url="https://github.com/SPAAM-workshop/AMDirT",
+    url="https://github.com/SPAAM-community/AMDirT",
     long_description_content_type="text/markdown",
     license="GNU-GPLv3",
     python_requires=">=3.6",
