@@ -15,4 +15,3 @@ messageFormat = "%(message)s"
 [browser]
 
 gatherUsageStats = false
-hideTopBar = true
