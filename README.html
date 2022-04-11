@@ -41,8 +41,9 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">AMDirT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#install">Install</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#from-pypi-using-pip">From PyPI using pip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-the-conda-environment-and-activate-it">1. Install the conda environment and activate it</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-latest-development-version-directly-from-github">The latest development version, directly from GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-pypi-using-pip-only-the-code-on-master-branch">From PyPI using pip (only the code on master branch)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
@@ -81,15 +82,23 @@
 <p><strong>AMDirT</strong>: <a class="reference external" href="https://github.com/SPAAM-community/ancientmetagenomedir"><strong>A</strong>ncient<strong>M</strong>etagenome<strong>Dir</strong></a> <strong>T</strong>oolkit</p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline"></a></h2>
-<section id="from-pypi-using-pip">
-<h3>From PyPI using pip<a class="headerlink" href="#from-pypi-using-pip" title="Permalink to this headline"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install AMDirT
+<p>Before we release AMDirt on (bio)Conda, please follow the instructions below.</p>
+<section id="install-the-conda-environment-and-activate-it">
+<h3>1. Install the conda environment and activate it<a class="headerlink" href="#install-the-conda-environment-and-activate-it" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f environment.yml
+conda activate amdirt
 </pre></div>
 </div>
 </section>
 <section id="the-latest-development-version-directly-from-github">
 <h3>The latest development version, directly from GitHub<a class="headerlink" href="#the-latest-development-version-directly-from-github" title="Permalink to this headline"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/AMDirT.git@dev
+</pre></div>
+</div>
+</section>
+<section id="from-pypi-using-pip-only-the-code-on-master-branch">
+<h3>From PyPI using pip (only the code on master branch)<a class="headerlink" href="#from-pypi-using-pip-only-the-code-on-master-branch" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install AMDirT
 </pre></div>
 </div>
 </section>

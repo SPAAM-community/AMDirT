@@ -6,16 +6,25 @@
 
 ## Install
 
-### From PyPI using pip
+Before we release AMDirt on (bio)Conda, please follow the instructions below.
+
+### 1. Install the conda environment and activate it
 
 ```bash
-pip install AMDirT
+conda env create -f environment.yml
+conda activate amdirt
 ```
 
 ### The latest development version, directly from GitHub
 
 ```bash
 pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/AMDirT.git@dev
+```
+
+### From PyPI using pip (only the code on master branch)
+
+```bash
+pip install AMDirT
 ```
 
 ## Documentation
