@@ -15,7 +15,9 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.style import Style
 from rich.table import Table
-import logging
+from AMDirT import logger
+
+logger.propagate = False
 
 
 def parse_dataset(dataset):
@@ -58,11 +60,11 @@ def check_extra_missing_columns(dataset, schema):
     extra_columns = list(set(present_columns) - set(required_columns))
     if len(missing_columns) > 0:
         message = f"The required column(s) {', '.join(missing_columns)} is/are missing"
-        logging.info(message)
+        logger.info(message)
         return "MissingColumnError"
     if len(extra_columns) > 0:
         message = f"Additional column(s) {', '.join(extra_columns)} not allowed"
-        logging.info(message)
+        logger.info(message)
         return "UnwantedColumnError"
 
 
@@ -136,7 +138,7 @@ def check_duplicates(dataset):
         message = (
             f"Duplication Error\n{dataset[dataset.duplicated()]} line is duplicated"
         )
-        logging.info(message)
+        logger.info(message)
         return ["DuplicatedRowError"]
 
 
@@ -222,7 +224,7 @@ def check_DOI_duplicates(dataset):
 
 def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, markdown):
 
-    logging.info(f"Checking {dataset} against schema {schema}")
+    logger.info(f"Checking {dataset} against schema {schema}")
 
     check_list = []
     table_list = []
@@ -259,20 +261,20 @@ def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, mar
             )
         else:
             md = Markdown("**All is good, no errors were found !**")
-            console.logging.info(md, style=ok_style)
+            console.print(md, style=ok_style)
     except (DatasetValidationError, AttributeError) as e:
         if markdown:
-            logging.info(
+            logger.info(
                 "\n **Errors were found, please unfold below to see errors:**\n\n <details>\n\n```"
             )
 
         for table in table_list:
-            console.logging.info(table)
+            console.print(table)
 
         md = Markdown(str(e))
-        console.logging.info(md, style=danger_style)
+        console.print(md, style=danger_style)
 
         if markdown:
-            logging.info("```\n</details>")
+            logger.info("```\n</details>")
 
         sys.exit(1)

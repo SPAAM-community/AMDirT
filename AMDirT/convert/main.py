@@ -7,7 +7,7 @@ from AMDirT.core.utils import (
 )
 from AMDirT.filter.run_streamlit import get_json_path
 from json import load
-import logging
+from AMDirT import logger
 import pandas as pd
 
 
@@ -19,26 +19,26 @@ def run_convert(samples, table_name, tables, output="."):
             tables = load(f)
     table_list = list(tables["samples"].keys())
     if table_name not in table_list:
-        logging.info(f"Table '{table_name}' not found in {table_list}")
+        logger.info(f"Table '{table_name}' not found in {table_list}")
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
-    logging.info("Preparing Eager table")
-    
+    logger.info("Preparing Eager table")
+
     eager_table = prepare_eager_table(
         samples=samples,
         libraries=libraries,
         table_name=table_name,
         supported_archives=supported_archives,
     )
-    logging.info("Preparing Accession table")
+    logger.info("Preparing Accession table")
     accession_table = prepare_accession_table(
         samples=samples,
         libraries=libraries,
         table_name=table_name,
         supported_archives=supported_archives,
     )
-    logging.info("Preparing Bibtex citation file")
+    logger.info("Preparing Bibtex citation file")
     with open("AncientMetagenomeDir_citations.bib", "w") as fw:
         fw.write(prepare_bibtex_file(samples))
 

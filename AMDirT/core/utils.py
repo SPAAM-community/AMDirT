@@ -6,7 +6,7 @@ from numpy import where
 import pandas as pd
 import streamlit as st
 import pkg_resources
-import logging
+from AMDirT import logger
 
 pd.options.mode.chained_assignment = None
 
@@ -255,7 +255,7 @@ def prepare_bibtex_file(samples):
         try:
             dois.add(doi2bib(doi))
         except Exception as e:
-            logging.info(e)
+            logger.info(e)
             pass
 
     dois_string = "\n".join(list(dois))

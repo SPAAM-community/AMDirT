@@ -1,6 +1,6 @@
 import pandas as pd
 from rich.table import Table
-import logging
+from AMDirT import logger
 
 
 def generate_table(columns, rows, title, method):
@@ -18,7 +18,7 @@ def generate_table(columns, rows, title, method):
         for column in columns:
             table.add_column(column, style="red", overflow="fold")
         for row in rows:
-            logging.info(*row)
+            logger.info(*row)
             table.add_row(*row)
         return table
     else:
