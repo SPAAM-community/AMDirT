@@ -2,7 +2,7 @@
 
 # AMDirT
 
-**AMDirT**: [**A**ncient**M**etagenome**Dir**](https://github.com/spaAM-community/ancientmetagenomedir) **T**oolkit
+**AMDirT**: [**A**ncient**M**etagenome**Dir**](https://github.com/SPAAM-community/ancientmetagenomedir) **T**oolkit
 
 ## Install
 
@@ -18,7 +18,7 @@ conda activate amdirt
 ### The latest development version, directly from GitHub
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/spaAM-community/AMDirT.git@dev
+pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/AMDirT.git@dev
 ```
 
 ### From PyPI using pip (only the code on master branch)
