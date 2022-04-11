@@ -15,7 +15,7 @@ pip install AMDirT
 ### The latest development version, directly from GitHub
 
 ```bash
-pip install --upgrade --force-reinstall git+https://github.com/spaAM-community/AMDirT.git@dev
+pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/AMDirT.git@dev
 ```
 
 ## Documentation
