@@ -27,6 +27,14 @@ pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/A
 pip install AMDirT
 ```
 
+### The latest development version, with local changes
+
+From within you local clone of the AMDirT repository
+
+```bash
+pip install -e .
+```
+
 ## Documentation
 
 - Stable: [amdirt.readthedocs.io/en/latest/](https://amdirt.readthedocs.io/en/latest/)
