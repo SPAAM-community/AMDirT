@@ -50,7 +50,6 @@ def get_study_table(study_accession):
         f"?accession={study_accession}&result=read_run&fields="
         "run_accession,"
         "scientific_name,"
-        "center_name,"
         "library_layout,"
         "library_strategy,"
         "instrument_platform,"
@@ -171,7 +170,7 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
         selected_libraries["sample_host"] = "human"
     col2keep = [
         "sample_name",
-        "archive_run_accession",
+        "archive_data_accession",
         "Lane",
         "Colour_Chemistry",
         "SeqType",
@@ -185,7 +184,7 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
     selected_libraries = selected_libraries[col2keep].rename(
         columns={
             "sample_name": "Sample_Name",
-            "archive_run_accession": "Library_ID",
+            "archive_data_accession": "Library_ID",
             "sample_host": "Organism",
             "strand_type": "Strandedness",
         }
