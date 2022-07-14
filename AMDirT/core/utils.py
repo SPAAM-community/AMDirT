@@ -134,7 +134,6 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
 
     if table_name in [
         "ancientmetagenome-environmental",
-        "ancientmetagenome-anthropogenic",
     ]:
         sel_col = ["archive_accession"]
     else:
@@ -167,8 +166,6 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
     selected_libraries["BAM"] = "NA"
     if table_name == "ancientmetagenome-environmental":
         selected_libraries["sample_host"] = "environmental"
-    elif table_name == "ancientmetagenome-anthropogenic":
-        selected_libraries["sample_host"] = "human"
     col2keep = [
         "sample_name",
         "archive_run_accession",
@@ -217,7 +214,6 @@ def prepare_accession_table(samples, libraries, table_name, supported_archives):
     )
     if table_name in [
         "ancientmetagenome-environmental",
-        "ancientmetagenome-anthropogenic",
     ]:
         sel_col = ["archive_accession"]
     else:
@@ -286,7 +282,6 @@ def is_merge_size_zero(samples, library, table_name):
 
     if table_name in [
         "ancientmetagenome-environmental",
-        "ancientmetagenome-anthropogenic",
     ]:
         sel_col = ["archive_accession"]
     else:
