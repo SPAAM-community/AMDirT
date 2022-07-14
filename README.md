@@ -29,7 +29,7 @@ pip install AMDirT
 
 ### The latest development version, with local changes
 
-From within you local repository
+From within you local clone of the AMDirT repository
 
 ```bash
 pip install -e .
