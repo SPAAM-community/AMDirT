@@ -16,7 +16,7 @@ from AMDirT.core.utils import (
 
 st.set_page_config(
     page_title="AMDirT Filter",
-    page_icon="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/dev/assets/images/spaam-AncientMetagenomeDir_logo_mini.png",
+    page_icon="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/logos/spaam-AncientMetagenomeDir_logo_mini.png",
     layout="wide",
 )
 
@@ -52,7 +52,7 @@ with open(args.config) as c:
 with st.sidebar:
     st.markdown(
         """
-<p style="text-align:center;"><img src="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/spaam-AncientMetagenomeDir_logo_colourmode.svg" alt="logo" width="50%"></p>
+<p style="text-align:center;"><img src="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/logos/spaam-AncientMetagenomeDir_logo_colourmode.svg" alt="logo" width="50%"></p>
 """,
         unsafe_allow_html=True,
     )
