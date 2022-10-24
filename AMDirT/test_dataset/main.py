@@ -1,3 +1,4 @@
+from typing import Iterable
 import pandas as pd
 import json
 from jsonschema import Draft7Validator
@@ -20,7 +21,7 @@ from AMDirT import logger
 logger.propagate = False
 
 
-def parse_dataset(dataset):
+def parse_dataset(dataset: str) -> tuple(pd.DataFrame, None):
     """Parse dataset
 
     Args:
@@ -39,7 +40,7 @@ def parse_dataset(dataset):
     return dt, None
 
 
-def check_extra_missing_columns(dataset, schema):
+def check_extra_missing_columns(dataset: str, schema: str):
     """Check if there are extra or missing column in dataset
 
     Args:
@@ -68,7 +69,7 @@ def check_extra_missing_columns(dataset, schema):
         return "UnwantedColumnError"
 
 
-def check_validity(dataset, schema):
+def check_validity(dataset: str, schema: str):
     """Check validity of dataset against schema
 
     Args:
@@ -125,7 +126,7 @@ def check_validity(dataset, schema):
         return ["DatasetValidationError", table]
 
 
-def check_duplicates(dataset):
+def check_duplicates(dataset: str):
     """Check for rows duplicatations
 
     Args:
@@ -142,7 +143,7 @@ def check_duplicates(dataset):
         return ["DuplicatedRowError"]
 
 
-def check_duplicates_in_column(dataset, column_names):
+def check_duplicates_in_column(dataset: str, column_names: Iterable[str]):
     """Check for duplicates in sample accession numbers
 
     Args:
@@ -193,7 +194,7 @@ def check_duplicates_in_column(dataset, column_names):
         return ["DuplicateEntryError", table]
 
 
-def check_DOI_duplicates(dataset):
+def check_DOI_duplicates(dataset: str):
     """Check that each project has its unique DOI
 
     Args:
@@ -222,7 +223,15 @@ def check_DOI_duplicates(dataset):
         return ["DuplicateDOIError", table]
 
 
-def run_tests(dataset, schema, validity, duplicate, doi, duplicated_entries, markdown):
+def run_tests(
+    dataset: str,
+    schema: str,
+    validity: bool,
+    duplicate: bool,
+    doi: bool,
+    duplicated_entries: bool,
+    markdown: bool,
+):
 
     logger.info(f"Checking {dataset} against schema {schema}")
 

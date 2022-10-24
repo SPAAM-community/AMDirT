@@ -1,9 +1,10 @@
+from typing import Iterable
 import pandas as pd
 from rich.table import Table
 from AMDirT import logger
 
 
-def generate_table(columns, rows, title, method):
+def generate_table(columns: Iterable[str], rows, title: str, method: str) -> str:
     """Generate output table
 
     Args:

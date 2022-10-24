@@ -1,5 +1,5 @@
-import imp
 from os import path
+from typing import Iterable
 import requests
 import xmltodict
 from numpy import where
@@ -16,7 +16,7 @@ def get_json_path(rel_path="../assets/tables.json"):
     return path
 
 
-def get_colour_chemistry(instrument):
+def get_colour_chemistry(instrument: str) -> int:
     """
     Get number of colours used in sequencing chemistry
     Args:
@@ -38,13 +38,13 @@ def get_colour_chemistry(instrument):
             return chemistry_colours[k]
 
 
-def get_experiment_accession(run_accession):
+def get_experiment_accession(run_accession: str) -> str:
     resp = requests.get(f"https://www.ebi.ac.uk/ena/browser/api/xml/{run_accession}")
     tree = xmltodict.parse(resp.content.decode())
     return tree["RUN_SET"]["RUN"]["EXPERIMENT_REF"]["@accession"]
 
 
-def get_study_table(study_accession):
+def get_study_table(study_accession: str) -> pd.DataFrame:
     url = (
         "https://www.ebi.ac.uk/ena/portal/api/filereport"
         f"?accession={study_accession}&result=read_run&fields="
@@ -63,7 +63,7 @@ def get_study_table(study_accession):
     return pd.read_csv(url, sep="\t")
 
 
-def doi2bib(doi):
+def doi2bib(doi: str) -> str:
     """
     Return a bibTeX string of metadata for a given DOI.
     """
@@ -76,7 +76,7 @@ def doi2bib(doi):
     return r.text
 
 
-def get_filename(path_string, prepend_exp=False):
+def get_filename(path_string: str, prepend_exp=False) -> tuple[str, str]:
     """
     Get Fastq Filename from download_links column
 
@@ -111,7 +111,12 @@ def get_filename(path_string, prepend_exp=False):
 
 
 @st.cache()
-def prepare_eager_table(samples, libraries, table_name, supported_archives):
+def prepare_eager_table(
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    table_name: str,
+    supported_archives: Iterable(str),
+) -> pd.DataFrame:
     """Prepare nf-core/eager tsv input table
 
     Args:
@@ -191,7 +196,12 @@ def prepare_eager_table(samples, libraries, table_name, supported_archives):
 
 
 @st.cache()
-def prepare_accession_table(samples, libraries, table_name, supported_archives):
+def prepare_accession_table(
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    table_name: str,
+    supported_archives: Iterable(str),
+) -> pd.DataFrame:
     """Get accession lists for samples and libraries
 
     Args:
@@ -242,7 +252,7 @@ def prepare_accession_table(samples, libraries, table_name, supported_archives):
 
 
 @st.cache()
-def prepare_bibtex_file(samples):
+def prepare_bibtex_file(samples: pd.DataFrame) -> str:
     dois = set()
     dois_set = set(list(samples["publication_doi"]))
     dois_set.add("10.1038/s41597-021-00816-y")
@@ -257,7 +267,9 @@ def prepare_bibtex_file(samples):
     return dois_string
 
 
-def is_merge_size_zero(samples, library, table_name):
+def is_merge_size_zero(
+    samples: pd.DataFrame, library: pd.DataFrame, table_name: str
+) -> bool:
     """
     Checks if intersection of samples and libraries table is not null
 
