@@ -122,7 +122,7 @@ if st.session_state.table_name != "No table selected":
             st.session_state.force_validation = True
 
         if st.session_state.force_validation:
-            if st.session_state.dl_method == "fetchngs":
+            if st.session_state.dl_method == "nf-core/fetchngs":
                 st.download_button(
                     label="Download nf-core/fetchNGS input accession list",
                     data=prepare_accession_table(
