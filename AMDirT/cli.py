@@ -1,6 +1,8 @@
 import click
 from AMDirT import __version__
-from AMDirT.test_dataset.main import run_tests
+
+# from AMDirT.test_dataset.main import run_tests
+from AMDirT.validate import run_validation
 from AMDirT.filter.run_streamlit import run_app
 from AMDirT.convert.main import run_convert
 from AMDirT.core.utils import get_json_path
@@ -37,20 +39,20 @@ def cli(no_args_is_help=True, **kwargs):
 )
 @click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
-@click.option(
-    "-dc",
-    "--duplicated_entries",
-    type=str,
-    help="Commma separated list of columns to check for duplicated entries",
-)
-def test_dataset(no_args_is_help=True, **kwargs):
+# @click.option(
+#     "-dc",
+#     "--duplicated_entries",
+#     type=str,
+#     help="Commma separated list of columns to check for duplicated entries",
+# )
+def validate(no_args_is_help=True, **kwargs):
     """\b
     Run validity check of ancientMetagenomeDir datasets
     \b
     DATASET: path to tsv file of dataset to check
     SCHEMA: path to JSON schema file
     """
-    run_tests(**kwargs)
+    run_validation(**kwargs)
 
 
 @cli.command()

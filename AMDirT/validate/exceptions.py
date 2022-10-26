@@ -5,22 +5,26 @@ class Error(Exception):
 
 
 class DatasetValidationError(Error):
-    """Exception raised for errors in validating the dataset agains the standards.
+    """Exception raised for errors in validating the dataset againsy the standards.
 
     Attributes:
         message -- explanation of the error
     """
+
+    name = "Dataset Validation Error"
 
     def __init__(self, message):
         self.message = message
 
 
 class DuplicateError(Error):
-    """Exception raised for errors due to duplicates in standards
+    """Exception raised for errors due to duplicated rows"
 
     Attributes:
         message -- explanation of the error
     """
+
+    name = "Duplicated Row Error"
 
     def __init__(self, message):
         self.message = message
@@ -33,6 +37,8 @@ class DOIDuplicateError(Error):
         message -- explanation of the error
     """
 
+    name = "Duplicated DOI Error"
+
     def __init__(self, message):
         self.message = message
 
@@ -44,6 +50,8 @@ class ColumnDifferenceError(Error):
         message -- explanation of the error
     """
 
+    name = "Different Columns Error"
+
     def __init__(self, message):
         self.message = message
 
@@ -54,6 +62,8 @@ class ParsingError(Error):
     Attributes:
         message -- explanation of the error
     """
+
+    name = "Parsing Error"
 
     def __init__(self, message):
         self.message = message

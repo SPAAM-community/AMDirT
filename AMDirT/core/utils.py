@@ -115,7 +115,7 @@ def prepare_eager_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
     table_name: str,
-    supported_archives: Iterable(str),
+    supported_archives: Iterable[str],
 ) -> pd.DataFrame:
     """Prepare nf-core/eager tsv input table
 
@@ -200,7 +200,7 @@ def prepare_accession_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
     table_name: str,
-    supported_archives: Iterable(str),
+    supported_archives: Iterable[str],
 ) -> pd.DataFrame:
     """Get accession lists for samples and libraries
 
