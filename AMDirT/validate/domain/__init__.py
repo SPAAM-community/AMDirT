@@ -1,13 +1,14 @@
 import json
 import pandas as pd
 from AMDirT.validate import exceptions
+from AMDirT import logger
 from io import StringIO
 from pathlib import Path
 from rich.table import Table
 from rich.console import Console
 from dataclasses import dataclass
 from jsonschema import Draft7Validator, exceptions as json_exceptions
-from typing import AnyStr, BinaryIO, TextIO, Union, Tuple
+from typing import AnyStr, BinaryIO, Iterable, TextIO, Union, Tuple, Bool
 
 Schema = Union[AnyStr, BinaryIO, TextIO]
 Dataset = Union[AnyStr, BinaryIO, TextIO]
@@ -39,12 +40,12 @@ class DFError:
 
 class DatasetValidator:
     def __init__(self, schema: Schema, dataset: Dataset):
-        self.schema = self.read_schema(schema)
-        self.schema_name = Path(schema).name
-        self.dataset = self.read_dataset(dataset)
-        self.dataset_name = Path(dataset).name
-        self.dataset_json = self.dataset_to_json()
         self.errors = list()
+        self.dataset_name = Path(dataset).name
+        self.schema_name = Path(schema).name
+        self.schema = self.read_schema(schema)
+        self.dataset = self.read_dataset(dataset)
+        self.dataset_json = self.dataset_to_json()
 
     def __repr__(self):
         return (
@@ -74,26 +75,35 @@ class DatasetValidator:
         """
         try:
             return pd.read_table(dataset, sep="\t")
-        except pd.errors.ParserError as e:
+        except (AttributeError, pd.errors.ParserError) as e:
+            logger.error(e)
             self.add_error(
                 DFError(
-                    "Dataset Parsing Error", self.dataset_name, None, None, e.message
+                    "Dataset Parsing Error",
+                    self.dataset_name,
+                    None,
+                    None,
+                    e,
                 )
             )
+            raise SystemExit
 
-    def check_columns(self):
+    def check_columns(self) -> Bool:
         """Checks if dataset has all required columns"""
         col_diff = set(self.dataset.columns).difference(
             set(self.schema["items"]["required"])
         )
         try:
-            if col_diff != 0:
+            if len(col_diff) != 0:
                 raise exceptions.ColumnDifferenceError(
                     f"Dataset has different columns compared to schema {col_diff}"
                 )
+            else:
+                return True
         except exceptions.ColumnDifferenceError as e:
             for c in col_diff:
                 self.add_error(DFError(e.name, c, None, None, e.message))
+            return False
 
     def dataset_to_json(self) -> dict:
         """Convert dataset from Pandas DataFrame to JSON
@@ -102,11 +112,17 @@ class DatasetValidator:
         """
         return json.load((StringIO(self.dataset.to_json(orient="records"))))
 
-    def validate_schema(self):
+    def validate_schema(self) -> Bool:
         """Validate dataset against JSON schema"""
         validator = Draft7Validator(self.schema)
+        err_cnt = 0
         for err in validator.iter_errors(self.dataset_json):
             self.add_error(self.cleanup_errors(err))
+            err_cnt += 1
+        if err_cnt > 0:
+            return False
+        else:
+            return True
 
     def cleanup_errors(self, error: json_exceptions.ValidationError) -> DFError:
         """Cleans up JSON schema validation errors
@@ -128,7 +144,7 @@ class DatasetValidator:
             error.message,
         )
 
-    def check_duplicate_rows(self):
+    def check_duplicate_rows(self) -> Bool:
         """Checks for duplicated rows in dataset"""
         try:
             dup_df = self.dataset[self.dataset.duplicated(keep=False)]
@@ -142,6 +158,8 @@ class DatasetValidator:
         except exceptions.DuplicateError as e:
             for r in dup_rows:
                 self.add_error(DFError(e.name, r, None, r, f"Rows {r} are duplicated"))
+            return False
+        return True
 
     def to_rich(self):
         """Generate output table
@@ -163,7 +181,12 @@ class DatasetValidator:
             table.add_row(*(error.to_list()))
 
         console = Console()
-        console.print(table)
+        if len(self.errors) > 0:
+            console.print(table)
+            raise SystemExit(f"Invalid dataset {self.dataset_name}")
+        else:
+            logger.info(f"{self.dataset_name} is valid")
+            return True
 
     def to_markdown(self):
         df = pd.DataFrame(columns=["Error", "Source", "Column", "Row", "Message"])
@@ -172,18 +195,10 @@ class DatasetValidator:
                 error.to_dict(),
                 ignore_index=True,
             )
-        return df.to_markdown(index=False)
-
-
-if __name__ == "__main__":
-
-    s = "/Users/maxime/Documents/github/AMDirT/test/data/schema.json"
-    d = "/Users/maxime/Documents/github/AMDirT/test/data/invalid.tsv"
-
-    v = DatasetValidator(s, d)
-    v.validate()
-    v.check_columns()
-    v.check_duplicate_rows()
-    v.to_rich()
-    print(v.errors)
-    print(v.to_markdown())
+        if len(df) > 0:
+            raise SystemExit(
+                f"Invalid dataset `{self.dataset_name}`\n\n{df.to_markdown(index=False)}"
+            )
+        else:
+            logger.info(f"{self.dataset_name} is valid")
+            return True

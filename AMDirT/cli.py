@@ -37,6 +37,7 @@ def cli(no_args_is_help=True, **kwargs):
 @click.option(
     "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
 )
+@click.option("-c", "--columns", is_flag=True, help="Turn on column checking.")
 @click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 # @click.option(

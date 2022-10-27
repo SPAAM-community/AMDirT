@@ -6,6 +6,7 @@ def run_validation(
     schema,
     validity,
     duplicate,
+    columns,
     doi,
     markdown,
 ):
@@ -14,6 +15,8 @@ def run_validation(
         v.validate_schema()
     if duplicate:
         v.check_duplicate_rows()
+    if columns:
+        v.check_columns()
     if doi:
         v.check_duplicate_dois()
     if markdown:

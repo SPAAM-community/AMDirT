@@ -67,3 +67,16 @@ class ParsingError(Error):
 
     def __init__(self, message):
         self.message = message
+
+
+class DuplicateEntryError(Error):
+    """Exception raised for errors due to duplicated entries in columns"
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    name = "Duplicated Entries in column Error"
+
+    def __init__(self, message):
+        self.message = message
