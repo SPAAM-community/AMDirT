@@ -15,6 +15,7 @@ __ homepage_
    :caption: Contents:
 
    README
+   API
    CLI
 
 

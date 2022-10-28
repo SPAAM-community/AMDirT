@@ -1,11 +1,10 @@
 import click
 from AMDirT import __version__
 
-# from AMDirT.test_dataset.main import run_tests
 from AMDirT.validate import run_validation
-from AMDirT.filter.run_streamlit import run_app
-from AMDirT.convert.main import run_convert
-from AMDirT.core.utils import get_json_path
+from AMDirT.filter import run_app
+from AMDirT.convert import run_convert
+from AMDirT.core import get_json_path
 from json import load
 
 
@@ -30,6 +29,11 @@ def cli(no_args_is_help=True, **kwargs):
     pass
 
 
+####################
+# Validation  tool #
+####################
+
+
 @cli.command()
 @click.argument("dataset", type=click.Path(exists=True))
 @click.argument("schema", type=click.Path(exists=True))
@@ -37,15 +41,17 @@ def cli(no_args_is_help=True, **kwargs):
 @click.option(
     "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
 )
-@click.option("-c", "--columns", is_flag=True, help="Turn on column checking.")
+@click.option(
+    "-c", "--columns", is_flag=True, help="Turn on column presense/absence checking."
+)
 @click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
+@click.option(
+    "--multi_values",
+    multiple=True,
+    default=["archive_accession"],
+    help="Check multi-values column for duplicate values",
+)
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
-# @click.option(
-#     "-dc",
-#     "--duplicated_entries",
-#     type=str,
-#     help="Commma separated list of columns to check for duplicated entries",
-# )
 def validate(no_args_is_help=True, **kwargs):
     """\b
     Run validity check of ancientMetagenomeDir datasets
@@ -54,6 +60,11 @@ def validate(no_args_is_help=True, **kwargs):
     SCHEMA: path to JSON schema file
     """
     run_validation(**kwargs)
+
+
+###############################
+# Interactive filtering  tool #
+###############################
 
 
 @cli.command()
@@ -66,6 +77,11 @@ def validate(no_args_is_help=True, **kwargs):
 def filter(no_args_is_help=True, **kwargs):
     """Launch interactive filtering tool"""
     run_app(**kwargs)
+
+
+###################
+# Conversion tool #
+###################
 
 
 @cli.command()

@@ -8,6 +8,7 @@ def run_validation(
     duplicate,
     columns,
     doi,
+    multi_values,
     markdown,
 ):
     v = AMDirValidator(schema, dataset)
@@ -19,6 +20,8 @@ def run_validation(
         v.check_columns()
     if doi:
         v.check_duplicate_dois()
+    if multi_values:
+        v.check_multi_values()
     if markdown:
         v.to_markdown()
     else:

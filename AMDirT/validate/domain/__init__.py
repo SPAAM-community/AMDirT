@@ -1,14 +1,14 @@
 import json
 import pandas as pd
 from AMDirT.validate import exceptions
-from AMDirT import logger
+from AMDirT.core import logger
 from io import StringIO
 from pathlib import Path
 from rich.table import Table
 from rich.console import Console
 from dataclasses import dataclass
 from jsonschema import Draft7Validator, exceptions as json_exceptions
-from typing import AnyStr, BinaryIO, Iterable, TextIO, Union, Tuple, Bool
+from typing import AnyStr, BinaryIO, TextIO, Union
 
 Schema = Union[AnyStr, BinaryIO, TextIO]
 Dataset = Union[AnyStr, BinaryIO, TextIO]
@@ -16,6 +16,8 @@ Dataset = Union[AnyStr, BinaryIO, TextIO]
 
 @dataclass
 class DFError:
+    """Class to store DataFrame validation errors"""
+
     error: str
     source: str
     column: str
@@ -39,6 +41,8 @@ class DFError:
 
 
 class DatasetValidator:
+    """Dataset as DataFrame validation class"""
+
     def __init__(self, schema: Schema, dataset: Dataset):
         self.errors = list()
         self.dataset_name = Path(dataset).name
@@ -88,7 +92,7 @@ class DatasetValidator:
             )
             raise SystemExit
 
-    def check_columns(self) -> Bool:
+    def check_columns(self) -> bool:
         """Checks if dataset has all required columns"""
         col_diff = set(self.dataset.columns).difference(
             set(self.schema["items"]["required"])
@@ -112,7 +116,7 @@ class DatasetValidator:
         """
         return json.load((StringIO(self.dataset.to_json(orient="records"))))
 
-    def validate_schema(self) -> Bool:
+    def validate_schema(self) -> bool:
         """Validate dataset against JSON schema"""
         validator = Draft7Validator(self.schema)
         err_cnt = 0
@@ -139,12 +143,12 @@ class DatasetValidator:
         return DFError(
             "Schema Validation Error",
             error.instance,
-            err_line,
             err_column,
+            err_line,
             error.message,
         )
 
-    def check_duplicate_rows(self) -> Bool:
+    def check_duplicate_rows(self) -> bool:
         """Checks for duplicated rows in dataset"""
         try:
             dup_df = self.dataset[self.dataset.duplicated(keep=False)]

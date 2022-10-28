@@ -42,6 +42,7 @@ def invalid_dataset():
 
 
 def test_jsonschema_validator(valid_dataset, invalid_dataset, schema):
+
     assert validate(instance=valid_dataset, schema=schema) is None
     with pytest.raises(JSONValidationError):
         assert validate(instance=invalid_dataset, schema=schema)
@@ -87,7 +88,7 @@ def test_duplicate_row(test_data_dir):
 
 def test_schema_validation(test_data_dir):
     valid_dataset = os.path.join(test_data_dir, "valid.tsv")
-    invalid_dataset = os.path.join(test_data_dir, "invalid.tsv")
+    invalid_dataset = os.path.join(test_data_dir, "invalid_schema.tsv")
     schema = os.path.join(test_data_dir, "schema.json")
 
     validator_valid = DatasetValidator(schema=schema, dataset=valid_dataset)
