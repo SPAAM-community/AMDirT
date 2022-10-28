@@ -30,6 +30,7 @@ setup(
     install_requires=[
         "click",
         "pandas",
+        "tabulate",
         "jsonschema",
         "rich",
         "streamlit",
