@@ -1,6 +1,6 @@
 import pytest
 
-from AMDirT.core.utils import (
+from AMDirT.core import (
     get_colour_chemistry,
     get_experiment_accession,
     get_study_table,
