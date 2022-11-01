@@ -1,5 +1,5 @@
 from os import path
-from typing import Iterable
+from typing import Tuple, Iterable
 import requests
 import xmltodict
 from numpy import where
@@ -67,7 +67,7 @@ def doi2bib(doi: str) -> str:
     return r.text
 
 
-def get_filename(path_string: str, prepend_exp=False) -> tuple[str, str]:
+def get_filename(path_string: str, prepend_exp=False) -> Tuple[str, str]:
     """
     Get Fastq Filename from download_links column
 
