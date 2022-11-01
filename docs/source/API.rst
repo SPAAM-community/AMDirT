@@ -4,13 +4,9 @@ Python API
 Dataset Validation
 ------------------
 
-.. autoclass:: AMDirT.validate.application.DatasetValidator
-    :members:
-    :show-inheritance:
-
-
 .. autoclass:: AMDirT.validate.application.AMDirValidator
     :members:
+    :inherited-members:
     :show-inheritance:
 
 Dataset conversion

@@ -61,6 +61,7 @@ class DatasetValidator:
 
     def read_schema(self, schema: Schema) -> dict:
         """Read JSON schema from file or string
+
         Args:
             schema (str): Path to schema in json format
         Returns:
@@ -93,7 +94,11 @@ class DatasetValidator:
             raise SystemExit
 
     def check_columns(self) -> bool:
-        """Checks if dataset has all required columns"""
+        """Checks if dataset has all required columns
+
+        Returns:
+            bool: True if dataset has all required columns, False otherwise
+        """
         col_diff = set(self.dataset.columns).difference(
             set(self.schema["items"]["required"])
         )
@@ -111,13 +116,18 @@ class DatasetValidator:
 
     def dataset_to_json(self) -> dict:
         """Convert dataset from Pandas DataFrame to JSON
+
         Returns:
             dict: Dataset as dictionary
         """
         return json.load((StringIO(self.dataset.to_json(orient="records"))))
 
     def validate_schema(self) -> bool:
-        """Validate dataset against JSON schema"""
+        """Validate dataset against JSON schema
+
+        Returns:
+            bool: True if dataset is valid, False otherwise
+        """
         validator = Draft7Validator(self.schema)
         err_cnt = 0
         for err in validator.iter_errors(self.dataset_json):
@@ -130,10 +140,11 @@ class DatasetValidator:
 
     def cleanup_errors(self, error: json_exceptions.ValidationError) -> DFError:
         """Cleans up JSON schema validation errors
+
         Args:
             error (json_exceptions.ValidationError): JSON schema validation error
         Returns:
-            list[error instance, error line, error column, error message]: Cleaned up error
+            DFError: Cleaned DataFrame error
         """
         err_column = list(error.path)[-1]
         if "enum" in error.schema:
@@ -149,7 +160,11 @@ class DatasetValidator:
         )
 
     def check_duplicate_rows(self) -> bool:
-        """Checks for duplicated rows in dataset"""
+        """Checks for duplicated rows in dataset
+
+        Returns:
+            bool: True if dataset has no duplicated rows, False otherwise
+        """
         try:
             dup_df = self.dataset[self.dataset.duplicated(keep=False)]
             if len(dup_df) > 0:
@@ -166,13 +181,12 @@ class DatasetValidator:
         return True
 
     def to_rich(self):
-        """Generate output table
+        """Generate rich output table for console display
 
-        Args:
-            columns (list): name of columns
-            rows (list of list): rows of the table
-            title (str): title of the table
-            method (string): table generation method (rich or markdown)
+        Returns:
+            bool: True if dataset is valid
+        Raises:
+            SystemExit: If dataset is invalid
         """
 
         table = Table(
@@ -192,7 +206,14 @@ class DatasetValidator:
             logger.info(f"{self.dataset_name} is valid")
             return True
 
-    def to_markdown(self):
+    def to_markdown(self) -> bool:
+        """Generate markdown output table for github display
+
+        Returns:
+            bool: True if dataset is valid
+        Raises:
+            SystemExit: If dataset is invalid
+        """
         df = pd.DataFrame(columns=["Error", "Source", "Column", "Row", "Message"])
         for error in self.errors:
             df = df.append(
