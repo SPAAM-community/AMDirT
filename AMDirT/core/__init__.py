@@ -54,25 +54,6 @@ def get_experiment_accession(run_accession: str) -> str:
     return tree["RUN_SET"]["RUN"]["EXPERIMENT_REF"]["@accession"]
 
 
-def get_study_table(study_accession: str) -> pd.DataFrame:
-    url = (
-        "https://www.ebi.ac.uk/ena/portal/api/filereport"
-        f"?accession={study_accession}&result=read_run&fields="
-        "run_accession,"
-        "scientific_name,"
-        "library_layout,"
-        "library_strategy,"
-        "instrument_platform,"
-        "submitted_ftp,"
-        "submitted_md5,"
-        "submitted_bytes,"
-        "submitted_format,"
-        "fastq_ftp"
-    )
-    print(url)
-    return pd.read_csv(url, sep="\t")
-
-
 def doi2bib(doi: str) -> str:
     """
     Return a bibTeX string of metadata for a given DOI.

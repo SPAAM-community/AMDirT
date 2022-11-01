@@ -23,4 +23,17 @@ Dataset filtering
 
 .. autofunction:: AMDirT.filter.run_app
 
+ENA API
+------------------
+
+.. autoclass:: AMDirT.core.ena.ENAPortalAPI
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: AMDirT.core.ena.ENABrowserAPI
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
 

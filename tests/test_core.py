@@ -3,9 +3,8 @@ import pytest
 from AMDirT.core import (
     get_colour_chemistry,
     get_experiment_accession,
-    get_study_table,
     doi2bib,
-    get_filename,
+    ena,
 )
 
 
@@ -23,9 +22,15 @@ def test_get_experiment_accession():
         get_experiment_accession("SRS7890496")
 
 
-def test_get_study_table():
-    assert get_study_table("PRJNA216965").iloc[0, :]["run_accession"] == "SRR957738"
-
-
 def test_doi2bib():
     assert doi2bib("10.1038/nature14236")[:18] == "@article{Mnih_2015"
+
+
+def test_ena_portal_status():
+    ena_portal = ena.ENAPortalAPI()
+    assert ena_portal.status() is True
+
+
+def test_ena_browser_status():
+    ena_browser = ena.ENABrowserAPI()
+    assert ena_browser.status() is True
