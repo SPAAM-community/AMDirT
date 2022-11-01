@@ -1,4 +1,6 @@
+from distutils.log import warn
 from AMDirT.validate.application import AMDirValidator
+import warnings
 
 
 def run_validation(
@@ -10,7 +12,10 @@ def run_validation(
     doi,
     multi_values,
     markdown,
+    verbose,
 ):
+    if not verbose:
+        warnings.filterwarnings("ignore")
     v = AMDirValidator(schema, dataset)
     if validity:
         v.validate_schema()

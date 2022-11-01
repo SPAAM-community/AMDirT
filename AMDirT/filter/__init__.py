@@ -1,17 +1,21 @@
 # from AMDirT import logger
+from distutils.log import warn
 import sys
 from streamlit.web import cli as stcli
 from pathlib import Path
 from AMDirT.core import get_json_path, logger
+import warnings
 
 
-def run_app(tables=None):
+def run_app(tables=None, verbose=False):
     """
     Run the AMDirT interactive filtering application
 
     Args:
         tables (str): path to JSON file listing AncientMetagenomeDir tables
     """
+    if not warnings:
+        warnings.filterwarnings("ignore")
     directory = Path(__file__).parent.resolve()
     app = "streamlit.py"
     if tables is None:

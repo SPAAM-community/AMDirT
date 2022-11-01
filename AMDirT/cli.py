@@ -18,7 +18,9 @@ def get_table_list():
 
 @click.group()
 @click.version_option(__version__)
-def cli(no_args_is_help=True, **kwargs):
+@click.pass_context
+@click.option("--verbose", is_flag=True, help="Verbose mode")
+def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     """\b
     AMDirT: Performs validity check of ancientMetagenomeDir datasets
     Authors: Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov
@@ -26,6 +28,8 @@ def cli(no_args_is_help=True, **kwargs):
     Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
     """
+    ctx.ensure_object(dict)
+    ctx.obj["verbose"] = verbose
     pass
 
 
@@ -52,14 +56,15 @@ def cli(no_args_is_help=True, **kwargs):
     help="Check multi-values column for duplicate values",
 )
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
-def validate(no_args_is_help=True, **kwargs):
+@click.pass_context
+def validate(ctx, no_args_is_help=True, **kwargs):
     """\b
     Run validity check of ancientMetagenomeDir datasets
     \b
     DATASET: path to tsv file of dataset to check
     SCHEMA: path to JSON schema file
     """
-    run_validation(**kwargs)
+    run_validation(**kwargs, **ctx.obj)
 
 
 ###############################
@@ -74,9 +79,10 @@ def validate(no_args_is_help=True, **kwargs):
     type=click.Path(exists=True),
     help="JSON file listing AncientMetagenomeDir tables",
 )
-def filter(no_args_is_help=True, **kwargs):
+@click.pass_context
+def filter(ctx, no_args_is_help=True, **kwargs):
     """Launch interactive filtering tool"""
-    run_app(**kwargs)
+    run_app(**kwargs, **ctx.obj)
 
 
 ###################
@@ -101,14 +107,15 @@ def filter(no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
-def convert(no_args_is_help=True, **kwargs):
+@click.pass_context
+def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager and fetchNGS input tables
     \b
     SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
     """
-    run_convert(**kwargs)
+    run_convert(**kwargs, **ctx.obj)
 
 
 if __name__ == "__main__":

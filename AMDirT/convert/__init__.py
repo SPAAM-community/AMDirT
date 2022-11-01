@@ -9,9 +9,10 @@ from AMDirT.core import get_json_path
 from json import load
 from AMDirT.core import logger
 import pandas as pd
+import warnings
 
 
-def run_convert(samples, tables, table_name, output="."):
+def run_convert(samples, tables, table_name, output=".", verbose=False):
     """Run the AMDirT conversion application to generate Eager and/or fetchNGS tables
 
     Args:
@@ -20,6 +21,8 @@ def run_convert(samples, tables, table_name, output="."):
         table_name (str): Name of the table of the table to convert
         output (str): Path to output table. Defaults to "."
     """
+    if not verbose:
+        warnings.filterwarnings("ignore")
     supported_archives = ["ENA", "SRA"]
     if tables is None:
         table_path = get_json_path()
