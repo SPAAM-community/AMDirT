@@ -1,6 +1,6 @@
 # from AMDirT import logger
 import sys
-from streamlit import cli as stcli
+from streamlit.web import cli as stcli
 from pathlib import Path
 from AMDirT.core import get_json_path, logger
 
