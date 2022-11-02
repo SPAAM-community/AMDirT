@@ -52,7 +52,6 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 @click.option(
     "--multi_values",
     multiple=True,
-    default=["archive_accession"],
     help="Check multi-values column for duplicate values",
 )
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")

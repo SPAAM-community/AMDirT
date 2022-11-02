@@ -32,9 +32,9 @@ class AMDirValidator(DatasetValidator):
         Args:
             column_names (Iterable[str], optional): List of multi values columns to check for duplications. Defaults to ["archive_accession"].
         """
+        err_cnt = 0
         for column in column_names:
             row = 0
-            err_cnt = 0
             for archives in self.dataset[column]:
                 archives = archives.split(",")
                 if len(set(archives)) != len(archives):

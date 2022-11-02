@@ -26,7 +26,7 @@ def run_validation(
     if doi:
         v.check_duplicate_dois()
     if multi_values:
-        v.check_multi_values()
+        v.check_multi_values(column_names=multi_values)
     if markdown:
         v.to_markdown()
     else:
