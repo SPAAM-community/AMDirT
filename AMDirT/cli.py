@@ -1,9 +1,10 @@
 import click
 from AMDirT import __version__
-from AMDirT.test_dataset.main import run_tests
-from AMDirT.filter.run_streamlit import run_app
-from AMDirT.convert.main import run_convert
-from AMDirT.core.utils import get_json_path
+
+from AMDirT.validate import run_validation
+from AMDirT.filter import run_app
+from AMDirT.convert import run_convert
+from AMDirT.core import get_json_path
 from json import load
 
 
@@ -17,7 +18,9 @@ def get_table_list():
 
 @click.group()
 @click.version_option(__version__)
-def cli(no_args_is_help=True, **kwargs):
+@click.pass_context
+@click.option("--verbose", is_flag=True, help="Verbose mode")
+def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     """\b
     AMDirT: Performs validity check of ancientMetagenomeDir datasets
     Authors: Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov
@@ -25,7 +28,14 @@ def cli(no_args_is_help=True, **kwargs):
     Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
     """
+    ctx.ensure_object(dict)
+    ctx.obj["verbose"] = verbose
     pass
+
+
+####################
+# Validation  tool #
+####################
 
 
 @cli.command()
@@ -35,22 +45,30 @@ def cli(no_args_is_help=True, **kwargs):
 @click.option(
     "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
 )
-@click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
-@click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.option(
-    "-dc",
-    "--duplicated_entries",
-    type=str,
-    help="Commma separated list of columns to check for duplicated entries",
+    "-c", "--columns", is_flag=True, help="Turn on column presense/absence checking."
 )
-def test_dataset(no_args_is_help=True, **kwargs):
+@click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
+@click.option(
+    "--multi_values",
+    multiple=True,
+    help="Check multi-values column for duplicate values",
+)
+@click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
+@click.pass_context
+def validate(ctx, no_args_is_help=True, **kwargs):
     """\b
     Run validity check of ancientMetagenomeDir datasets
     \b
     DATASET: path to tsv file of dataset to check
     SCHEMA: path to JSON schema file
     """
-    run_tests(**kwargs)
+    run_validation(**kwargs, **ctx.obj)
+
+
+###############################
+# Interactive filtering  tool #
+###############################
 
 
 @cli.command()
@@ -60,9 +78,15 @@ def test_dataset(no_args_is_help=True, **kwargs):
     type=click.Path(exists=True),
     help="JSON file listing AncientMetagenomeDir tables",
 )
-def filter(no_args_is_help=True, **kwargs):
+@click.pass_context
+def filter(ctx, no_args_is_help=True, **kwargs):
     """Launch interactive filtering tool"""
-    run_app(**kwargs)
+    run_app(**kwargs, **ctx.obj)
+
+
+###################
+# Conversion tool #
+###################
 
 
 @cli.command()
@@ -82,14 +106,15 @@ def filter(no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
-def convert(no_args_is_help=True, **kwargs):
+@click.pass_context
+def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager and fetchNGS input tables
     \b
     SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
     """
-    run_convert(**kwargs)
+    run_convert(**kwargs, **ctx.obj)
 
 
 if __name__ == "__main__":

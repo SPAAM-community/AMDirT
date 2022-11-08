@@ -4,10 +4,9 @@ import pandas as pd
 
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import argparse
-import sys
 import json
 import os
-from AMDirT.core.utils import (
+from AMDirT.core import (
     prepare_bibtex_file,
     prepare_eager_table,
     prepare_accession_table,
