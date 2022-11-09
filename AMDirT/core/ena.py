@@ -145,9 +145,10 @@ class ENAPortalAPI(ENA):
         fields: List = [
             "run_accession",
             "sample_accession",
-            "fastq_ftp",
-            "fastq_md5",
-            "fastq_bytes",
+            "study_accession",
+            "first_public",
+            "sample_alias",
+            "secondary_sample_accession",
         ],
     ) -> dict:
         """Generate list of runs metadata for a study accession
