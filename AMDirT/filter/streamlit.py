@@ -62,7 +62,7 @@ with st.sidebar:
     st.write(f"Only {' and '.join(supported_archives)} archives are supported for now")
     st.write("## Select a download methods")
     st.session_state.dl_method = st.selectbox(
-        label="", options=["curl", "nf-core/fetchngs"]
+        label="", options=["curl", "nf-core/fetchngs", "aspera"]
     )
 
 if st.session_state.table_name != "No table selected":
@@ -134,6 +134,17 @@ if st.session_state.table_name != "No table selected":
                     .encode("utf-8"),
                     file_name="ancientMetagenomeDir_accession_table.csv",
                 )
+            elif st.session_state.dl_method == "aspera":
+                st.download_button(
+                    label="Download Aspera sample download script",
+                    data=prepare_accession_table(
+                        pd.DataFrame(df_mod["selected_rows"]),
+                        library,
+                        st.session_state.table_name,
+                        supported_archives,
+                    )["aspera_script"],
+                    file_name="ancientMetagenomeDir_aspera_download_script.sh",
+                )
             else:
                 st.download_button(
                     label="Download Curl sample download script",
@@ -142,7 +153,7 @@ if st.session_state.table_name != "No table selected":
                         library,
                         st.session_state.table_name,
                         supported_archives,
-                    )["script"],
+                    )["curl_script"],
                     file_name="ancientMetagenomeDir_curl_download_script.sh",
                 )
             st.download_button(
