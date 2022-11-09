@@ -121,22 +121,37 @@ if st.session_state.table_name != "No table selected":
             st.session_state.force_validation = True
 
         if st.session_state.force_validation:
+            # Calculate the fastq file size of the selected libraries
+            acc_table = prepare_accession_table(
+                pd.DataFrame(df_mod["selected_rows"]),
+                library,
+                st.session_state.table_name,
+                supported_archives,
+            )["df"]
+            total_size = acc_table['download_sizes'] \
+                .apply(lambda r: sum([int(s) for s in r.split(";")])) \
+                .sum(axis=0)
+            if total_size > 1e12:
+                total_size_str = f"{total_size / 1e12:.2f}TB"
+            else:
+                total_size_str = f"{total_size / 1e9:.2f}GB"
+
             if st.session_state.dl_method == "nf-core/fetchngs":
                 st.download_button(
-                    label="Download nf-core/fetchNGS input accession list",
+                    label=f"Download nf-core/fetchNGS input accession list (approx. {total_size_str})",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
                         st.session_state.table_name,
                         supported_archives,
-                    )["df"]
+                    )["df"][["archive_accession"]]
                     .to_csv(sep="\t", header=False, index=False)
                     .encode("utf-8"),
                     file_name="ancientMetagenomeDir_accession_table.csv",
                 )
             else:
                 st.download_button(
-                    label="Download Curl sample download script",
+                    label=f"Download Curl sample download script (approx. {total_size_str})",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
