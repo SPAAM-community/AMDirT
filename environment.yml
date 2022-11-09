@@ -23,5 +23,5 @@ dependencies:
   - pip:
     - python-dotenv==0.19.2
     - simplejson==3.17.6
-    - streamlit-aggrid==0.2.3.post2
+    - streamlit-aggrid==0.3.3
     - protobuf==3.20.*
