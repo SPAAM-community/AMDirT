@@ -97,7 +97,10 @@ if st.session_state.table_name != "No table selected":
             update_mode="selection_changed",
         )
         if st.form_submit_button("Validate selection"):
-            st.session_state.compute = True
+            if len(df_mod['selected_rows']) == 0:
+                st.error("You didn't select any sample! Please select at least one sample.")
+            else:
+                st.session_state.compute = True
 
     merge_is_zero = is_merge_size_zero(
         pd.DataFrame(df_mod["selected_rows"]), library, st.session_state.table_name
