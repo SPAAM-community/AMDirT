@@ -242,17 +242,29 @@ def prepare_accession_table(
     }
 
 
-@st.cache()
+@st.cache(suppress_st_warning=True)
 def prepare_bibtex_file(samples: pd.DataFrame) -> str:
     dois = set()
+    failed_dois = set()
     dois_set = set(list(samples["publication_doi"]))
     dois_set.add("10.1038/s41597-021-00816-y")
     for doi in dois_set:
         try:
-            dois.add(doi2bib(doi))
+            bibtex_str = doi2bib(doi)
+            if len(bibtex_str) == 0:
+                failed_dois.add(doi)
+            else:
+                dois.add(bibtex_str)
         except Exception as e:
             logger.info(e)
             pass
+    # Print warning for DOIs that do not have an entry
+    st.warning("Citation information could not be resolved for the following "
+               "DOIs: " + ", ".join(failed_dois) + ". Please check how to cite "
+               "these publications manually!")
+    logger.warning("Citation information could not be resolved for the "
+                   "following DOIs: " + ", ".join(failed_dois) + ". Please "
+                   "check how to cite these publications manually!")
 
     dois_string = "\n".join(list(dois))
     return dois_string
