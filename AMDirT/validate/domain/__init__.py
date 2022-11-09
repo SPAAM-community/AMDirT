@@ -1,4 +1,6 @@
 import json
+from xxlimited import Null
+from numpy import int64
 import pandas as pd
 from AMDirT.validate import exceptions
 from AMDirT.core import logger
@@ -48,7 +50,7 @@ class DatasetValidator:
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)
-        self.dataset = self.read_dataset(dataset)
+        self.dataset = self.read_dataset(dataset,self.schema)
         self.dataset_json = self.dataset_to_json()
 
     def __repr__(self):
@@ -71,15 +73,30 @@ class DatasetValidator:
         with open(schema, "r") as s:
             return json.load(s)
 
-    def read_dataset(self, dataset: Dataset) -> pd.DataFrame:
+    def read_dataset(self, dataset: Dataset, schema: Schema) -> pd.DataFrame:
         """ "Read dataset from file or string
         Args:
             dataset (str): Path to dataset in tsv format
+            schema (Schema): Parsed schema as dictionary (from read_schema)
         Returns:
             pd.DataFrame: Dataset as pandas dataframe
         """
+        string_to_dtype_conversions = {
+            'string': str,
+            'integer': pd.Int64Dtype(),
+            'null': Null
+        }
+        asdfg
+        column_dtypes = {}
+        for column_keys in schema['items']['properties']:
+            parsed_schema_dtypes=schema['items']['properties'][column_keys]['type']
+            if len(parsed_schema_dtypes) == 1:
+                column_dtypes[column_keys] = schema['items']['properties'][column_keys]['type']
+            else:
+                if parsed_schema_dtypes == ['integer','null']: column_dtypes[column_keys] = string_to_dtype_conversions['integer']
+                if parsed_schema_dtypes == ['string','null']: column_dtypes[column_keys] = string_to_dtype_conversions['string']
         try:
-            return pd.read_table(dataset, sep="\t")
+            return pd.read_table(dataset, sep="\t", dtype=column_dtypes)
         except (AttributeError, pd.errors.ParserError) as e:
             logger.error(e)
             self.add_error(
