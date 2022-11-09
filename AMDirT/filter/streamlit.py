@@ -99,6 +99,7 @@ if st.session_state.table_name != "No table selected":
         enableRowGroup=True,
         aggFunc="sum",
         editable=False,
+        filterParams={"inRangeInclusive": "true"},
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
     gb.configure_grid_options(checkboxSelection=True)
