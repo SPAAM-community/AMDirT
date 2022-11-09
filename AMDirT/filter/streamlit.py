@@ -6,12 +6,15 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import argparse
 import json
 import os
+from AMDirT import __version__
 from AMDirT.core import (
     prepare_bibtex_file,
     prepare_eager_table,
     prepare_accession_table,
     is_merge_size_zero,
+    get_amdir_tags,
 )
+
 
 st.set_page_config(
     page_title="AMDirT Filter",
@@ -41,6 +44,7 @@ def parse_args():
 
 args = parse_args()
 
+tags = get_amdir_tags() + ["master"]
 
 with open(args.config) as c:
     tables = json.load(c)
@@ -55,7 +59,10 @@ with st.sidebar:
 """,
         unsafe_allow_html=True,
     )
-    st.write("# [AMDirT](https://github.com/SPAAM-community/AMDirT) filtering tool")
+    st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) filter tool")
+    st.write(f"\n Version: {__version__}")
+    st.write("## Select an AncientMetagenomeDir release")
+    st.session_state.tag_name = st.selectbox(label="", options=tags)
     st.write("## Select a table")
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="", options=options)
@@ -67,13 +74,21 @@ with st.sidebar:
 
 if st.session_state.table_name != "No table selected":
     # Main content
+    st.markdown(f"AncientMetagenomeDir release: `{st.session_state.tag_name}`")
     st.markdown(f"Displayed table: `{st.session_state.table_name}`")
+    samp_url = samples[st.session_state.table_name].replace(
+        "master", st.session_state.tag_name
+    )
+    lib_url = libraries[st.session_state.table_name].replace(
+        "master", st.session_state.tag_name
+    )
+    print(samp_url)
     df = pd.read_csv(
-        samples[st.session_state.table_name],
+        samp_url,
         sep="\t",
     )
     library = pd.read_csv(
-        libraries[st.session_state.table_name],
+        lib_url,
         sep="\t",
     )
     height = 50

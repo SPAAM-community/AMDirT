@@ -2,13 +2,14 @@ from os import path
 from typing import Tuple, Iterable
 from pathlib import Path
 import requests
-import xmltodict
 from numpy import where
 import pandas as pd
 import streamlit as st
 import pkg_resources
 import logging
-from .ena import ENABrowserAPI, ENAPortalAPI
+from packaging import version
+
+# from .ena import ENABrowserAPI, ENAPortalAPI
 
 
 pd.options.mode.chained_assignment = None
@@ -26,6 +27,17 @@ logger.addHandler(ch)
 def get_json_path(rel_path="../assets/tables.json"):
     path = pkg_resources.resource_filename(__name__, rel_path)
     return path
+
+
+def get_amdir_tags():
+    r = requests.get(
+        "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
+    )
+    return [
+        k["name"]
+        for k in r.json()
+        if version.parse(k["name"]) >= version.parse("v22.09")
+    ]
 
 
 def get_colour_chemistry(instrument: str) -> int:

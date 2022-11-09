@@ -17,7 +17,6 @@ dependencies:
   - sphinx_rtd_theme=1.0.0
   - streamlit>=1.12.2
   - watchdog=2.1.7
-  - xmltodict=0.12.0
   - pyarrow
   - tox
   - pip:
