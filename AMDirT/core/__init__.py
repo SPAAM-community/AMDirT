@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit as st
 import pkg_resources
 import logging
+from .ena import ENABrowserAPI, ENAPortalAPI
 
 
 pd.options.mode.chained_assignment = None
