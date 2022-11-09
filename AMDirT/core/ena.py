@@ -174,7 +174,7 @@ class ENAPortalAPI(ENA):
 
 if __name__ == "__main__":
     e = ENAPortalAPI()
-    for row in e.query("PRJNA216965", fields=["run_accession","sample_accession","study_accession","first_public","sample_alias","secondary_sample_accession"]):
+    for row in e.query("PRJNA216965", fields=["study_accession","first_public","sample_alias","secondary_sample_accession"]):
         
         # Get year from ENA date column
         date = row["first_public"].split("-")[0]
