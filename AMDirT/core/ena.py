@@ -145,10 +145,9 @@ class ENAPortalAPI(ENA):
         fields: List = [
             "run_accession",
             "sample_accession",
-            "study_accession",
-            "first_public",
-            "sample_alias",
-            "secondary_sample_accession",
+            "fastq_ftp",
+            "fastq_md5",
+            "fastq_bytes",
         ],
     ) -> dict:
         """Generate list of runs metadata for a study accession
@@ -175,14 +174,23 @@ class ENAPortalAPI(ENA):
 
 if __name__ == "__main__":
     e = ENAPortalAPI()
-    for row in e.query("PRJNA216965"):
+    for row in e.query("PRJNA216965", fields=["run_accession","sample_accession","study_accession","first_public","sample_alias","secondary_sample_accession"]):
+        
+        # Get year from ENA date column
         date = row["first_public"].split("-")[0]
         row["first_public"] = date
 
+        # Get SRA or ENA archive info
         if row["secondary_sample_accession"].startswith("ERS"):
             archive = "ENA"
         elif row["secondary_sample_accession"].startswith("SRS"):
             archive = "SRA"
         row["archive"] = archive
+
+        # Remove unneeded columns
+        row = {
+            key: val for key,
+            val in row.items() if key != "run_accession" and key != "sample_accession"
+        }
+
         print(row)
-    #print(e.query("PRJEB30331"))
