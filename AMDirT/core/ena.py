@@ -175,4 +175,14 @@ class ENAPortalAPI(ENA):
 
 if __name__ == "__main__":
     e = ENAPortalAPI()
-    print(e.query("PRJEB30331"))
+    for row in e.query("PRJNA216965"):
+        date = row["first_public"].split("-")[0]
+        row["first_public"] = date
+
+        if row["secondary_sample_accession"].startswith("ERS"):
+            archive = "ENA"
+        elif row["secondary_sample_accession"].startswith("SRS"):
+            archive = "SRA"
+        row["archive"] = archive
+        print(row)
+    #print(e.query("PRJEB30331"))
