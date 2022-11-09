@@ -259,12 +259,13 @@ def prepare_bibtex_file(samples: pd.DataFrame) -> str:
             logger.info(e)
             pass
     # Print warning for DOIs that do not have an entry
-    st.warning("Citation information could not be resolved for the following "
-               "DOIs: " + ", ".join(failed_dois) + ". Please check how to cite "
-               "these publications manually!")
-    logger.warning("Citation information could not be resolved for the "
+    if len(failed_dois) > 0:
+        st.warning("Citation information could not be resolved for the "
                    "following DOIs: " + ", ".join(failed_dois) + ". Please "
                    "check how to cite these publications manually!")
+        logger.warning("Citation information could not be resolved for the "
+                       "following DOIs: " + ", ".join(failed_dois) + ". Please "
+                       "check how to cite these publications manually!")
 
     dois_string = "\n".join(list(dois))
     return dois_string
