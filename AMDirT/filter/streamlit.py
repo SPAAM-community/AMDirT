@@ -76,7 +76,8 @@ if st.session_state.table_name != "No table selected":
         libraries[st.session_state.table_name],
         sep="\t",
     )
-
+    height = 50
+    st.write(f"Table height{height}")
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(
         groupable=True,
@@ -86,6 +87,15 @@ if st.session_state.table_name != "No table selected":
         editable=False,
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
+    gb.configure_grid_options(checkboxSelection=True)
+    gb.configure_pagination(
+        enabled=True, paginationAutoPageSize=False, paginationPageSize=50
+    )
+    gb.configure_column(
+        "project_name",
+        headerCheckboxSelection=True,
+        headerCheckboxSelectionFilteredOnly=True,
+    )
     gridOptions = gb.build()
 
     with st.form("Samples table") as f:
@@ -97,8 +107,10 @@ if st.session_state.table_name != "No table selected":
             update_mode="selection_changed",
         )
         if st.form_submit_button("Validate selection"):
-            if len(df_mod['selected_rows']) == 0:
-                st.error("You didn't select any sample! Please select at least one sample.")
+            if len(df_mod["selected_rows"]) == 0:
+                st.error(
+                    "You didn't select any sample! Please select at least one sample."
+                )
             else:
                 st.session_state.compute = True
 
@@ -111,17 +123,17 @@ if st.session_state.table_name != "No table selected":
         and not merge_is_zero
         and pd.DataFrame(df_mod["selected_rows"]).shape[0] != 0
     ):
-        if pd.DataFrame(df_mod["selected_rows"]).shape[0] == df.shape[0]:
-            st.warning(
-                "All samples are selected, are you sure you want you want them all ?"
-            )
-            st.session_state.force_validation = False
-            if st.button("Yes"):
-                st.session_state.force_validation = True
-        else:
-            nb_sel_samples = pd.DataFrame(df_mod["selected_rows"]).shape[0]
-            st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
-            st.session_state.force_validation = True
+        # if pd.DataFrame(df_mod["selected_rows"]).shape[0] == df.shape[0]:
+        #     st.warning(
+        #         "All samples are selected, are you sure you want you want them all ?"
+        #     )
+        #     st.session_state.force_validation = False
+        #     if st.button("Yes"):
+        #         st.session_state.force_validation = True
+        # else:
+        nb_sel_samples = pd.DataFrame(df_mod["selected_rows"]).shape[0]
+        st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
+        st.session_state.force_validation = True
 
         if st.session_state.force_validation:
             if st.session_state.dl_method == "nf-core/fetchngs":
