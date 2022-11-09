@@ -230,19 +230,24 @@ def prepare_accession_table(
     select_libs = list(stacked_samples["archive_accession"])
     selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
-    # Downloading with curl instead of fetchngs
+    # Downloading with curl or aspera instead of fetchngs
     urls = set(selected_libraries["download_links"])
     links = set()
     for u in urls:
         for s in u.split(";"):
             links.add(s)
-    dl_script = "#!/usr/bin/env bash\n"
-    for l in links:
-        dl_script += f"curl -L ftp://{l} -o {l.split('/')[-1]}\n"
+    dl_script_header = "#!/usr/bin/env bash\n"
+    curl_script = "\n".join([f"curl -L ftp://{l} -o {l.split('/')[-1]}"
+                             for l in links]) + "\n"
+    aspera_script = "\n".join(["ascp -QT -l 300m -P 33001 "
+                               "-i ${ASPERA_PATH}/etc/asperaweb_id_dsa.openssh "
+                               f"era-fasp@fasp.sra.ebi.ac.uk:{'/'.join(l.split('/')[1:])} ."
+                               for l in links]) + "\n"
 
     return {
         "df": selected_libraries[["archive_accession", "download_sizes"]].drop_duplicates(),
-        "script": dl_script,
+        "curl_script": dl_script_header + curl_script,
+        "aspera_script": dl_script_header + aspera_script,
     }
 
 

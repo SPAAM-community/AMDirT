@@ -68,7 +68,7 @@ with st.sidebar:
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
     st.session_state.height = st.selectbox('Number of rows to display', (10, 20,50, 100, 200), index=2)
     st.session_state.dl_method = st.selectbox(
-        label="Select a download method", options=["curl", "nf-core/fetchngs"]
+        label="", options=["curl", "nf-core/fetchngs", "aspera"]
     )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
@@ -143,6 +143,7 @@ if st.session_state.table_name != "No table selected":
         st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
         st.session_state.force_validation = True
 
+<<<<<<< HEAD
         placeholder = st.empty()
 
         with placeholder.container():
@@ -181,6 +182,18 @@ if st.session_state.table_name != "No table selected":
                             .encode("utf-8"),
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
+                elif st.session_state.dl_method == "aspera":
+                    st.download_button(
+                        label="Download Aspera sample download script",
+                        help=f"approx. {total_size_str} of sequencing data selected",
+                        data=prepare_accession_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )["aspera_script"],
+                        file_name="ancientMetagenomeDir_aspera_download_script.sh",
+                    )
                 else:
                     with button_fastq:
                         st.download_button(
