@@ -77,7 +77,6 @@ if st.session_state.table_name != "No table selected":
         sep="\t",
     )
     height = 50
-    st.write(f"Table height{height}")
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(
         groupable=True,
@@ -89,7 +88,7 @@ if st.session_state.table_name != "No table selected":
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
     gb.configure_grid_options(checkboxSelection=True)
     gb.configure_pagination(
-        enabled=True, paginationAutoPageSize=False, paginationPageSize=50
+        enabled=True, paginationAutoPageSize=False, paginationPageSize=height
     )
     gb.configure_column(
         "project_name",

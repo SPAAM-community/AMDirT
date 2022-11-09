@@ -80,7 +80,6 @@ def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     else:
         fwd = Path(path_string).name
         rev = "NA"
-    print(fwd, rev)
     if orientation == "fwd":
         return fwd
     elif orientation == "rev":
@@ -249,12 +248,16 @@ def prepare_bibtex_file(samples: pd.DataFrame) -> str:
             pass
     # Print warning for DOIs that do not have an entry
     if len(failed_dois) > 0:
-        st.warning("Citation information could not be resolved for the "
-                   "following DOIs: " + ", ".join(failed_dois) + ". Please "
-                   "check how to cite these publications manually!")
-        logger.warning("Citation information could not be resolved for the "
-                       "following DOIs: " + ", ".join(failed_dois) + ". Please "
-                       "check how to cite these publications manually!")
+        st.warning(
+            "Citation information could not be resolved for the "
+            "following DOIs: " + ", ".join(failed_dois) + ". Please "
+            "check how to cite these publications manually!"
+        )
+        logger.warning(
+            "Citation information could not be resolved for the "
+            "following DOIs: " + ", ".join(failed_dois) + ". Please "
+            "check how to cite these publications manually!"
+        )
 
     dois_string = "\n".join(list(dois))
     return dois_string
