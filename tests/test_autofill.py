@@ -1,6 +1,6 @@
 import os
 from AMDirT.validate.application import AMDirValidator
-from AMDirT.autofill.diff import get_sample_diff
+from AMDirT.core.diff import get_sample_diff
 
 
 def test_get_sample_diff(test_data_dir):
@@ -17,7 +17,7 @@ def test_get_sample_diff(test_data_dir):
         dataset=remote_dataset,
     )
 
-    diff = diff = get_sample_diff(
+    diff = get_sample_diff(
         local=local_validator.dataset,
         remote=remote_validator.dataset,
         schema=local_validator.schema,
