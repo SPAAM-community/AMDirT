@@ -66,6 +66,7 @@ with st.sidebar:
     )
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
+    st.session_state.height = st.selectbox('Number of rows to display', (10, 20,50, 100, 200), index=2)
     st.session_state.dl_method = st.selectbox(
         label="Select a download method", options=["curl", "nf-core/fetchngs"]
     )
@@ -91,7 +92,6 @@ if st.session_state.table_name != "No table selected":
         lib_url,
         sep="\t",
     )
-    height = 50
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(
         groupable=True,
@@ -102,9 +102,10 @@ if st.session_state.table_name != "No table selected":
         filterParams={"inRangeInclusive": "true"},
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
-    gb.configure_grid_options(checkboxSelection=True)
+    gb.configure_grid_options(checkboxSelection=True)    
+
     gb.configure_pagination(
-        enabled=True, paginationAutoPageSize=False, paginationPageSize=height
+        enabled=True, paginationAutoPageSize=False, paginationPageSize=st.session_state.height
     )
     gb.configure_column(
         "project_name",
