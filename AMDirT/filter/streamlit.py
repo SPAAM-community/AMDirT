@@ -168,7 +168,7 @@ if st.session_state.table_name != "No table selected":
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
                 else:
-                    with fastq_buttonl:
+                    with fastq_button:
                         st.download_button(
                             label="Download Curl sample download script",
                             data=prepare_accession_table(
