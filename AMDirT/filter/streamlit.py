@@ -138,25 +138,38 @@ if st.session_state.table_name != "No table selected":
         and not merge_is_zero
         and pd.DataFrame(df_mod["selected_rows"]).shape[0] != 0
     ):
-        # if pd.DataFrame(df_mod["selected_rows"]).shape[0] == df.shape[0]:
-        #     st.warning(
-        #         "All samples are selected, are you sure you want you want them all ?"
-        #     )
-        #     st.session_state.force_validation = False
-        #     if st.button("Yes"):
-        #         st.session_state.force_validation = True
-        # else:
         nb_sel_samples = pd.DataFrame(df_mod["selected_rows"]).shape[0]
         st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
         st.session_state.force_validation = True
+
         placeholder = st.empty()
+
         with placeholder.container():
             button_fastq, button_samplesheet, button_bibtex = st.columns(3)
             if st.session_state.force_validation:
+                # Calculate the fastq file size of the selected libraries
+                acc_table = prepare_accession_table(
+                    pd.DataFrame(df_mod["selected_rows"]),
+                    library,
+                    st.session_state.table_name,
+                    supported_archives,
+                )["df"]
+                total_size = (
+                    acc_table["download_sizes"]
+                    .apply(lambda r: sum([int(s) for s in r.split(";")]))
+                    .sum(axis=0)
+                )
+
+                if total_size > 1e12:
+                    total_size_str = f"{total_size / 1e12:.2f}TB"
+                else:
+                    total_size_str = f"{total_size / 1e9:.2f}GB"
+
                 if st.session_state.dl_method == "nf-core/fetchngs":
                     with button_fastq:
                         st.download_button(
-                            label="Download nf-core/fetchNGS input accession list",
+                            label=f"Download nf-core/fetchNGS input accession list",
+                            help=f"approx. {total_size_str} of sequencing data selected",
                             data=prepare_accession_table(
                                 pd.DataFrame(df_mod["selected_rows"]),
                                 library,
@@ -171,6 +184,7 @@ if st.session_state.table_name != "No table selected":
                     with button_fastq:
                         st.download_button(
                             label="Download Curl sample download script",
+                            help=f"approx. {total_size_str} of sequencing data selected",
                             data=prepare_accession_table(
                                 pd.DataFrame(df_mod["selected_rows"]),
                                 library,
@@ -202,5 +216,4 @@ if st.session_state.table_name != "No table selected":
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
                     st.session_state.force_validation = False
-                    # st.session_state.tag_name = tags[0]
                     placeholder.empty()
