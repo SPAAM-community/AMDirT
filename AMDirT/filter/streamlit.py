@@ -121,7 +121,7 @@ if st.session_state.table_name != "No table selected":
             data_return_mode="filtered",
             update_mode="selection_changed",
         )
-        if st.form_submit_button("Validate selection"):
+        if st.form_submit_button("Validate selection", type="primary"):
             if len(df_mod["selected_rows"]) == 0:
                 st.error(
                     "You didn't select any sample! Please select at least one sample."
@@ -151,49 +151,54 @@ if st.session_state.table_name != "No table selected":
         st.session_state.force_validation = True
         placeholder = st.empty()
         with placeholder.container():
+            col1, col2, col3 = st.columns(3)
             if st.session_state.force_validation:
                 if st.session_state.dl_method == "nf-core/fetchngs":
-                    st.download_button(
-                        label="Download nf-core/fetchNGS input accession list",
-                        data=prepare_accession_table(
-                            pd.DataFrame(df_mod["selected_rows"]),
-                            library,
-                            st.session_state.table_name,
-                            supported_archives,
-                        )["df"]
-                        .to_csv(sep="\t", header=False, index=False)
-                        .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_accession_table.csv",
-                    )
+                    with col1:
+                        st.download_button(
+                            label="Download nf-core/fetchNGS input accession list",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                library,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["df"]
+                            .to_csv(sep="\t", header=False, index=False)
+                            .encode("utf-8"),
+                            file_name="ancientMetagenomeDir_accession_table.csv",
+                        )
                 else:
+                    with col1:
+                        st.download_button(
+                            label="Download Curl sample download script",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                library,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["script"],
+                            file_name="ancientMetagenomeDir_curl_download_script.sh",
+                        )
+                with col2:
                     st.download_button(
-                        label="Download Curl sample download script",
-                        data=prepare_accession_table(
+                        label="Download nf-core/eager input TSV",
+                        data=prepare_eager_table(
                             pd.DataFrame(df_mod["selected_rows"]),
                             library,
                             st.session_state.table_name,
                             supported_archives,
-                        )["script"],
-                        file_name="ancientMetagenomeDir_curl_download_script.sh",
+                        )
+                        .to_csv(sep="\t", index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_eager_input.csv",
                     )
-                st.download_button(
-                    label="Download nf-core/eager input TSV",
-                    data=prepare_eager_table(
-                        pd.DataFrame(df_mod["selected_rows"]),
-                        library,
-                        st.session_state.table_name,
-                        supported_archives,
+                with col3:
+                    st.download_button(
+                        label="Download Citations as BibTex",
+                        data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
+                        file_name="ancientMetagenomeDir_citations.bib",
                     )
-                    .to_csv(sep="\t", index=False)
-                    .encode("utf-8"),
-                    file_name="ancientMetagenomeDir_eager_input.csv",
-                )
-                st.download_button(
-                    label="Download Citations as BibTex",
-                    data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
-                    file_name="ancientMetagenomeDir_citations.bib",
-                )
-                if st.button("Reset app"):
+                if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
                     st.session_state.force_validation = False
