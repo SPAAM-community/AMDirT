@@ -73,29 +73,105 @@ class ENAPortalAPI(ENA):
         super().__init__()
         self.base_url = "https://www.ebi.ac.uk/ena/portal/api/"
 
-    def get_study_runs(self, study_accession: str) -> dict:
-        """Generate list of runs for a given study accession
+    def list_results(self) -> List[Dict]:
+        """Get list of available results
+
+        Returns:
+            List[Dict]: list of available results
+        """
+        url = os.path.join(self.base_url, "results?dataPortal=ena&format=json")
+        json_resp = self.__get_json__(url)
+        for result in json_resp:
+            logging.info(f"{result['resultId']} - {result['description']}")
+        return json_resp
+
+    def list_fields(self, result_type: str) -> List:
+        """Get list of available fields
 
         Args:
-            study_accession (str): study accession
+            result_type(str): A result is a set of data that can
+            be searched against and returned
+        Returns:
+            List: list of available fields
+        """
+        url = os.path.join(
+            self.base_url,
+            f"returnFields?dataPortal=ena&format=json&result={result_type}",
+        )
+        json_resp = self.__get_json__(url)
+        for field in json_resp:
+            logging.info(f"{field['columnId']} - {field['description']}")
+        logging.info(f"Available fields for {result_type} are: {json_resp}")
+        return json_resp
+
+    def _check_result_type(self, result_type: str) -> bool:
+        """Check if result type is allowed
+
+        Args:
+            result_type(str): A result is a set of data that can
+            be searched against and returned
+        Returns:
+            bool: True if result type is valid, False otherwise
+        """
+        all_results = self.list_results()
+        results = [result["resultId"] for result in all_results]
+        if result_type not in results:
+            logging.warning(f"{result_type} is not a valid result type")
+            return False
+        return True
+
+    def _check_fields(self, result_type: str, fields: List[str]) -> bool:
+        """Check if fields are allowed
+
+        Args:
+            result_type(str): A result is a set of data that can
+            be searched against and returned
+            fields(List): list of fields to check
+        Returns:
+            bool: True if fields are valid, False otherwise
+        """
+        all_fields = self.list_fields(result_type)
+        fields = [field["columnId"] for field in all_fields]
+        for field in fields:
+            if field not in fields:
+                logging.warning(f"{field} is not a valid field")
+                return False
+        return True
+
+    def query(
+        self,
+        accession: str,
+        result_type: str = "read_run",
+        fields: List = [
+            "run_accession",
+            "sample_accession",
+            "fastq_ftp",
+            "fastq_md5",
+            "fastq_bytes",
+        ],
+    ) -> dict:
+        """Generate list of runs metadata for a study accession
+
+        Args:
+            accession (str): ENA accession
+            result_type(str): A result is a set of data that can
+            be searched against and returned
+            fields(List): list of fields to return
 
         Returns:
             dict: run_accession as keys, and metadata as values
         """
+
+        self._check_result_type(result_type)
+        self._check_fields(result_type, fields)
         url = os.path.join(
             self.base_url,
-            f"filereport?accession={study_accession}&download=false&format=json&result=read_run",
+            f"filereport?accession={accession}&download=false&format=json&result={result_type}&fields={','.join(fields)}",
         )
         json_resp = self.__get_json__(url)
-        d = dict()
-        for run in json_resp:
-            if "run_accession" in run:
-                run_tmp = run.copy()
-                run_tmp.pop("run_accession")
-                d[run["run_accession"]] = run_tmp
-        return d
+        return json_resp
 
 
 if __name__ == "__main__":
     e = ENAPortalAPI()
-    print(e.get_study_runs("PRJEB30331"))
+    print(e.query("PRJEB30331"))

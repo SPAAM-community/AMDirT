@@ -6,8 +6,12 @@ class AMDirValidator(DatasetValidator):
     """Validator Class for AncientMetagenomeDir datasets"""
 
     def check_duplicate_dois(self) -> bool:
-        project_dois = self.dataset.groupby("project_name")["publication_doi"].unique()
-        doi_unique = self.dataset.groupby("project_name")["publication_doi"].nunique()
+        project_dois = self.dataset.groupby("project_name")[
+            "data_publication_doi"
+        ].unique()
+        doi_unique = self.dataset.groupby("project_name")[
+            "data_publication_doi"
+        ].nunique()
         err_cnt = 0
         for project in doi_unique.index:
             if doi_unique[project] > 1:
@@ -16,7 +20,7 @@ class AMDirValidator(DatasetValidator):
                     DFError(
                         error="Duplicated DOI Error",
                         source=project_dois[project],
-                        column="publication_doi",
+                        column="data_publication_doi",
                         row="",
                         message=f"Duplicate DOI for {project} project. Make sure each project has a single DOI",
                     )
