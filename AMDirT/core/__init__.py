@@ -1,13 +1,15 @@
 from os import path
 from typing import Tuple, Iterable
+from pathlib import Path
 import requests
-import xmltodict
 from numpy import where
 import pandas as pd
 import streamlit as st
 import pkg_resources
 import logging
-from .ena import ENABrowserAPI, ENAPortalAPI
+from packaging import version
+
+# from .ena import ENABrowserAPI, ENAPortalAPI
 
 
 pd.options.mode.chained_assignment = None
@@ -25,6 +27,21 @@ logger.addHandler(ch)
 def get_json_path(rel_path="../assets/tables.json"):
     path = pkg_resources.resource_filename(__name__, rel_path)
     return path
+
+
+@st.cache
+def get_amdir_tags():
+    r = requests.get(
+        "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
+    )
+    if r.status_code == 200:
+        return [
+            tag["name"]
+            for tag in r.json()
+            if version.parse(tag["name"]) >= version.parse("v22.09")
+        ]
+    else:
+        return []
 
 
 def get_colour_chemistry(instrument: str) -> int:
@@ -49,12 +66,6 @@ def get_colour_chemistry(instrument: str) -> int:
             return chemistry_colours[k]
 
 
-def get_experiment_accession(run_accession: str) -> str:
-    resp = requests.get(f"https://www.ebi.ac.uk/ena/browser/api/xml/{run_accession}")
-    tree = xmltodict.parse(resp.content.decode())
-    return tree["RUN_SET"]["RUN"]["EXPERIMENT_REF"]["@accession"]
-
-
 def doi2bib(doi: str) -> str:
     """
     Return a bibTeX string of metadata for a given DOI.
@@ -68,38 +79,27 @@ def doi2bib(doi: str) -> str:
     return r.text
 
 
-def get_filename(path_string: str, prepend_exp=False) -> Tuple[str, str]:
+def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     """
     Get Fastq Filename from download_links column
 
     Args:
         path_string(str): path to fastq files urls, comma separated
         orientation(str): [fwd | rev]
-        prepend_exp(bool): prepend experiment accession number
     Returns
         str: name of Fastq file
     """
 
-    try:
-        path_string = str(path_string)
-        if path_string == "nan":
-            return "NA"
-        fwd, rev = path_string.split(";")
-        fwd = fwd.split("/")[-1]
-        rev = rev.split("/")[-1]
-    except (ValueError, AttributeError):
-        fwd = path_string
-        fwd = fwd.split("/")[-1]
-    if prepend_exp:
-        run_accession = fwd.split(".")[0].split("_")[0]
-        exp_accession = get_experiment_accession(run_accession)
-    try:
-        if prepend_exp:
-            fwd = f"{exp_accession}_{fwd}"
-            rev = f"{exp_accession}_{rev}"
-        return fwd, rev
-    except UnboundLocalError:
-        return fwd, "NA"
+    if ";" in path_string:
+        fwd = Path(path_string.split(";")[0]).name
+        rev = Path(path_string.split(";")[1]).name
+    else:
+        fwd = Path(path_string).name
+        rev = "NA"
+    if orientation == "fwd":
+        return fwd
+    elif orientation == "rev":
+        return rev
 
 
 @st.cache()
@@ -150,11 +150,14 @@ def prepare_eager_table(
         "UDG_Treatment"
     ] = selected_libraries.library_treatment.str.split("-", expand=True)[0]
 
-    selected_libraries["download_links"].apply(get_filename, prepend_exp=True)
-
-    selected_libraries["R1"], selected_libraries["R2"] = zip(
-        *selected_libraries["download_links"].apply(get_filename, prepend_exp=True)
+    selected_libraries["R1"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="fwd"
     )
+
+    selected_libraries["R2"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="rev"
+    )
+
     selected_libraries["Lane"] = 0
     selected_libraries["SeqType"] = where(
         selected_libraries["library_layout"] == "SINGLE", "SE", "PE"
@@ -238,22 +241,39 @@ def prepare_accession_table(
         dl_script += f"curl -L ftp://{l} -o {l.split('/')[-1]}\n"
 
     return {
-        "df": selected_libraries["archive_accession"].to_frame().drop_duplicates(),
+        "df": selected_libraries[["archive_accession", "download_sizes"]].drop_duplicates(),
         "script": dl_script,
     }
 
 
-@st.cache()
+@st.cache(suppress_st_warning=True)
 def prepare_bibtex_file(samples: pd.DataFrame) -> str:
     dois = set()
+    failed_dois = set()
     dois_set = set(list(samples["publication_doi"]))
     dois_set.add("10.1038/s41597-021-00816-y")
     for doi in dois_set:
         try:
-            dois.add(doi2bib(doi))
+            bibtex_str = doi2bib(doi)
+            if len(bibtex_str) == 0:
+                failed_dois.add(doi)
+            else:
+                dois.add(bibtex_str)
         except Exception as e:
             logger.info(e)
             pass
+    # Print warning for DOIs that do not have an entry
+    if len(failed_dois) > 0:
+        st.warning(
+            "Citation information could not be resolved for the "
+            "following DOIs: " + ", ".join(failed_dois) + ". Please "
+            "check how to cite these publications manually!"
+        )
+        logger.warning(
+            "Citation information could not be resolved for the "
+            "following DOIs: " + ", ".join(failed_dois) + ". Please "
+            "check how to cite these publications manually!"
+        )
 
     dois_string = "\n".join(list(dois))
     return dois_string
