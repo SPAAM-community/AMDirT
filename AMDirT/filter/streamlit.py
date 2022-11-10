@@ -61,15 +61,16 @@ with st.sidebar:
     )
     st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) filter tool")
     st.write(f"\n Version: {__version__}")
-    st.write("## Select an AncientMetagenomeDir release")
-    st.session_state.tag_name = st.selectbox(label="", options=tags)
-    st.write("## Select a table")
+    st.session_state.tag_name = st.selectbox(
+        label="Select an AncientMetagenomeDir release", options=tags
+    )
     options = ["No table selected"] + list(samples.keys())
-    st.session_state.table_name = st.selectbox(label="", options=options)
-    st.write(f"Only {' and '.join(supported_archives)} archives are supported for now")
-    st.write("## Select a download methods")
+    st.session_state.table_name = st.selectbox(label="Select a table", options=options)
     st.session_state.dl_method = st.selectbox(
-        label="", options=["curl", "nf-core/fetchngs"]
+        label="Select a download method", options=["curl", "nf-core/fetchngs"]
+    )
+    st.warning(
+        f"Only {' and '.join(supported_archives)} archives are supported for now"
     )
 
 if st.session_state.table_name != "No table selected":
@@ -82,7 +83,6 @@ if st.session_state.table_name != "No table selected":
     lib_url = libraries[st.session_state.table_name].replace(
         "master", st.session_state.tag_name
     )
-    print(samp_url)
     df = pd.read_csv(
         samp_url,
         sep="\t",
@@ -121,7 +121,7 @@ if st.session_state.table_name != "No table selected":
             data_return_mode="filtered",
             update_mode="selection_changed",
         )
-        if st.form_submit_button("Validate selection"):
+        if st.form_submit_button("Validate selection", type="primary"):
             if len(df_mod["selected_rows"]) == 0:
                 st.error(
                     "You didn't select any sample! Please select at least one sample."
@@ -145,6 +145,7 @@ if st.session_state.table_name != "No table selected":
         placeholder = st.empty()
 
         with placeholder.container():
+            button_fastq, button_samplesheet, button_bibtex = st.columns(3)
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
                 acc_table = prepare_accession_table(
@@ -158,12 +159,14 @@ if st.session_state.table_name != "No table selected":
                     .apply(lambda r: sum([int(s) for s in r.split(";")]))
                     .sum(axis=0)
                 )
+
                 if total_size > 1e12:
                     total_size_str = f"{total_size / 1e12:.2f}TB"
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
 
-                    if st.session_state.dl_method == "nf-core/fetchngs":
+                if st.session_state.dl_method == "nf-core/fetchngs":
+                    with button_fastq:
                         st.download_button(
                             label=f"Download nf-core/fetchNGS input accession list",
                             help=f"approx. {total_size_str} of sequencing data selected",
@@ -177,7 +180,8 @@ if st.session_state.table_name != "No table selected":
                             .encode("utf-8"),
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
-                    else:
+                else:
+                    with button_fastq:
                         st.download_button(
                             label="Download Curl sample download script",
                             help=f"approx. {total_size_str} of sequencing data selected",
@@ -189,6 +193,7 @@ if st.session_state.table_name != "No table selected":
                             )["script"],
                             file_name="ancientMetagenomeDir_curl_download_script.sh",
                         )
+                with button_samplesheet:
                     st.download_button(
                         label="Download nf-core/eager input TSV",
                         data=prepare_eager_table(
@@ -201,12 +206,13 @@ if st.session_state.table_name != "No table selected":
                         .encode("utf-8"),
                         file_name="ancientMetagenomeDir_eager_input.csv",
                     )
+                with button_bibtex:
                     st.download_button(
                         label="Download Citations as BibTex",
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="ancientMetagenomeDir_citations.bib",
                     )
-                if st.button("Reset app"):
+                if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
                     st.session_state.force_validation = False
