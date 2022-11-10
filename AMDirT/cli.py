@@ -4,6 +4,7 @@ from AMDirT import __version__
 from AMDirT.validate import run_validation
 from AMDirT.filter import run_app
 from AMDirT.convert import run_convert
+from AMDirT.autofill import run_autofill
 from AMDirT.core import get_json_path
 from json import load
 
@@ -115,6 +116,27 @@ def convert(ctx, no_args_is_help=True, **kwargs):
     TABLE_NAME: name of table to convert
     """
     run_convert(**kwargs, **ctx.obj)
+
+
+#################
+# Autofill tool #
+#################
+
+
+@cli.command()
+@click.argument("local", type=click.Path(exists=True))
+@click.argument("remote", type=click.Path(exists=True))
+@click.argument("schema", type=click.Path(exists=True))
+@click.pass_context
+def autofill(ctx, no_args_is_help=True, **kwargs):
+    """\b
+    Prefill library tables by querying ENA
+    \b
+    local: path to local sample table
+    remote: path to remote sample table
+    schema: path to sample table JSON schema file
+    """
+    run_autofill(**kwargs, **ctx.obj)
 
 
 if __name__ == "__main__":
