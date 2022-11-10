@@ -1,7 +1,7 @@
 from typing import AnyStr
 from AMDirT.core import logger
+from AMDirT.core.diff import get_sample_diff
 from AMDirT.validate.application import AMDirValidator
-from AMDirT.autofill.diff import get_sample_diff
 
 
 def run_autofill(local: AnyStr, remote: AnyStr, schema: AnyStr):
