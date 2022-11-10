@@ -17,6 +17,7 @@ __ homepage_
    README
    API
    CLI
+   tutorial
 
 
 

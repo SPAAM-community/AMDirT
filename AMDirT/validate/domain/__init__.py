@@ -44,6 +44,21 @@ class DatasetValidator:
     """Dataset as DataFrame validation class"""
 
     def __init__(self, schema: Schema, dataset: Dataset):
+        """Dataset validation class
+
+        Attributes:
+            errors (list): List of DFError objects
+            dataset_name (str): Dataset name
+            schema_name (str): Schema name
+            schema (dict): JSON schema
+            dataset (pd.DataFrame): Dataset as pandas dataframe
+            dataset_json (dict): Dataset as dictionary
+
+        Args:
+            schema (Schema): Path to schema in json format
+            dataset (Dataset): Path to dataset in tsv format
+
+        """
         self.errors = list()
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
