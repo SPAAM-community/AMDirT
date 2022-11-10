@@ -138,7 +138,7 @@ if st.session_state.table_name != "No table selected":
 
             if st.session_state.dl_method == "nf-core/fetchngs":
                 st.download_button(
-                    label=f"Download nf-core/fetchNGS input accession list (approx. {total_size_str})",
+                    label=f"Download nf-core/fetchNGS input accession list (approx. {total_size_str} of sequencing data selected)",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
@@ -151,7 +151,7 @@ if st.session_state.table_name != "No table selected":
                 )
             else:
                 st.download_button(
-                    label=f"Download Curl sample download script (approx. {total_size_str})",
+                    label=f"Download Curl sample download script (approx. {total_size_str} of sequencing data selected)",
                     data=prepare_accession_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
