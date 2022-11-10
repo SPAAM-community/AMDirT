@@ -61,15 +61,16 @@ with st.sidebar:
     )
     st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) filter tool")
     st.write(f"\n Version: {__version__}")
-    st.write("## Select an AncientMetagenomeDir release")
-    st.session_state.tag_name = st.selectbox(label="", options=tags)
-    st.write("## Select a table")
+    st.session_state.tag_name = st.selectbox(
+        label="Select an AncientMetagenomeDir release", options=tags
+    )
     options = ["No table selected"] + list(samples.keys())
-    st.session_state.table_name = st.selectbox(label="", options=options)
-    st.write(f"Only {' and '.join(supported_archives)} archives are supported for now")
-    st.write("## Select a download methods")
+    st.session_state.table_name = st.selectbox(label="Select a table", options=options)
     st.session_state.dl_method = st.selectbox(
-        label="", options=["curl", "nf-core/fetchngs"]
+        label="Select a download method", options=["curl", "nf-core/fetchngs"]
+    )
+    st.warning(
+        f"Only {' and '.join(supported_archives)} archives are supported for now"
     )
 
 if st.session_state.table_name != "No table selected":
@@ -82,7 +83,6 @@ if st.session_state.table_name != "No table selected":
     lib_url = libraries[st.session_state.table_name].replace(
         "master", st.session_state.tag_name
     )
-    print(samp_url)
     df = pd.read_csv(
         samp_url,
         sep="\t",
