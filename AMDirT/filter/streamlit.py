@@ -149,50 +149,53 @@ if st.session_state.table_name != "No table selected":
         nb_sel_samples = pd.DataFrame(df_mod["selected_rows"]).shape[0]
         st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
         st.session_state.force_validation = True
-
-        if st.session_state.force_validation:
-            if st.session_state.dl_method == "nf-core/fetchngs":
+        placeholder = st.empty()
+        with placeholder.container():
+            if st.session_state.force_validation:
+                if st.session_state.dl_method == "nf-core/fetchngs":
+                    st.download_button(
+                        label="Download nf-core/fetchNGS input accession list",
+                        data=prepare_accession_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )["df"]
+                        .to_csv(sep="\t", header=False, index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_accession_table.csv",
+                    )
+                else:
+                    st.download_button(
+                        label="Download Curl sample download script",
+                        data=prepare_accession_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )["script"],
+                        file_name="ancientMetagenomeDir_curl_download_script.sh",
+                    )
                 st.download_button(
-                    label="Download nf-core/fetchNGS input accession list",
-                    data=prepare_accession_table(
+                    label="Download nf-core/eager input TSV",
+                    data=prepare_eager_table(
                         pd.DataFrame(df_mod["selected_rows"]),
                         library,
                         st.session_state.table_name,
                         supported_archives,
-                    )["df"]
-                    .to_csv(sep="\t", header=False, index=False)
+                    )
+                    .to_csv(sep="\t", index=False)
                     .encode("utf-8"),
-                    file_name="ancientMetagenomeDir_accession_table.csv",
+                    file_name="ancientMetagenomeDir_eager_input.csv",
                 )
-            else:
                 st.download_button(
-                    label="Download Curl sample download script",
-                    data=prepare_accession_table(
-                        pd.DataFrame(df_mod["selected_rows"]),
-                        library,
-                        st.session_state.table_name,
-                        supported_archives,
-                    )["script"],
-                    file_name="ancientMetagenomeDir_curl_download_script.sh",
+                    label="Download Citations as BibTex",
+                    data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
+                    file_name="ancientMetagenomeDir_citations.bib",
                 )
-            st.download_button(
-                label="Download nf-core/eager input TSV",
-                data=prepare_eager_table(
-                    pd.DataFrame(df_mod["selected_rows"]),
-                    library,
-                    st.session_state.table_name,
-                    supported_archives,
-                )
-                .to_csv(sep="\t", index=False)
-                .encode("utf-8"),
-                file_name="ancientMetagenomeDir_eager_input.csv",
-            )
-            st.download_button(
-                label="Download Citations as BibTex",
-                data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
-                file_name="ancientMetagenomeDir_citations.bib",
-            )
-            if st.button("Reset app"):
-                st.session_state.compute = False
-                st.session_state.table_name = "No table selected"
-                st.session_state.force_validation = False
+                if st.button("Reset app"):
+                    st.session_state.compute = False
+                    st.session_state.table_name = "No table selected"
+                    st.session_state.force_validation = False
+                    # st.session_state.tag_name = tags[0]
+                    placeholder.empty()
