@@ -241,7 +241,7 @@ def prepare_accession_table(
         dl_script += f"curl -L ftp://{l} -o {l.split('/')[-1]}\n"
 
     return {
-        "df": selected_libraries["archive_accession"].to_frame().drop_duplicates(),
+        "df": selected_libraries[["archive_accession", "download_sizes"]].drop_duplicates(),
         "script": dl_script,
     }
 
