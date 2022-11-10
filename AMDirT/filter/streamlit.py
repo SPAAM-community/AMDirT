@@ -151,10 +151,10 @@ if st.session_state.table_name != "No table selected":
         st.session_state.force_validation = True
         placeholder = st.empty()
         with placeholder.container():
-            col1, col2, col3 = st.columns(3)
+            fastq_button, samplesheet_button, bibtext_button = st.columns(3)
             if st.session_state.force_validation:
                 if st.session_state.dl_method == "nf-core/fetchngs":
-                    with col1:
+                    with fastq_button:
                         st.download_button(
                             label="Download nf-core/fetchNGS input accession list",
                             data=prepare_accession_table(
@@ -168,7 +168,7 @@ if st.session_state.table_name != "No table selected":
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
                 else:
-                    with col1:
+                    with fastq_buttonl:
                         st.download_button(
                             label="Download Curl sample download script",
                             data=prepare_accession_table(
@@ -179,7 +179,7 @@ if st.session_state.table_name != "No table selected":
                             )["script"],
                             file_name="ancientMetagenomeDir_curl_download_script.sh",
                         )
-                with col2:
+                with samplesheet_button:
                     st.download_button(
                         label="Download nf-core/eager input TSV",
                         data=prepare_eager_table(
@@ -192,7 +192,7 @@ if st.session_state.table_name != "No table selected":
                         .encode("utf-8"),
                         file_name="ancientMetagenomeDir_eager_input.csv",
                     )
-                with col3:
+                with bibtext_button:
                     st.download_button(
                         label="Download Citations as BibTex",
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
