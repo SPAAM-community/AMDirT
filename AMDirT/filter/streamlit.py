@@ -198,7 +198,7 @@ if st.session_state.table_name != "No table selected":
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="ancientMetagenomeDir_citations.bib",
                     )
-                if st.button("Reset app", type="primary"):
+                if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
                     st.session_state.force_validation = False
