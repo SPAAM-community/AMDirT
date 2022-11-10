@@ -8,12 +8,13 @@
 
 Before we release AMDirt on (bio)Conda, please follow the instructions below.
 
-### 1. Install the conda environment and activate it
+### 1. With pip
 
-```bash
-conda env create -f environment.yml
-conda activate amdirt
-```
+...upon release of v 1.4
+
+### 2. With conda
+
+...upon release of v 1.4
 
 ### The latest development version, directly from GitHub
 
@@ -21,19 +22,14 @@ conda activate amdirt
 pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/AMDirT.git@dev
 ```
 
-### From PyPI using pip (only the code on master branch)
-
-```bash
-pip install AMDirT
-```
-
 ### The latest development version, with local changes
 
-From within you local clone of the AMDirT repository
-
-```bash
-pip install -e .
-```
+- Fork AMDirT on GitHub
+- Clone your fork `git clone [your-AMDirT-fork]`
+- Checkout the `dev` branch `git switch dev`
+- Create the conda environment `conda env create -f environment.yml`
+- Activate the environemnt `conda activate amdirt`
+- Install amdirt in development mode `pip install -e .`
 
 ## Documentation
 
