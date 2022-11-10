@@ -1,5 +1,5 @@
 import json
-from xxlimited import Null
+#from xxlimited import Null
 from numpy import int64
 import pandas as pd
 from AMDirT.validate import exceptions
@@ -95,7 +95,7 @@ class DatasetValidator:
                 if parsed_schema_dtypes == ['string','null']: column_dtypes[column_keys] = string_to_dtype_conversions['string']
         try:
             return pd.read_table(dataset, sep="\t", dtype=column_dtypes)
-        except (AttributeError, pd.errors.ParserError) as e:
+        except (AttributeError, pd.errors.ParserError, ValueError) as e:
             logger.error(e)
             self.add_error(
                 DFError(
@@ -144,6 +144,8 @@ class DatasetValidator:
             bool: True if dataset is valid, False otherwise
         """
         validator = Draft7Validator(self.schema)
+        # redefining json type 'null' to accept python None as correct instance of 'null'
+        validator.TYPE_CHECKER.redefine('null',lambda validator,instance: instance is None)
         err_cnt = 0
         for err in validator.iter_errors(self.dataset_json):
             self.add_error(self.cleanup_errors(err))
