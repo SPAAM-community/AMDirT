@@ -29,15 +29,19 @@ def get_json_path(rel_path="../assets/tables.json"):
     return path
 
 
+@st.cache
 def get_amdir_tags():
     r = requests.get(
         "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
     )
-    return [
-        k["name"]
-        for k in r.json()
-        if version.parse(k["name"]) >= version.parse("v22.09")
-    ]
+    if r.status_code == 200:
+        return [
+            tag["name"]
+            for tag in r.json()
+            if version.parse(tag["name"]) >= version.parse("v22.09")
+        ]
+    else:
+        return []
 
 
 def get_colour_chemistry(instrument: str) -> int:
