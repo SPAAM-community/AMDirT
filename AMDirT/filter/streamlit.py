@@ -91,7 +91,6 @@ if st.session_state.table_name != "No table selected":
         lib_url,
         sep="\t",
     )
-    height = 50
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(
         groupable=True,
@@ -103,6 +102,11 @@ if st.session_state.table_name != "No table selected":
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
     gb.configure_grid_options(checkboxSelection=True)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        height = st.selectbox('Number of rows to display', (10, 20,50, 100, 200), index=2)
+
     gb.configure_pagination(
         enabled=True, paginationAutoPageSize=False, paginationPageSize=height
     )
