@@ -66,10 +66,16 @@ with st.sidebar:
     )
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
-    st.session_state.height = st.selectbox('Number of rows to display', (10, 20,50, 100, 200), index=2)
-    st.session_state.dl_method = st.selectbox(
-        label="Select a download method", options=["curl", "nf-core/fetchngs"]
+    st.session_state.height = st.selectbox(
+        "Number of rows to display", (10, 20, 50, 100, 200), index=2
     )
+    st.session_state.dl_method = st.selectbox(
+        label="", options=["curl", "nf-core/fetchngs", "aspera"]
+    )
+    if st.session_state.dl_method == "aspera":
+        st.warning(
+            "You will need to set the `${ASPERA_PATH}` environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
+        )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
     )
@@ -102,10 +108,12 @@ if st.session_state.table_name != "No table selected":
         filterParams={"inRangeInclusive": "true"},
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
-    gb.configure_grid_options(checkboxSelection=True)    
+    gb.configure_grid_options(checkboxSelection=True)
 
     gb.configure_pagination(
-        enabled=True, paginationAutoPageSize=False, paginationPageSize=st.session_state.height
+        enabled=True,
+        paginationAutoPageSize=False,
+        paginationPageSize=st.session_state.height,
     )
     gb.configure_column(
         "project_name",
@@ -166,8 +174,8 @@ if st.session_state.table_name != "No table selected":
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
 
-                if st.session_state.dl_method == "nf-core/fetchngs":
-                    with button_fastq:
+                with button_fastq:
+                    if st.session_state.dl_method == "nf-core/fetchngs":
                         st.download_button(
                             label=f"Download nf-core/fetchNGS input accession list",
                             help=f"approx. {total_size_str} of sequencing data selected",
@@ -181,8 +189,19 @@ if st.session_state.table_name != "No table selected":
                             .encode("utf-8"),
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
-                else:
-                    with button_fastq:
+                    elif st.session_state.dl_method == "aspera":
+                        st.download_button(
+                            label="Download Aspera sample download script",
+                            help=f"approx. {total_size_str} of sequencing data selected",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                library,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["aspera_script"],
+                            file_name="ancientMetagenomeDir_aspera_download_script.sh",
+                        )
+                    else:
                         st.download_button(
                             label="Download Curl sample download script",
                             help=f"approx. {total_size_str} of sequencing data selected",
