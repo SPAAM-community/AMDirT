@@ -1,6 +1,6 @@
-from typing import Iterable, AnyStr
+from typing import Iterable, AnyStr, Union
 from AMDirT.validate.domain import DatasetValidator, DFError
-from AMDirT.core import get_json_path, logger
+from AMDirT.core import get_json_path
 from AMDirT.core.diff import get_sample_diff
 from AMDirT.core.ena import ENAPortalAPI
 from pathlib import Path
@@ -63,7 +63,7 @@ class AMDirValidator(DatasetValidator):
         else:
             return True
 
-    def check_sample_accession(self, remote: AnyStr | None = None):
+    def check_sample_accession(self, remote: Union[AnyStr, None] = None) -> bool:
         """Check that sample accession are valid
 
         Args:
