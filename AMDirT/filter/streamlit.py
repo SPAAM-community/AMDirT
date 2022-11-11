@@ -66,16 +66,16 @@ with st.sidebar:
     )
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
-    st.session_state.height = st.selectbox('Number of rows to display', (10, 20,50, 100, 200), index=2)
+    st.session_state.height = st.selectbox(
+        "Number of rows to display", (10, 20, 50, 100, 200), index=2
+    )
     st.session_state.dl_method = st.selectbox(
-            label="", options=["curl", "nf-core/fetchngs", "aspera"]
+        label="", options=["curl", "nf-core/fetchngs", "aspera"]
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
             "You will need to set the `${ASPERA_PATH}` environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
         )
-        label="", options=["curl", "nf-core/fetchngs", "aspera"]
-    )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
     )
@@ -108,10 +108,12 @@ if st.session_state.table_name != "No table selected":
         filterParams={"inRangeInclusive": "true"},
     )
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
-    gb.configure_grid_options(checkboxSelection=True)    
+    gb.configure_grid_options(checkboxSelection=True)
 
     gb.configure_pagination(
-        enabled=True, paginationAutoPageSize=False, paginationPageSize=st.session_state.height
+        enabled=True,
+        paginationAutoPageSize=False,
+        paginationPageSize=st.session_state.height,
     )
     gb.configure_column(
         "project_name",
