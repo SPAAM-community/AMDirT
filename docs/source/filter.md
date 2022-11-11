@@ -25,7 +25,8 @@ AMDirT will automatically replace `path/to/sequencing/file` to match the paths f
 
 However, you will need to set the `path/to/aspera/installation` prior to running this. To make it more convenient, we opted for using the environment variable `ASPERA_PATH` that has to be set in the shell prior to running the script. Therefore, run:
 
-`ASPERA_PATH="$HOME/.aspera/cli"`
+```bash
+ASPERA_PATH="$HOME/.aspera/cli"
 
 > ⚠️ In case your institute blocks the port 33001, you will need to change the parameter `-P 33001` to another port that is not blocked.
 
