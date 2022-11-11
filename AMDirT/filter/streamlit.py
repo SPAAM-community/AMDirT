@@ -166,8 +166,8 @@ if st.session_state.table_name != "No table selected":
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
 
-                if st.session_state.dl_method == "nf-core/fetchngs":
-                    with button_fastq:
+                with button_fastq:
+                    if st.session_state.dl_method == "nf-core/fetchngs":
                         st.download_button(
                             label=f"Download nf-core/fetchNGS input accession list",
                             help=f"approx. {total_size_str} of sequencing data selected",
@@ -181,20 +181,19 @@ if st.session_state.table_name != "No table selected":
                             .encode("utf-8"),
                             file_name="ancientMetagenomeDir_accession_table.csv",
                         )
-                elif st.session_state.dl_method == "aspera":
-                    st.download_button(
-                        label="Download Aspera sample download script",
-                        help=f"approx. {total_size_str} of sequencing data selected",
-                        data=prepare_accession_table(
-                            pd.DataFrame(df_mod["selected_rows"]),
-                            library,
-                            st.session_state.table_name,
-                            supported_archives,
-                        )["aspera_script"],
-                        file_name="ancientMetagenomeDir_aspera_download_script.sh",
-                    )
-                else:
-                    with button_fastq:
+                    elif st.session_state.dl_method == "aspera":
+                        st.download_button(
+                            label="Download Aspera sample download script",
+                            help=f"approx. {total_size_str} of sequencing data selected",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                library,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["aspera_script"],
+                            file_name="ancientMetagenomeDir_aspera_download_script.sh",
+                        )
+                    else:
                         st.download_button(
                             label="Download Curl sample download script",
                             help=f"approx. {total_size_str} of sequencing data selected",
