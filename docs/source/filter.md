@@ -14,7 +14,7 @@ AMDirT provides three different methods to download the sequencing data of selec
 
 [FASP](https://en.wikipedia.org/wiki/Fast_and_Secure_Protocol) is a specific protocol that allows the download of large data files at a speed that is usually much higher than when downloading from the FTP server.
 
-Prior to be able to download via this method, make sure that you have the ASPERA connect installed on your system (using `which ascp`). If this is not the case, please refer to this [installation guide](https://www.ibm.com/docs/en/aspera-connect/4.1?topic=suc-installation#installation__section_zfj_wpq_ghb) and download the binary from [here](https://www.ibm.com/aspera/connect/).
+Prior to be able to download via this method, make sure that you have the ASPERA connect installed on your system (using `which ascp`). If this is not the case, please refer to this [installation guide](https://www.ibm.com/docs/en/aspera-connect/4.1?topic=suc-installation#installation__section_zfj_wpq_ghb) and download the binary from [here](https://www.ibm.com/aspera/connect/). You can also install this via conda (`conda create -n aspera -c HCC aspera-cli`)
 
 AMDirT will return a script that for each sequencing file looks like this following the recommendation from [ENA](https://ena-docs.readthedocs.io/en/latest/retrieval/file-download.html#using-aspera):
 
