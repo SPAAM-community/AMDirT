@@ -143,7 +143,6 @@ if st.session_state.table_name != "No table selected":
         st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
         st.session_state.force_validation = True
 
-<<<<<<< HEAD
         placeholder = st.empty()
 
         with placeholder.container():
