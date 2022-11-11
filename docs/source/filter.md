@@ -27,6 +27,6 @@ However, you will need to set the `path/to/aspera/installation` prior to running
 
 `ASPERA_PATH="$HOME/.aspera/cli"`
 
-WARNING: In case your institute blocks the port 33001, you will need to change the parameter `-P 33001` to another port that is not blocked.
+> ⚠️ In case your institute blocks the port 33001, you will need to change the parameter `-P 33001` to another port that is not blocked.
 
 ### Downloading via nf-core/fetchngs
