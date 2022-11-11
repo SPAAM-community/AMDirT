@@ -61,7 +61,7 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 )
 @click.option(
     "--remote",
-    type=click.Path(exists=True),
+    type=click.Path(),
     default=None,
     help="Path/URL to remote sample file",
 )
