@@ -60,6 +60,8 @@ class DatasetValidator:
 
         """
         self.errors = list()
+        self.dataset_path = Path(dataset)
+        self.schema_path = Path(schema)
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)

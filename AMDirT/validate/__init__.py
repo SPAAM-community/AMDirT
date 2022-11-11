@@ -1,4 +1,3 @@
-from distutils.log import warn
 from AMDirT.validate.application import AMDirValidator
 import warnings
 
@@ -11,6 +10,8 @@ def run_validation(
     columns,
     doi,
     multi_values,
+    accessions,
+    remote,
     markdown,
     verbose,
 ):
@@ -27,6 +28,8 @@ def run_validation(
         v.check_duplicate_dois()
     if multi_values:
         v.check_multi_values(column_names=multi_values)
+    if accessions:
+        v.check_sample_accession(remote=remote)
     if markdown:
         v.to_markdown()
     else:

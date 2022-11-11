@@ -1,5 +1,10 @@
-from typing import Iterable
+from typing import Iterable, AnyStr
 from AMDirT.validate.domain import DatasetValidator, DFError
+from AMDirT.core import get_json_path, logger
+from AMDirT.core.diff import get_sample_diff
+from AMDirT.core.ena import ENAPortalAPI
+from pathlib import Path
+import json
 
 
 class AMDirValidator(DatasetValidator):
@@ -57,3 +62,64 @@ class AMDirValidator(DatasetValidator):
             return False
         else:
             return True
+
+    def check_sample_accession(self, remote: AnyStr | None = None):
+        """Check that sample accession are valid
+
+        Args:
+            remote (AnyStr | None, optional): Remote to check against. Defaults to None.
+        """
+
+        if not remote:
+            with open(get_json_path("sample_accession.json")) as f:
+                tables = json.load(f)
+            samples = tables["samples"]
+            for table in samples:
+                if self.dataset_name == Path(samples[table]).name:
+                    remote = samples[table]
+            if remote is None:
+                raise SystemExit(
+                    f"No remote found for {self.dataset} dataset, please provide one"
+                )
+        remote_samples = DatasetValidator(schema=self.schema_path, dataset=remote)
+        new_samples = get_sample_diff(
+            local=self.dataset, remote=remote_samples.dataset, schema=self.schema
+        )
+        df_change = self.dataset[
+            self.dataset["archive_accession"].str.contains("|".join(new_samples))
+        ]
+        if len(new_samples) > 0:
+            e = ENAPortalAPI()
+            change_dict = {}
+            for i in df_change.index:
+                if df_change.loc[i, "archive"] in ["SRA", "ENA"]:
+                    samples = df_change.loc[i, "archive_accession"].split(",")
+                    project = df_change.loc[i, "archive_project"]
+                    if project not in change_dict:
+                        change_dict[project] = {"index": i, "sample": samples}
+                    else:
+                        change_dict[project]["sample"].extend(samples)
+                else:
+                    continue
+            for project in change_dict:
+                json_result = e.query(
+                    accession=project,
+                    result_type="read_experiment",
+                    fields=["secondary_sample_accession"],
+                )
+                ena_samples = []
+                for i in json_result:
+                    ena_samples.append(i["secondary_sample_accession"])
+                for sample in change_dict[project]["sample"]:
+                    if sample not in ena_samples:
+                        self.add_error(
+                            DFError(
+                                error="Invalid sample accession",
+                                source=sample,
+                                column="archive_accession",
+                                row=change_dict[project]["index"] + 2,
+                                message=f"Sample accession {sample} is not valid",
+                            )
+                        )
+                        return False
+                return True

@@ -54,6 +54,17 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     multiple=True,
     help="Check multi-values column for duplicate values",
 )
+@click.option(
+    "--accessions",
+    is_flag=True,
+    help="Turn on ENA accession validation",
+)
+@click.option(
+    "--remote",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path/URL to remote sample file",
+)
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.pass_context
 def validate(ctx, no_args_is_help=True, **kwargs):
