@@ -18,7 +18,8 @@ Prior to be able to download via this method, make sure that you have the ASPERA
 
 AMDirT will return a script that for each sequencing file looks like this following the recommendation from [ENA](https://ena-docs.readthedocs.io/en/latest/retrieval/file-download.html#using-aspera):
 
-`ascp -QT -l 300m -P 33001 -i path/to/aspera/installation/etc/asperaweb_id_dsa.openssh era-fasp@fasp.sra.ebi.ac.uk:path/to/sequencing/file local/target/directory`
+```bash
+ascp -QT -l 300m -P 33001 -i path/to/aspera/installation/etc/asperaweb_id_dsa.openssh era-fasp@fasp.sra.ebi.ac.uk:path/to/sequencing/file local/target/directory
 
 AMDirT will automatically replace `path/to/sequencing/file` to match the paths for the libraries that were selected. It will also set the `local/target/directory` to the current directory.
 
