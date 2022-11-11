@@ -70,7 +70,7 @@ with st.sidebar:
         "Number of rows to display", (10, 20, 50, 100, 200), index=2
     )
     st.session_state.dl_method = st.selectbox(
-        label="", options=["curl", "nf-core/fetchngs", "aspera"]
+        label="Data download method", options=["curl", "nf-core/fetchngs", "aspera"]
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
