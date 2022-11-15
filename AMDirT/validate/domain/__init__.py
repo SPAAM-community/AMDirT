@@ -72,7 +72,7 @@ class DatasetValidator:
         with open(schema, "r") as s:
             return json.load(s)
 
-    def read_dataset(self, dataset: Dataset, schema: Dict) -> pd.DataFrame:
+    def read_dataset(self, dataset: Dataset, schema: dict) -> pd.DataFrame:
         """ "Read dataset from file or string
         Args:
             dataset (str): Path to dataset in tsv format
@@ -86,22 +86,22 @@ class DatasetValidator:
         }
         column_dtypes = {}
         for column_keys in schema['items']['properties']:
-            parsed_schema_dtypes=schema['items']['properties'][column_keys]['type']
-    coltype = schema['items']['properties'][column_keys]['type'][0]
-    if coltype in string_to_dtype_conversions:
-        column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
-    elif coltype == 'null':
-        self.add_error(
-            DFError(
-                error = "Schema Error"
-                source = column_dtypes[column_keys]
-                column = column_keys
-                row = None
-                message = "Default/first type of column in schema can not be null"
-
-        )
-    else:
-        column_dtypes[column_keys] = coltype
+            coltype = schema['items']['properties'][column_keys]['type'][0]
+            if coltype in string_to_dtype_conversions:
+                column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
+            elif coltype == 'null':
+                self.add_error(
+                    DFError(
+                        error = "Schema Error",
+                        source = column_dtypes[column_keys],
+                        column = column_keys,
+                        row = None,
+                        message = "Default/first type of column in schema can not be null"
+                    )
+                )
+                raise SystemExit
+            else:
+                column_dtypes[column_keys] = coltype
         try:
             return pd.read_table(dataset, sep="\t", dtype=column_dtypes)
         except (AttributeError, pd.errors.ParserError, ValueError) as e:
