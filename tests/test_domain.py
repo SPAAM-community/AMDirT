@@ -53,12 +53,18 @@ def test_dataset_parsing(test_data_dir):
     invalid_dataset_too_many_columns = os.path.join(
         test_data_dir, "invalid_too_many_columns.tsv"
     )
+    invalid_dataset_invalid_dtype_in_col = os.path.join(
+        test_data_dir, "invalid_dtype_in_col.tsv"
+    )
     schema = os.path.join(test_data_dir, "schema.json")
 
     assert DatasetValidator(schema=schema, dataset=valid_dataset)
 
     with pytest.raises(SystemExit):
         DatasetValidator(schema, invalid_dataset_too_many_columns)
+
+    with pytest.raises(SystemExit):
+        DatasetValidator(schema, invalid_dataset_invalid_dtype_in_col)
 
 
 def test_column_name(test_data_dir):
