@@ -76,7 +76,7 @@ class DatasetValidator:
         """ "Read dataset from file or string
         Args:
             dataset (str): Path to dataset in tsv format
-            schema (Schema): Parsed schema as dictionary (from read_schema)
+            schema (dict): Parsed schema as dictionary (from read_schema)
         Returns:
             pd.DataFrame: Dataset as pandas dataframe
         """
