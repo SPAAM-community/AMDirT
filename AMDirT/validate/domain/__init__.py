@@ -87,11 +87,21 @@ class DatasetValidator:
         column_dtypes = {}
         for column_keys in schema['items']['properties']:
             parsed_schema_dtypes=schema['items']['properties'][column_keys]['type']
-            if len(parsed_schema_dtypes) == 1:
-                column_dtypes[column_keys] = schema['items']['properties'][column_keys]['type']
-            else:
-                if parsed_schema_dtypes == ['integer','null']: column_dtypes[column_keys] = string_to_dtype_conversions['integer']
-                if parsed_schema_dtypes == ['string','null']: column_dtypes[column_keys] = string_to_dtype_conversions['string']
+    coltype = schema['items']['properties'][column_keys]['type'][0]
+    if coltype in string_to_dtype_conversions:
+        column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
+    elif coltype == 'null':
+        self.add_error(
+            DFError(
+                error = "Schema Error"
+                source = column_dtypes[column_keys]
+                column = column_keys
+                row = None
+                message = "Default/first type of column in schema can not be null"
+
+        )
+    else:
+        column_dtypes[column_keys] = coltype
         try:
             return pd.read_table(dataset, sep="\t", dtype=column_dtypes)
         except (AttributeError, pd.errors.ParserError, ValueError) as e:
