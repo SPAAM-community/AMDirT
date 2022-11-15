@@ -72,7 +72,7 @@ class DatasetValidator:
         with open(schema, "r") as s:
             return json.load(s)
 
-    def read_dataset(self, dataset: Dataset, schema: Schema) -> pd.DataFrame:
+    def read_dataset(self, dataset: Dataset, schema: Dict) -> pd.DataFrame:
         """ "Read dataset from file or string
         Args:
             dataset (str): Path to dataset in tsv format
