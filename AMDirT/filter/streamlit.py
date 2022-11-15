@@ -210,7 +210,7 @@ if st.session_state.table_name != "No table selected":
                                 library,
                                 st.session_state.table_name,
                                 supported_archives,
-                            )["script"],
+                            )["curl_script"],
                             file_name="ancientMetagenomeDir_curl_download_script.sh",
                         )
                 with button_samplesheet:

@@ -237,15 +237,25 @@ def prepare_accession_table(
         for s in u.split(";"):
             links.add(s)
     dl_script_header = "#!/usr/bin/env bash\n"
-    curl_script = "\n".join([f"curl -L ftp://{l} -o {l.split('/')[-1]}"
-                             for l in links]) + "\n"
-    aspera_script = "\n".join(["ascp -QT -l 300m -P 33001 "
-                               "-i ${ASPERA_PATH}/etc/asperaweb_id_dsa.openssh "
-                               f"era-fasp@fasp.sra.ebi.ac.uk:{'/'.join(l.split('/')[1:])} ."
-                               for l in links]) + "\n"
+    curl_script = (
+        "\n".join([f"curl -L ftp://{l} -o {l.split('/')[-1]}" for l in links]) + "\n"
+    )
+    aspera_script = (
+        "\n".join(
+            [
+                "ascp -QT -l 300m -P 33001 "
+                "-i ${ASPERA_PATH}/etc/asperaweb_id_dsa.openssh "
+                f"era-fasp@fasp.sra.ebi.ac.uk:{'/'.join(l.split('/')[1:])} ."
+                for l in links
+            ]
+        )
+        + "\n"
+    )
 
     return {
-        "df": selected_libraries[["archive_accession", "download_sizes"]].drop_duplicates(),
+        "df": selected_libraries[
+            ["archive_accession", "download_sizes"]
+        ].drop_duplicates(),
         "curl_script": dl_script_header + curl_script,
         "aspera_script": dl_script_header + aspera_script,
     }
