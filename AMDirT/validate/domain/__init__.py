@@ -83,6 +83,7 @@ class DatasetValidator:
         string_to_dtype_conversions = {
             'string': str,
             'integer': pd.Int64Dtype(),
+            'number': float
         }
         column_dtypes = {}
         for column_keys in schema['items']['properties']:
