@@ -86,7 +86,9 @@ class DatasetValidator:
         }
         column_dtypes = {}
         for column_keys in schema['items']['properties']:
-            coltype = schema['items']['properties'][column_keys]['type'][0]
+            coltype = schema['items']['properties'][column_keys]['type']
+            if isinstance(coltype,list): 
+                coltype = coltype[0]
             if coltype in string_to_dtype_conversions:
                 column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
             elif coltype == 'null':
