@@ -17,15 +17,15 @@ def run_validation(
     if not verbose:
         warnings.filterwarnings("ignore")
     v = AMDirValidator(schema, dataset)
-    if validity:
+    if validity and v.parsing_ok:
         v.validate_schema()
-    if duplicate:
+    if duplicate and v.parsing_ok:
         v.check_duplicate_rows()
-    if columns:
+    if columns and v.parsing_ok:
         v.check_columns()
-    if doi:
+    if doi and v.parsing_ok:
         v.check_duplicate_dois()
-    if multi_values:
+    if multi_values and v.parsing_ok: 
         v.check_multi_values(column_names=multi_values)
     if markdown:
         v.to_markdown()

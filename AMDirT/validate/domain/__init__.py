@@ -1,4 +1,5 @@
 import json
+from numpy import int64
 import pandas as pd
 from AMDirT.validate import exceptions
 from AMDirT.core import logger
@@ -9,6 +10,7 @@ from rich.console import Console
 from dataclasses import dataclass
 from jsonschema import Draft7Validator, exceptions as json_exceptions
 from typing import AnyStr, BinaryIO, TextIO, Union
+import re
 
 Schema = Union[AnyStr, BinaryIO, TextIO]
 Dataset = Union[AnyStr, BinaryIO, TextIO]
@@ -63,8 +65,13 @@ class DatasetValidator:
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)
-        self.dataset = self.read_dataset(dataset)
-        self.dataset_json = self.dataset_to_json()
+        if self.schema:
+            self.dataset = self.read_dataset(dataset,self.schema)
+        else:
+            self.dataset = False
+        self.parsing_ok =  True if isinstance(self.dataset, pd.DataFrame) and self.schema else False
+        if self.parsing_ok:
+            self.dataset_json = self.dataset_to_json()
 
     def __repr__(self):
         return (
@@ -82,21 +89,70 @@ class DatasetValidator:
         Returns:
             dict: JSON schema
         """
+        try:
+            with open(schema, "r") as s:
+                return json.load(s)
+        except json.JSONDecodeError as e:
+            msg = str(e.with_traceback(e.__traceback__))
+            self.add_error(
+                DFError(
+                    error = "Schema Error",
+                    source = e.msg,
+                    column = str(*re.findall(".*column.(\d+).*", msg)),
+                    row = str(*re.findall(".*line.(\d+).*", msg)),
+                    message = "JSON parsing error"
+                )
+            )
+            return False
 
-        with open(schema, "r") as s:
-            return json.load(s)
-
-    def read_dataset(self, dataset: Dataset) -> pd.DataFrame:
+    def read_dataset(self, dataset: Dataset, schema: dict) -> pd.DataFrame:
         """ "Read dataset from file or string
         Args:
             dataset (str): Path to dataset in tsv format
+            schema (dict): Parsed schema as dictionary (from read_schema)
         Returns:
             pd.DataFrame: Dataset as pandas dataframe
         """
+        string_to_dtype_conversions = {
+            'string': str,
+            'integer': pd.Int64Dtype(),
+            'number': float
+        }
+        column_dtypes = {}
+        for column_keys in schema['items']['properties']:
+            coltype = schema['items']['properties'][column_keys]['type']
+            if isinstance(coltype,list):
+                if ('null' in coltype and len(coltype) > 2) or (len(coltype) >1 and 'null' not in coltype):
+                    self.add_error(
+                        DFError(
+                            error = "Schema Error",
+                            source = coltype,
+                            column = column_keys,
+                            row = '-',
+                            message = "No mixed data types allowed"
+                        )
+                    )
+                    return False
+                else:
+                    coltype = coltype[0]
+            if coltype in string_to_dtype_conversions:
+                column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
+            elif coltype == 'null':
+                self.add_error(
+                    DFError(
+                        error = "Schema Error",
+                        source = coltype,
+                        column = column_keys,
+                        row = '-',
+                        message = "Default/first type of column in schema can not be null"
+                    )
+                )
+                return False
+            else:
+                column_dtypes[column_keys] = coltype
         try:
-            return pd.read_table(dataset, sep="\t")
-        except (AttributeError, pd.errors.ParserError) as e:
-            logger.error(e)
+            return pd.read_table(dataset, sep="\t", dtype=column_dtypes)
+        except (AttributeError, pd.errors.ParserError, ValueError) as e:
             self.add_error(
                 DFError(
                     "Dataset Parsing Error",
@@ -106,7 +162,7 @@ class DatasetValidator:
                     e,
                 )
             )
-            raise SystemExit
+            return False
 
     def check_columns(self) -> bool:
         """Checks if dataset has all required columns
