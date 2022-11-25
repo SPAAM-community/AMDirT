@@ -5,7 +5,7 @@ from typing import List, Dict
 
 
 class ENA:
-    """Abstract class for querying the ENA API"""
+    """Class for querying the ENA API"""
 
     def __init__(self) -> None:
         self.base_url = "https://www.ebi.ac.uk/ena"
@@ -63,13 +63,22 @@ class ENA:
 
 
 class ENABrowserAPI(ENA):
+    """Class to interact with the ENA Browser API"""
+
     def __init__(self) -> None:
         super().__init__()
         self.base_url = "https://www.ebi.ac.uk/ena/browser/api/"
 
 
 class ENAPortalAPI(ENA):
+    """Class to interact with the ENA Portal API"""
+
     def __init__(self) -> None:
+        """ENA Portal API class
+
+        Attributes:
+            base_url(str): base URL for ENA Portal API
+        """
         super().__init__()
         self.base_url = "https://www.ebi.ac.uk/ena/portal/api/"
 

@@ -1,0 +1,9 @@
+click==8.1.2
+jsonschema==4.4.0
+numpy==1.22.3
+pandas==1.4.2
+requests==2.27.1
+rich==12.2.0
+streamlit==1.14.1
+watchdog==2.1.7
+streamlit-aggrid==0.3.3

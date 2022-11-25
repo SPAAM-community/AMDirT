@@ -46,7 +46,7 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
 )
 @click.option(
-    "-c", "--columns", is_flag=True, help="Turn on column presense/absence checking."
+    "-c", "--columns", is_flag=True, help="Turn on column presence/absence checking."
 )
 @click.option("-i", "--doi", is_flag=True, help="Turn on DOI duplicate checking.")
 @click.option(

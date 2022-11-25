@@ -35,7 +35,6 @@ setup(
         "rich",
         "streamlit",
         "streamlit-aggrid",
-        "xmltodict",
         "numpy",
         "requests",
     ],
