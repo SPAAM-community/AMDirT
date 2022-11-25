@@ -47,6 +47,18 @@ def test_jsonschema_validator(valid_dataset, invalid_dataset, schema):
     with pytest.raises(JSONValidationError):
         assert validate(instance=invalid_dataset, schema=schema)
 
+def test_schema_parsing(test_data_dir):
+    valid_dataset = os.path.join(test_data_dir, "valid.tsv")
+    schema = os.path.join(test_data_dir, "schema.json")
+    invalid_schema_too_many_types = os.path.join(test_data_dir, "invalid_schema_too_many_types.json")
+    invalid_schema_parsing = os.path.join(test_data_dir, "invalid_schema_parsing.json")
+
+    assert DatasetValidator(schema=schema, dataset=valid_dataset)
+
+    assert DatasetValidator(schema=invalid_schema_too_many_types, dataset=valid_dataset).parsing_ok is False
+
+    assert DatasetValidator(schema=invalid_schema_parsing, dataset=valid_dataset).parsing_ok is False
+
 
 def test_dataset_parsing(test_data_dir):
     valid_dataset = os.path.join(test_data_dir, "valid.tsv")
@@ -60,11 +72,9 @@ def test_dataset_parsing(test_data_dir):
 
     assert DatasetValidator(schema=schema, dataset=valid_dataset)
 
-    with pytest.raises(SystemExit):
-        DatasetValidator(schema, invalid_dataset_too_many_columns)
+    assert DatasetValidator(schema, invalid_dataset_too_many_columns).parsing_ok is False
 
-    with pytest.raises(SystemExit):
-        DatasetValidator(schema, invalid_dataset_invalid_dtype_in_col)
+    assert DatasetValidator(schema, invalid_dataset_invalid_dtype_in_col).parsing_ok is False
 
 
 def test_column_name(test_data_dir):
