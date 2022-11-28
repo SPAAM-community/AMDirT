@@ -71,7 +71,7 @@ class AMDirValidator(DatasetValidator):
         """
 
         if not remote:
-            with open(get_json_path("sample_accession.json")) as f:
+            with open(get_json_path()) as f:
                 tables = json.load(f)
             samples = tables["samples"]
             for table in samples:

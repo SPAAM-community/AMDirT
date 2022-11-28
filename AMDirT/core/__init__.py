@@ -6,10 +6,7 @@ import pandas as pd
 import streamlit as st
 import logging
 from packaging import version
-from importlib.resources import files
-
-# from .ena import ENABrowserAPI, ENAPortalAPI
-
+from importlib.resources import path as import_path
 
 pd.options.mode.chained_assignment = None
 
@@ -23,8 +20,8 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-def get_json_path(rel_path="../assets/tables.json"):
-    path = files('AMDirT.assets').joinpath('tables.json')
+def get_json_path():
+    path = import_path("AMDirT.assets","tables.json")
     return path
 
 
