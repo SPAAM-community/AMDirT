@@ -1,13 +1,12 @@
-from os import path
 from typing import Tuple, Iterable
 from pathlib import Path
 import requests
 from numpy import where
 import pandas as pd
 import streamlit as st
-import pkg_resources
 import logging
 from packaging import version
+from importlib.resources import files
 
 # from .ena import ENABrowserAPI, ENAPortalAPI
 
@@ -25,7 +24,7 @@ logger.addHandler(ch)
 
 
 def get_json_path(rel_path="../assets/tables.json"):
-    path = pkg_resources.resource_filename(__name__, rel_path)
+    path = files('AMDirT.assets').joinpath('tables.json')
     return path
 
 
