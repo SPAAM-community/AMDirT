@@ -4,6 +4,7 @@ from AMDirT.core import get_json_path
 from AMDirT.core.diff import get_sample_diff
 from AMDirT.core.ena import ENAPortalAPI
 from pathlib import Path
+import pandas as pd
 import json
 
 
@@ -82,13 +83,9 @@ class AMDirValidator(DatasetValidator):
                     f"No remote found for {self.dataset} dataset, please provide one"
                 )
         remote_samples = DatasetValidator(schema=self.schema_path, dataset=remote)
-        new_samples = get_sample_diff(
-            local=self.dataset, remote=remote_samples.dataset, schema=self.schema
-        )
-        df_change = self.dataset[
-            self.dataset["archive_accession"].str.contains("|".join(new_samples))
-        ]
-        if len(new_samples) > 0:
+        df_change = pd.concat([remote_samples.dataset, self.dataset]).drop_duplicates(keep=False)
+        is_ok = True
+        if df_change.shape[0] > 0:
             e = ENAPortalAPI()
             change_dict = {}
             for i in df_change.index:
@@ -121,5 +118,5 @@ class AMDirValidator(DatasetValidator):
                                 message=f"Sample accession {sample} is not valid",
                             )
                         )
-                        return False
-                return True
+                        is_ok = False
+        return is_ok
