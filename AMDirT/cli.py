@@ -52,7 +52,7 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 @click.option(
     "--multi_values",
     multiple=True,
-    help="Check multi-values column for duplicate values",
+    help="Check multi-values column for duplicate values.",
 )
 @click.option(
     "--accessions",
@@ -63,7 +63,7 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     "--remote",
     type=click.Path(),
     default=None,
-    help="Path/URL to remote sample file",
+    help="[Optional] Path/URL to remote reference sample table for archive accession validation",
 )
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.pass_context
