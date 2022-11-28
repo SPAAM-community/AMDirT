@@ -109,13 +109,14 @@ class AMDirValidator(DatasetValidator):
                     ena_samples.append(i["secondary_sample_accession"])
                 for sample in change_dict[project]["sample"]:
                     if sample not in ena_samples:
+                        row = df_change.query(f"archive_accession.str.contains('{sample}')").index[0] + 2
                         self.add_error(
                             DFError(
                                 error="Invalid sample accession",
                                 source=sample,
                                 column="archive_accession",
-                                row=change_dict[project]["index"] + 2,
-                                message=f"Sample accession {sample} is not valid",
+                                row=row,
+                                message=f"Sample accession {sample} is not a valid ENA/SRA sample accession for the project {project}",
                             )
                         )
                         is_ok = False
