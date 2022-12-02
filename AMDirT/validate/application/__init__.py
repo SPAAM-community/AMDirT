@@ -84,6 +84,7 @@ class AMDirValidator(DatasetValidator):
                 )
         remote_samples = DatasetValidator(schema=self.schema_path, dataset=remote)
         df_change = pd.concat([remote_samples.dataset, self.dataset]).drop_duplicates(keep=False)
+        df_change.drop_duplicates(inplace=True, keep='last', subset=list(df_change.columns)[:-1])
         is_ok = True
         if df_change.shape[0] > 0:
             e = ENAPortalAPI()
@@ -115,7 +116,7 @@ class AMDirValidator(DatasetValidator):
                                 error="Invalid sample accession",
                                 source=sample,
                                 column="archive_accession",
-                                row=row,
+                                row=change_dict[project]['index'] + 2,
                                 message=f"Sample accession {sample} is not a valid ENA/SRA sample accession for the project {project}",
                             )
                         )
