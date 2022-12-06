@@ -6,15 +6,15 @@ from jsonschema.exceptions import ValidationError as JSONValidationError
 
 
 def test_DFError():
-    err = DFError("test", "test", "test", "test", "test")
+    err = DFError("test", "test", "test", 0, "test")
     assert err.to_dict() == {
         "Error": "test",
         "Source": "test",
         "Column": "test",
-        "Row": "test",
+        "Row": "2",
         "Message": "test",
     }
-    assert err.to_list() == ["test", "test", "test", "test", "test"]
+    assert err.to_list() == ["test", "test", "test", "2", "test"]
 
 
 @pytest.fixture

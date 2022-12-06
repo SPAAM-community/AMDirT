@@ -32,7 +32,7 @@ class DFError:
             "Error": str(self.error),
             "Source": str(self.source),
             "Column": str(self.column),
-            "Row": str(self.row + self.line_offset),
+            "Row": str(int(self.row) + self.line_offset),
             "Message": str(self.message),
         }
 
