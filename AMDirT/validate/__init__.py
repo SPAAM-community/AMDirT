@@ -1,16 +1,15 @@
 from AMDirT.validate.application import AMDirValidator
 import warnings
 
-
 def run_validation(
     dataset,
     schema,
-    validity,
-    duplicate,
+    schema_check,
+    line_dup,
     columns,
     doi,
     multi_values,
-    accessions,
+    online_archive,
     remote,
     markdown,
     verbose,
@@ -18,9 +17,9 @@ def run_validation(
     if not verbose:
         warnings.filterwarnings("ignore")
     v = AMDirValidator(schema, dataset)
-    if validity and v.parsing_ok:
+    if schema_check and v.parsing_ok:
         v.validate_schema()
-    if duplicate and v.parsing_ok:
+    if line_dup and v.parsing_ok:
         v.check_duplicate_rows()
     if columns and v.parsing_ok:
         v.check_columns()
@@ -28,7 +27,7 @@ def run_validation(
         v.check_duplicate_dois()
     if multi_values and v.parsing_ok: 
         v.check_multi_values(column_names=multi_values)
-    if accessions:
+    if online_archive:
         v.check_sample_accession(remote=remote)
     if markdown:
         v.to_markdown()

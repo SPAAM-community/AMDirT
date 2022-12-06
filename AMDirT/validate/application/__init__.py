@@ -53,7 +53,7 @@ class AMDirValidator(DatasetValidator):
                             error="Duplicates in multi values column",
                             source=archives,
                             column=column,
-                            row=row + 2,
+                            row=row,
                             message=f"Duplicates in multi values column {column}. Make sure each value in combination is unique",
                         )
                     )
@@ -70,7 +70,6 @@ class AMDirValidator(DatasetValidator):
         Args:
             remote (AnyStr | None, optional): Remote to check against. Defaults to None.
         """
-
         if not remote:
             with open(get_json_path()) as f:
                 tables = json.load(f)
@@ -85,12 +84,21 @@ class AMDirValidator(DatasetValidator):
         remote_samples = DatasetValidator(schema=self.schema_path, dataset=remote)
         df_change = pd.concat([remote_samples.dataset, self.dataset]).drop_duplicates(keep=False)
         df_change.drop_duplicates(inplace=True, keep='last', subset=list(df_change.columns)[:-1])
+        print(df_change)
         is_ok = True
         if df_change.shape[0] > 0:
             e = ENAPortalAPI()
             change_dict = {}
+            
             for i in df_change.index:
-                if df_change.loc[i, "archive"] in ["SRA", "ENA"]:
+                try:
+                    supported_archive =  df_change.loc[i, "archive"] in ["SRA", "ENA"]
+                except ValueError as e:
+                    print(e)
+                    print(df_change.loc[i, :])
+                    supported_archive = False
+                    continue
+                if supported_archive:
                     samples = df_change.loc[i, "archive_accession"].split(",")
                     project = df_change.loc[i, "archive_project"]
                     if project not in change_dict:
@@ -99,6 +107,8 @@ class AMDirValidator(DatasetValidator):
                         change_dict[project]["sample"].extend(samples)
                 else:
                     continue
+            
+
             for project in change_dict:
                 json_result = e.query(
                     accession=project,
@@ -110,13 +120,13 @@ class AMDirValidator(DatasetValidator):
                     ena_samples.append(i["secondary_sample_accession"])
                 for sample in change_dict[project]["sample"]:
                     if sample not in ena_samples:
-                        row = df_change.query(f"archive_accession.str.contains('{sample}')").index[0] + 2
+                        row = df_change.query(f"archive_accession.str.contains('{sample}') and archive_project.str.contains('{project}')").index[0]
                         self.add_error(
                             DFError(
                                 error="Invalid sample accession",
                                 source=sample,
                                 column="archive_accession",
-                                row=change_dict[project]['index'] + 2,
+                                row=row,
                                 message=f"Sample accession {sample} is not a valid ENA/SRA sample accession for the project {project}",
                             )
                         )
