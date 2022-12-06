@@ -17,7 +17,7 @@ from AMDirT.core import (
 
 
 st.set_page_config(
-    page_title="AMDirT Filter",
+    page_title="AMDirT viewer",
     page_icon="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/logos/spaam-AncientMetagenomeDir_logo_mini.png",
     layout="wide",
 )
@@ -59,7 +59,7 @@ with st.sidebar:
 """,
         unsafe_allow_html=True,
     )
-    st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) filter tool")
+    st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) viewer tool")
     st.write(f"\n Version: {__version__}")
     st.session_state.tag_name = st.selectbox(
         label="Select an AncientMetagenomeDir release", options=tags
