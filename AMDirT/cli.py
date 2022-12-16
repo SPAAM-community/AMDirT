@@ -108,18 +108,18 @@ def filter(ctx, no_args_is_help=True, **kwargs):
 )
 @click.option(
     "--eager",
-    default=True,
-    help="Convert filtered samples and libraries tables to eager input tables (Default: True)",
+    default=False,
+    help="Convert filtered samples and libraries tables to eager input tables (Default: False)",
 )
 @click.option(
     "--fetchngs",
-    default=True,
-    help="Convert filtered samples and libraries tables to fetchNGS input tables (Default: True)",
+    default=False,
+    help="Convert filtered samples and libraries tables to fetchNGS input tables (Default: False)",
 )
 @click.option(
     "--ameta",
-    default=True,
-    help="Convert filtered samples and libraries tables to aMeta input tables (Default: True)",
+    default=False,
+    help="Convert filtered samples and libraries tables to aMeta input tables (Default: False)",
 )
 
 @click.pass_context
