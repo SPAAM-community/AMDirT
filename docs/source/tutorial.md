@@ -1,1 +1,0 @@
-# AMDirt usage tutorial
