@@ -106,6 +106,22 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
+@click.option(
+    "--eager",
+    default=True,
+    help="Convert filtered samples and libraries tables to eager input tables (Default: True)",
+)
+@click.option(
+    "--fetchngs",
+    default=True,
+    help="Convert filtered samples and libraries tables to fetchNGS input tables (Default: True)",
+)
+@click.option(
+    "--ameta",
+    default=True,
+    help="Convert filtered samples and libraries tables to aMeta input tables (Default: True)",
+)
+
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
