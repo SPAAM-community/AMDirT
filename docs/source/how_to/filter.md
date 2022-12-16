@@ -77,7 +77,7 @@ and the sequencing files of the selected samples will be downloaded to the direc
 
 To use the **pipeline input samplesheet**, you should always double check the sheet is correctly configured. Once you have validated it, you can supply it to your selected pipeline as follows (using nf-core/eager as an example):
 
-```
+```bash
 nextflow run nf-core/eager <...> --input ancientMetagenomeDir_eager_input.csv
 ```
 
