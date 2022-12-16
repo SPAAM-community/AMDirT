@@ -35,7 +35,15 @@ Your web-browser should automatically open a new tab and have the `filter` inter
 
 > 🛈 _The first time you run the command, you first may get some prompts in your terminal. You can just say 'no' to all - this will not affect the usage of the tool._
 
-Once opened you should see a side bar and a empty pane. You can use the side bar to select various aspects such of AncientMetagneomeDir tables, such as the release, which table (e.g., environmetnal or host-associated metagenomics), how many rows to display, and if you wish to download the data - the type of tool that the download script will contain.
+![AMDirT welcome page with sidebar](images/amdirt-filter-welcome.png)
+
+Once opened you should see a side bar and a empty pane. You can use the side bar to select various aspects such of AncientMetagenomeDir tables, such as the release, which table (e.g., environmental or host-associated metagenomics), how many rows to display, and if you wish to download the data - the type of tool that the download script will contain.
+
+![AMDirT side bar with version dropdown menu](images/amdirt-filter-version-select.png)
+
+![AMDirT side bar with table dropdown menu](images/amdirt-filter-table-select.png)
+
+![AMDirT side bar with download method menu](images/amdirt-filter-downloadmethod-select.png)
 
 Once you have selected a version and a table, the table itself should open in the empty pane.
 
@@ -45,7 +53,13 @@ To navigate the tables you can scroll up and down with your mouse. To side scrol
 
 To filter the tables, you hover your cursor over the column of interest and you should see a 'hamburger' icon, press this to open the filter and table formatting options.
 
-With this pane you can:
+![AMDirT column configuration with row ordering options](images/amdirt-filter-column-order.png)
+
+![AMDirT column configuration with row filtering options](images/amdirt-filter-column-filter.png)
+
+![AMDirT column configuration with column selection options](images/amdirt-filter-column-select.png)
+
+With this pane and tabs you can:
 
 - Change the size and row ordering of the column
 - Filter the rows by various operations (equal, not equal, within range, etc.)
@@ -64,6 +78,8 @@ Once the select is validated, more buttons will appear allowing you to download 
 - a download script: contains a bash script with download commands
 - a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
 - citations file: citation information in BibTex format for selected samples
+
+![AMDirT buttons after selection validation](images/amdirt-filter-validate-buttons.png)
 
 To use the **download** script, you can simply run:
 
