@@ -47,6 +47,8 @@ Once opened you should see a side bar and a empty pane. You can use the side bar
 
 Once you have selected a version and a table, the table itself should open in the empty pane.
 
+To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
+
 ### Exploring the Tables
 
 To navigate the tables you can scroll up and down with your mouse. To side scroll you can hold shift and scroll. To go to the next page of samples, you can find the forward/back buttons in the bottom right of the table to navigate across pages of data entries.
