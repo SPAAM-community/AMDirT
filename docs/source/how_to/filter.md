@@ -61,7 +61,7 @@ To filter the tables, hover your cursor over the column of interest and you shou
 
 With this pane and tabs you can:
 
-- Change the size and row ordering of the column
+- Change the size and row ordering of the column (e.g. pin this column to the left or right)
 - Filter the rows by various operations on this column (equal, not equal, within range, etc.)
 - Change which columns are displayed overall
 
@@ -69,7 +69,13 @@ You can also re-order the order of columns across the table by click and holding
 
 ### Exporting Information
 
-Once you have selected all the samples you wish to download and/or analysis, press the 'Validate selection' button at the bottom of the table.
+Now, select all the samples you wish to download and/or analyse.
+
+You can select all samples currently displayed by clicking the empty box on the project_name column, or you can select individual samples by clicking the empty boxes on these rows in the project_name column.
+
+![AMDirT Selecting all samples currently in table](images/amdirt-filter-select-all.png)
+
+![AMDirT Selecting individual samples from the current table](images/amdirt-filter-select-single-samples.png)
 
 Now validate your selection! Press the 'Validate selection' button at the bottom of the table.
 
