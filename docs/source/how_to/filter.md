@@ -18,7 +18,7 @@ You should use this tool when you wish to find particular types of ancient metag
 
 ### Loading the interface
 
-Before using `AMDirT filter` you will to make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine.
+Before using `AMDirT filter` you will to make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
 
 To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)) and run:
 
@@ -95,9 +95,11 @@ To use the **download** script, you can simply run:
 bash ancientMetagenomeDir_curl_download_script.sh
 ```
 
-and the sequencing files of the selected samples will be downloaded to the directory you run the script from
+and the sequencing files of the selected samples will be downloaded to the directory you run the script from.
 
-> ⚠️ _You must already have the download tool you have selected downloaded and configured to use the bash script!_
+> ⚠️ _You must already have the download tool you have selected configured on your machine to use the bash script!_
+
+> ⚠️ _Make sure you only run this script on the machine you will run your analyses from, i.e. in most cases on a server or HPC!_
 
 To use the **pipeline input samplesheet**, you should always double check the sheet is correctly configured. Once you have validated it, you can supply it to your selected pipeline as follows (using nf-core/eager as an example):
 
