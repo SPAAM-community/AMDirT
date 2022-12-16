@@ -7,12 +7,12 @@ The purpose of the `filter` command is to provide a easy-to-use graphical-user i
 - **explore** the different AncientMetagenomeDir tables via drop down menus
 - **filter** tables based on different criteria using a standard tabular interface
 - **download** the resulting sequencing data via different methods
-- **download** prepare input samplesheets for pipelines
+- **download** prepared input samplesheets for pipelines
 - **download** citation information of selected samples
 
 ## When
 
-You should use this tool when you wish to find particular types of ancient metagenomic data, but wish to explore the dataset manually (i.e., don't know exactly what you're looking for yet), and if you do not wish to download the AncientMetagenomeDir tables yourself and/or open the tables in languages such as R or Python (with pandas).
+You should use this tool when you wish to find particular types of ancient metagenomic data, but wish to explore the dataset manually and interactively (i.e., don't know exactly what you're looking for yet), and/or if you do not wish to download the AncientMetagenomeDir full tables yourself and filter them within languages such as R or Python (with pandas).
 
 ## How
 
@@ -20,7 +20,7 @@ You should use this tool when you wish to find particular types of ancient metag
 
 Before using `AMDirT filter` you will to make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine.
 
-To open the graphical user interface, open a terminal (activating software environments if necessary) and run:
+To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)) and run:
 
 ```bash
 AMDirT filter
@@ -33,11 +33,11 @@ Your web-browser should automatically open a new tab and have the `filter` inter
   Network URL: http://172.0.0.0:8501
 ```
 
-> 🛈 _The first time you run the command, you first may get some prompts in your terminal. You can just say 'no' to all - this will not affect the usage of the tool._
+> ⚠️ _The first time you run the command, you first may get some prompts in your terminal. You can just say 'no' to all - this will not affect the usage of the tool._
 
 ![AMDirT welcome page with sidebar](images/amdirt-filter-welcome.png)
 
-Once opened you should see a side bar and a empty pane. You can use the side bar to select various aspects such of AncientMetagenomeDir tables, such as the release, which table (e.g., environmental or host-associated metagenomics), how many rows to display, and if you wish to download the data - the type of tool that the download script will contain.
+Once opened you should see a side bar and a empty pane. You can use the side bar to select various aspects of the displayed data from the AncientMetagenomeDir tables, such as the release, which table you view (e.g., environmental or host-associated metagenomics) and the number of rows to display. The data download option controls which tool the resulting download script will use to get the data.
 
 ![AMDirT side bar with version dropdown menu](images/amdirt-filter-version-select.png)
 
@@ -49,9 +49,9 @@ Once you have selected a version and a table, the table itself should open in th
 
 ### Exploring the Tables
 
-To navigate the tables you can scroll up and down with your mouse. To side scroll you can hold shift and scroll. To go to the next page of samples, you can find the forward/back buttons in the bottom right of the table.
+To navigate the tables you can scroll up and down with your mouse. To side scroll you can hold shift and scroll. To go to the next page of samples, you can find the forward/back buttons in the bottom right of the table to navigate across pages of data entries.
 
-To filter the tables, you hover your cursor over the column of interest and you should see a 'hamburger' icon, press this to open the filter and table formatting options.
+To filter the tables, hover your cursor over the column of interest and you should see a 'hamburger' icon, press this to open the filter and table formatting options.
 
 ![AMDirT column configuration with row ordering options](images/amdirt-filter-column-order.png)
 
@@ -62,8 +62,8 @@ To filter the tables, you hover your cursor over the column of interest and you 
 With this pane and tabs you can:
 
 - Change the size and row ordering of the column
-- Filter the rows by various operations (equal, not equal, within range, etc.)
-- Select the columns to be displayed
+- Filter the rows by various operations on this column (equal, not equal, within range, etc.)
+- Change which columns are displayed overall
 
 You can also re-order the order of columns across the table by click and holding the column name, and dragging left and right.
 
@@ -71,13 +71,15 @@ You can also re-order the order of columns across the table by click and holding
 
 Once you have selected all the samples you wish to download and/or analysis, press the 'Validate selection' button at the bottom of the table.
 
+Now validate your selection! Press the 'Validate selection' button at the bottom of the table.
+
 > ⚠️ _If you wish to download the data, make sure you have already selected your 'Data download method' in the sidebar before pressing 'Validate selection'!_
 
 Once the select is validated, more buttons will appear allowing you to download different files:
 
 - a download script: contains a bash script with download commands
 - a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
-- citations file: citation information in BibTex format for selected samples
+- a citations file: citation information in BibTex format for selected samples
 
 ![AMDirT buttons after selection validation](images/amdirt-filter-validate-buttons.png)
 

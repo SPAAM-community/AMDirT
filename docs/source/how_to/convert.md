@@ -8,7 +8,7 @@ It is a partial command-line equivalent to the `filter` graphical user interface
 
 ## When
 
-You typically will use `convert` if you are a command-line power user, and prefer to perform table filtering and sample selection programmtically (e.g. in R or python) rather than in a graphical-user-interface.
+You typically will use `convert` if you are a command-line power user, and have already performed table filtering and sample selection programmtically (e.g. in R or python), rather than using the AMDirT `filter` graphical-user-interface.
 
 ## How
 
@@ -16,7 +16,7 @@ The following description assumes that you have already have a AncientMetagenome
 
 > ⚠️ _The header, and present columns etc. should match exactly that on AncientMetagenomeDir, only rows may be removed._
 
-To generate sample sheets of the support pipelines, you can run the command (an example being a filtered `ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv` table):
+To generate sample sheets of the support pipelines: open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)), and there you can run the following command (an example being a filtered `ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv` table):
 
 ```bash
 mkdir samplesheets/
@@ -30,7 +30,7 @@ The output is as follows:
 - `<outdir>`: where all the pipeline samplesheets are placed
 - `AncientMetagenomeDir_citations.bib`: a BibTex format citation information file
 
-To use a **pipeline input samplesheet**, you should always double check the sheet is correctly configured. Once you have validated it, you can supply it to your selected pipeline as follows (using nf-core/eager as an example):
+To use a **pipeline input samplesheet**, you should always double check the sheet is correctly configured. Once you have validated it, you can directly supply it to the appropriate pipeline as follows (using nf-core/eager as an example):
 
 ```bash
 nextflow run nf-core/eager <...> --input ancientMetagenomeDir_eager_input.csv
