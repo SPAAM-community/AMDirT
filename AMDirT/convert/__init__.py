@@ -13,8 +13,8 @@ import pandas as pd
 import warnings
 
 
-def run_convert(samples, tables, table_name, output=".", eager = True, fetchngs = True, ameta = True, verbose = False):
-    """Run the AMDirT conversion application to generate Eager and / or fetchNGS tables
+def run_convert(samples, tables, table_name, output=".", eager = False, fetchngs = False, ameta = False, verbose = False):
+    """Run the AMDirT conversion application to input samplesheet tables for different pipelines
 
     Args:
         tables (str): Path to JSON file listing tables
@@ -36,7 +36,6 @@ def run_convert(samples, tables, table_name, output=".", eager = True, fetchngs 
         logger.info(f"Table '{table_name}' not found in {table_list}")
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
-
     
     if eager == True:
         logger.info("Preparing Eager table")

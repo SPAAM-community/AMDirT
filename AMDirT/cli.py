@@ -92,6 +92,7 @@ def filter(ctx, no_args_is_help=True, **kwargs):
 @cli.command()
 @click.argument("samples", type=click.Path(exists=True))
 @click.argument("table_name", type=str)
+
 @click.option(
     "-t",
     "--tables",
@@ -106,21 +107,23 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
+
 @click.option(
     "--eager",
-    default=False,
-    help="Convert filtered samples and libraries tables to eager input tables (Default: False)",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to eager input tables",
 )
 @click.option(
     "--fetchngs",
-    default=False,
-    help="Convert filtered samples and libraries tables to fetchNGS input tables (Default: False)",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to fetchNGS input tables",
 )
 @click.option(
     "--ameta",
-    default=False,
-    help="Convert filtered samples and libraries tables to aMeta input tables (Default: False)",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to aMeta input tables",
 )
+
 
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
