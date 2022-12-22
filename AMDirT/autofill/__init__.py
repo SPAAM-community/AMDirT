@@ -27,11 +27,17 @@ def autofill(project_accession, table_name=None, schema=None, dataset=None):
         schema=libraries_schema[table_name], dataset=libraries[table_name]
     )
 
+    # Using the project accesion from ENA,
+    # we can get the library information metadata
+    # columns: archive, archive_project, archive_sample_accession, (instrument_model), library_layout, read_count, archive_data_accession, download_links
+
+
     libraries.to_rich()
 
     sample_df = sample.dataset.iloc[:0, :].copy()
-    libraries_df = libraries.dataset
-    print(libraries)
+    libraries_df = libraries.dataset.iloc[:0, :].copy()
+
+
 
 
 if __name__ == "__main__":
