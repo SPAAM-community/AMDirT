@@ -3,6 +3,7 @@ from AMDirT.core import (
     prepare_accession_table,
     prepare_bibtex_file,
     prepare_eager_table,
+    prepare_mag_table,
     is_merge_size_zero,
 )
 from AMDirT.core import get_json_path
@@ -37,8 +38,14 @@ def run_convert(samples, tables, table_name, output=".", verbose=False):
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
     logger.info("Preparing Eager table")
-
     eager_table = prepare_eager_table(
+        samples=samples,
+        libraries=libraries,
+        table_name=table_name,
+        supported_archives=supported_archives,
+    )
+    logger.info("Preparing Mag table")
+    mag_table_single, mag_table_paired = prepare_mag_table(
         samples=samples,
         libraries=libraries,
         table_name=table_name,
@@ -54,8 +61,19 @@ def run_convert(samples, tables, table_name, output=".", verbose=False):
     logger.info("Preparing Bibtex citation file")
     with open("AncientMetagenomeDir_citations.bib", "w") as fw:
         fw.write(prepare_bibtex_file(samples))
+ 
 
-    eager_table.to_csv(f"{output}/eager_input_table.tsv", sep="\t", index=False)
+    eager_table.to_csv(
+        f"{output}/eager_input_table.tsv", sep="\t", index=False
+    )
+    if not mag_table_single.empty:
+        mag_table_single.to_csv(
+            f"{output}/mag_input_single_table.csv", index=False
+        )
+    if not mag_table_paired.empty:
+        mag_table_paired.to_csv(
+            f"{output}/mag_input_paired_table.csv", index=False
+        )
     accession_table["df"].to_csv(
         f"{output}/fetchNGS_input_table.tsv", sep="\t", header=False, index=False
     )
