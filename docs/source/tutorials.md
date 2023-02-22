@@ -1,6 +1,6 @@
 # Tutorials
 
-On this page we provide step-by-step video tutorials on how to use the AMDirT graphical-user-interface (GUI).
+On this page we provide step-by-step video tutorials on how to use the AMDirT graphical-user-interface (GUI) of the `filter` command.
 
 A [full walkthrough](#full-walkthrough) can be seen at the end of this page.
 
