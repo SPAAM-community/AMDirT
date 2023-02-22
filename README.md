@@ -6,6 +6,8 @@
 
 AMDirT is a toolkit for interacting with the AncientMetagenomeDir metadata repository of ancient metagenomic samples and ancient microbial genomes. This tool provides ways to validate AncientMetagenomeDir submissions, explore and download sequencing data for ancient microbial and environmental (meta)genomes, and automatically prepare input samplesheets for a range of bioinformatic processing pipelines.
 
+For documentation on using the tool, please see [How Tos](how_to/index), [Tutorials](/tutorials) and/or [Quick Reference](/reference).
+
 ## Install
 
 Before we release AMDirt on (bio)Conda, please follow the instructions below.
