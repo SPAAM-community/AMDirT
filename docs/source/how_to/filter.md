@@ -51,6 +51,10 @@ Once you have selected a version and a table, the table itself should open in th
 
 To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/EANpFh__6V8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dUzeJfSTQCU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 ### Exploring the Tables
 
 To navigate the tables you can scroll up and down with your mouse. To side scroll you can hold shift and scroll. To go to the next page of samples, you can find the forward/back buttons in the bottom right of the table to navigate across pages of data entries.
@@ -71,6 +75,10 @@ With this pane and tabs you can:
 
 You can also re-order the order of columns across the table by click and holding the column name, and dragging left and right.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DFHlGQcREy0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uRPkvGum19A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 ### Exporting Information
 
 Now, select all the samples you wish to download and/or analyse.
@@ -80,6 +88,8 @@ You can select all samples currently displayed by clicking the empty box on the 
 ![AMDirT Selecting all samples currently in table](images/amdirt-filter-select-all.png)
 
 ![AMDirT Selecting individual samples from the current table](images/amdirt-filter-select-single-samples.png)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-EnIIMEIGgA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 Now validate your selection! Press the 'Validate selection' button at the bottom of the table.
 
@@ -92,6 +102,8 @@ Once the select is validated, more buttons will appear allowing you to download 
 - a citations file: citation information in BibTex format for selected samples
 
 ![AMDirT buttons after selection validation](images/amdirt-filter-validate-buttons.png)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Re6YAdGmm7w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 To use the **download** script, you can simply run:
 
@@ -120,3 +132,7 @@ The **citations bibtex** file contains all the citation information of your sele
 If you have finished your selection and file downloading, you can close the interface simply by closing the tab, and then pressing <kbd>Ctrl</kbd> + <kbd>c</kbd> on your terminal.
 
 If you wish to generate a new selection in the same session, you **must** press the 'Start New Selection' button at the bottom of the interface, select the new samples, and press 'Validate selection' again. If you do not press 'Start New Selection', you will export the same set of files and samples from your first selection.
+
+### Full walkthrough
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iWrHJFG7Ky0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
