@@ -1,4 +1,5 @@
 from sys import path
+import os
 from AMDirT.core import (
     prepare_accession_table,
     prepare_bibtex_file,
@@ -15,8 +16,8 @@ import warnings
 
 def run_convert(
     samples,
-    tables,
     table_name,
+    tables=None,
     output=".",
     eager=False,
     fetchngs=False,
@@ -31,6 +32,8 @@ def run_convert(
         table_name (str): Name of the table of the table to convert
         output (str): Path to output table. Defaults to "."
     """
+    os.makedirs(output, exist_ok=True)
+
     if not verbose:
         warnings.filterwarnings("ignore")
     supported_archives = ["ENA", "SRA"]
