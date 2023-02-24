@@ -11,6 +11,7 @@ from AMDirT.core import (
     prepare_bibtex_file,
     prepare_eager_table,
     prepare_accession_table,
+    prepare_aMeta_table,
     is_merge_size_zero,
     get_amdir_tags,
 )
@@ -225,6 +226,19 @@ if st.session_state.table_name != "No table selected":
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
                         file_name="ancientMetagenomeDir_eager_input.csv",
+                    )
+                with button_samplesheet:
+                    st.download_button(
+                        label="Download aMeta input TSV",
+                        data=prepare_aMeta_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )
+                        .to_csv(sep="\t", index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_aMeta_input.csv",
                     )
                 with button_bibtex:
                     st.download_button(
