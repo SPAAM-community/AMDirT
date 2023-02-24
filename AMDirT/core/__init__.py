@@ -115,7 +115,7 @@ def parse_to_mag(selected_libraries):
     selected_libraries["longs_reads"] = ""
     col2keep = [
         "archive_data_accession",
-        "sample_name",
+        "archive_sample_accession",
         "short_reads_1",
         "short_reads_2",
         "longs_reads",
@@ -123,7 +123,7 @@ def parse_to_mag(selected_libraries):
     selected_libraries = selected_libraries[col2keep].rename(
         columns={
             "archive_data_accession": "sample",
-            "sample_name": "group",
+            "archive_sample_accession": "group",
         }
     )
     return selected_libraries
@@ -241,13 +241,9 @@ def prepare_mag_table(
         .rename(columns={0: "archive_accession"})
         .join(samples.drop("archive_accession", axis=1))
     )
+    
+    sel_col = ["archive_accession"]
 
-    if table_name in [
-        "ancientmetagenome-environmental",
-    ]:
-        sel_col = ["archive_accession"]
-    else:
-        sel_col = ["archive_accession", "sample_host"]
     libraries = libraries.merge(
         stacked_samples[sel_col],
         left_on="archive_sample_accession",
