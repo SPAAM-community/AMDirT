@@ -106,10 +106,25 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
+@click.option(
+    "--eager",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to eager input tables",
+)
+@click.option(
+    "--fetchngs",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to fetchNGS input tables",
+)
+@click.option(
+    "--ameta",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to aMeta input tables",
+)
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
-    Converts filtered samples and libraries tables to eager and fetchNGS input tables
+    Converts filtered samples and libraries tables to eager, ameta, and fetchNGS input tables
     \b
     SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert

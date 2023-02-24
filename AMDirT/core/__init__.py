@@ -261,6 +261,83 @@ def prepare_accession_table(
     }
 
 
+@st.cache()
+def prepare_aMeta_table(
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    table_name: str,
+    supported_archives: Iterable[str],
+) -> pd.DataFrame:
+    """Prepare aMeta tsv input table
+
+    Args:
+        sample (pd.dataFrame): selected samples table
+        library (pd.dataFrame): library table
+        table_name (str): Name of the table
+        supported_archives (list): list of supported archives
+    """
+    stacked_samples = (
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
+        .str.split(",", expand=True)
+        .stack()
+        .reset_index(level=0)
+        .set_index("level_0")
+        .rename(columns={0: "archive_accession"})
+        .join(samples.drop("archive_accession", axis=1))
+    )
+
+    if table_name in [
+        "ancientmetagenome-environmental",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
+    libraries = libraries.merge(
+        stacked_samples[sel_col],
+        left_on="archive_sample_accession",
+        right_on="archive_accession",
+    )
+    select_libs = list(stacked_samples["archive_accession"])
+    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
+
+    selected_libraries["Colour_Chemistry"] = selected_libraries[
+        "instrument_model"
+    ].apply(get_colour_chemistry)
+
+    selected_libraries[
+        "UDG_Treatment"
+    ] = selected_libraries.library_treatment.str.split("-", expand=True)[0]
+
+    selected_libraries["R1"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="fwd"
+    )
+
+    selected_libraries["R2"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="rev"
+    )
+
+    selected_libraries["Lane"] = 0
+    selected_libraries["SeqType"] = where(
+        selected_libraries["library_layout"] == "SINGLE", "SE", "PE"
+    )
+    selected_libraries["BAM"] = "NA"
+    if table_name == "ancientmetagenome-environmental":
+        selected_libraries["sample_host"] = "environmental"
+    col2keep = [
+        "archive_data_accession",
+        "R1"
+    ]
+    selected_libraries = selected_libraries[col2keep].rename(
+        columns={
+            "archive_data_accession": "sample",
+            "R1": "fastq",
+        }
+    )
+
+    return selected_libraries
+
+
 @st.cache(suppress_st_warning=True)
 def prepare_bibtex_file(samples: pd.DataFrame) -> str:
     dois = set()
