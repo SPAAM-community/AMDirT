@@ -6,7 +6,8 @@ import pandas as pd
 import streamlit as st
 import logging
 from packaging import version
-from importlib.resources import path as import_path
+from importlib.resources import files as get_module_dir
+import os
 
 pd.options.mode.chained_assignment = None
 
@@ -21,7 +22,8 @@ logger.addHandler(ch)
 
 
 def get_json_path():
-    path = import_path("AMDirT.assets","tables.json")
+    path = os.path.join(get_module_dir("AMDirT.assets"), "tables.json")
+    print(path)
     return path
 
 
@@ -320,10 +322,7 @@ def prepare_aMeta_table(
     selected_libraries["BAM"] = "NA"
     if table_name == "ancientmetagenome-environmental":
         selected_libraries["sample_host"] = "environmental"
-    col2keep = [
-        "archive_data_accession",
-        "R1"
-    ]
+    col2keep = ["archive_data_accession", "R1"]
     selected_libraries = selected_libraries[col2keep].rename(
         columns={
             "archive_data_accession": "sample",
