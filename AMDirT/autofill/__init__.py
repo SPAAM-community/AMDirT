@@ -1,6 +1,7 @@
 from AMDirT.validate.domain import DatasetValidator
 from AMDirT.core import get_json_path
 import json
+import logging
 
 
 def autofill(project_accession, table_name=None, schema=None, dataset=None):
@@ -16,6 +17,7 @@ def autofill(project_accession, table_name=None, schema=None, dataset=None):
         if table_name not in samples:
             raise Exception("Table name not found in AncientMetagenomeDir file")
     else:
+        logging.error("Not implemented yet")
 
 
     
