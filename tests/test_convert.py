@@ -19,8 +19,3 @@ def test_convert(test_data_dir):
         is None
     )
     shutil.rmtree("test_files")
-
-
-# @pytest.fixture(autouse=True)
-# def cleanup_files():
-#     shutil.rmtree("test_files")
