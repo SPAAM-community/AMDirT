@@ -1,4 +1,5 @@
 from sys import path
+import os
 from AMDirT.core import (
     prepare_accession_table,
     prepare_bibtex_file,
@@ -13,7 +14,16 @@ import pandas as pd
 import warnings
 
 
-def run_convert(samples, tables, table_name, output=".", eager = False, fetchngs = False, ameta = False, verbose = False):
+def run_convert(
+    samples,
+    table_name,
+    tables=None,
+    output=".",
+    eager=False,
+    fetchngs=False,
+    ameta=False,
+    verbose=False,
+):
     """Run the AMDirT conversion application to input samplesheet tables for different pipelines
 
     Args:
@@ -22,6 +32,8 @@ def run_convert(samples, tables, table_name, output=".", eager = False, fetchngs
         table_name (str): Name of the table of the table to convert
         output (str): Path to output table. Defaults to "."
     """
+    os.makedirs(output, exist_ok=True)
+
     if not verbose:
         warnings.filterwarnings("ignore")
     supported_archives = ["ENA", "SRA"]
@@ -36,33 +48,45 @@ def run_convert(samples, tables, table_name, output=".", eager = False, fetchngs
         logger.info(f"Table '{table_name}' not found in {table_list}")
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
-    
+
     if eager == True:
         logger.info("Preparing Eager table")
-        eager_table = prepare_eager_table(samples=samples, libraries=libraries, table_name=table_name, supported_archives=supported_archives)
+        eager_table = prepare_eager_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
         eager_table.to_csv(f"{output}/eager_input_table.tsv", sep="\t", index=False)
 
     if fetchngs == True:
         logger.info("Preparing FetchNGS table")
-        accession_table = prepare_accession_table(samples=samples, libraries=libraries, table_name=table_name, supported_archives=supported_archives)
-        accession_table["df"].to_csv(f"{output}/fetchNGS_input_table.tsv", sep="\t", header=False, index=False)
+        accession_table = prepare_accession_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        accession_table["df"].to_csv(
+            f"{output}/fetchNGS_input_table.tsv", sep="\t", header=False, index=False
+        )
 
     if ameta == True:
         logger.info("Preparing aMeta table")
-        aMeta_table = prepare_aMeta_table(samples=samples, libraries=libraries, table_name=table_name, supported_archives=supported_archives)
+        aMeta_table = prepare_aMeta_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
         aMeta_table.to_csv(f"{output}/aMeta_input_table.tsv", sep="\t", index=False)
-
 
     logger.info("Preparing Bibtex citation file")
     with open("AncientMetagenomeDir_citations.bib", "w") as fw:
         fw.write(prepare_bibtex_file(samples))
-    
-#FIXME
-#the commented lines below produce the following error:
-#File "AMDirT/AMDirT/convert/__init__.py", line 63, in run_convert
-#    fw.write(accession_table["script"])
-#KeyError: 'script'
 
+    with open(f"{output}/ancientMetagenomeDir_curl_download_script.sh", "w") as fw:
+        fw.write(accession_table["curl_script"])
 
-#    with open("ancientMetagenomeDir_curl_download_script.sh", "w") as fw:
-#        fw.write(accession_table["script"])
+    with open(f"{output}/ancientMetagenomeDir_aspera_download_script.sh", "w") as fw:
+        fw.write(accession_table["aspera_script"])

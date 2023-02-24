@@ -92,7 +92,6 @@ def filter(ctx, no_args_is_help=True, **kwargs):
 @cli.command()
 @click.argument("samples", type=click.Path(exists=True))
 @click.argument("table_name", type=str)
-
 @click.option(
     "-t",
     "--tables",
@@ -107,7 +106,6 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
-
 @click.option(
     "--eager",
     is_flag=True,
@@ -123,12 +121,10 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     is_flag=True,
     help="Convert filtered samples and libraries tables to aMeta input tables",
 )
-
-
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
-    Converts filtered samples and libraries tables to eager and fetchNGS input tables
+    Converts filtered samples and libraries tables to eager, ameta, and fetchNGS input tables
     \b
     SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
