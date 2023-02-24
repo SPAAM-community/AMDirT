@@ -82,17 +82,20 @@ class AMDirValidator(DatasetValidator):
                     f"No remote found for {self.dataset} dataset, please provide one"
                 )
         remote_samples = DatasetValidator(schema=self.schema_path, dataset=remote)
-        df_change = pd.concat([remote_samples.dataset, self.dataset]).drop_duplicates(keep=False)
-        df_change.drop_duplicates(inplace=True, keep='last', subset=list(df_change.columns)[:-1])
-        print(df_change)
+        df_change = pd.concat([remote_samples.dataset, self.dataset]).drop_duplicates(
+            keep=False
+        )
+        df_change.drop_duplicates(
+            inplace=True, keep="last", subset=list(df_change.columns)[:-1]
+        )
         is_ok = True
         if df_change.shape[0] > 0:
             e = ENAPortalAPI()
             change_dict = {}
-            
+
             for i in df_change.index:
                 try:
-                    supported_archive =  df_change.loc[i, "archive"] in ["SRA", "ENA"]
+                    supported_archive = df_change.loc[i, "archive"] in ["SRA", "ENA"]
                 except ValueError as e:
                     print(e)
                     print(df_change.loc[i, :])
@@ -107,7 +110,6 @@ class AMDirValidator(DatasetValidator):
                         change_dict[project]["sample"].extend(samples)
                 else:
                     continue
-            
 
             for project in change_dict:
                 json_result = e.query(
@@ -120,7 +122,9 @@ class AMDirValidator(DatasetValidator):
                     ena_samples.append(i["secondary_sample_accession"])
                 for sample in change_dict[project]["sample"]:
                     if sample not in ena_samples:
-                        row = df_change.query(f"archive_accession.str.contains('{sample}') and archive_project.str.contains('{project}')").index[0]
+                        row = df_change.query(
+                            f"archive_accession.str.contains('{sample}') and archive_project.str.contains('{project}')"
+                        ).index[0]
                         self.add_error(
                             DFError(
                                 error="Invalid sample accession",
