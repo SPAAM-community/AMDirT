@@ -24,6 +24,13 @@ def run_app(tables=None, verbose=False):
         config_path = tables
     app_path = f"{directory}/{app}"
 
-    sys.argv = ["streamlit", "run", app_path, "--", "--config", config_path]
+    sys.argv = [
+        "streamlit", 
+        "run", 
+        app_path, 
+        "--", 
+        "--config", 
+        config_path
+    ]
     logger.info("\n[AMDirT] To close app, press on your keyboard: ctrl+c\n")
     sys.exit(stcli.main())

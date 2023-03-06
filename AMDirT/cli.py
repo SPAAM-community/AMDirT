@@ -2,7 +2,7 @@ import click
 from AMDirT import __version__
 
 from AMDirT.validate import run_validation
-from AMDirT.filter import run_app
+from AMDirT.viewer import run_app
 from AMDirT.convert import run_convert
 from AMDirT.core import get_json_path
 from json import load
@@ -41,9 +41,9 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 @cli.command()
 @click.argument("dataset", type=click.Path(exists=True))
 @click.argument("schema", type=click.Path(exists=True))
-@click.option("-v", "--validity", is_flag=True, help="Turn on schema checking.")
+@click.option("-s", "--schema_check", is_flag=True, help="Turn on schema checking.")
 @click.option(
-    "-d", "--duplicate", is_flag=True, help="Turn on line duplicate line checking."
+    "-d", "--line_dup", is_flag=True, help="Turn on line duplicate line checking."
 )
 @click.option(
     "-c", "--columns", is_flag=True, help="Turn on column presence/absence checking."
@@ -52,7 +52,19 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 @click.option(
     "--multi_values",
     multiple=True,
-    help="Check multi-values column for duplicate values",
+    help="Check multi-values column for duplicate values.",
+)
+@click.option(
+    "-a",
+    "--online_archive",
+    is_flag=True,
+    help="Turn on ENA accession validation",
+)
+@click.option(
+    "--remote",
+    type=click.Path(),
+    default=None,
+    help="[Optional] Path/URL to remote reference sample table for archive accession validation",
 )
 @click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.pass_context
@@ -67,7 +79,7 @@ def validate(ctx, no_args_is_help=True, **kwargs):
 
 
 ###############################
-# Interactive filtering  tool #
+# Interactive viewing/filtering  tool #
 ###############################
 
 
@@ -79,7 +91,7 @@ def validate(ctx, no_args_is_help=True, **kwargs):
     help="JSON file listing AncientMetagenomeDir tables",
 )
 @click.pass_context
-def filter(ctx, no_args_is_help=True, **kwargs):
+def viewer(ctx, no_args_is_help=True, **kwargs):
     """Launch interactive filtering tool"""
     run_app(**kwargs, **ctx.obj)
 
@@ -106,10 +118,30 @@ def filter(ctx, no_args_is_help=True, **kwargs):
     show_default=True,
     help="conversion output directory",
 )
+@click.option(
+    "--eager",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to eager input tables",
+)
+@click.option(
+    "--fetchngs",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to fetchNGS input tables",
+)
+@click.option(
+    "--ameta",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to aMeta input tables",
+)
+@click.option(
+    "--mag",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to nf-core/mag input tables",
+)
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
-    Converts filtered samples and libraries tables to eager and fetchNGS input tables
+    Converts filtered samples and libraries tables to eager, ameta, and fetchNGS input tables
     \b
     SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
