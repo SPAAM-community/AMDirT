@@ -31,27 +31,31 @@ class DFError:
     )
 
     def to_dict(self):
+        try:
+            column = str(self.column)
+            row = str(int(self.row) + self.line_offset)
+        except (ValueError, TypeError):
+            column = "-"
+            row="-"
         return {
             "Error": str(self.error),
             "Source": str(self.source),
-            "Column": str(self.column),
-            "Row": str(int(self.row) + self.line_offset) if self.row else "",
+            "Column": column,
+            "Row": row,
             "Message": str(self.message),
         }
 
     def to_list(self):
-        row = str(int(self.row) + self.line_offset) if self.row else ""
+        try:
+            column = str(self.column)
+            row = str(int(self.row) + self.line_offset)
+        except (ValueError, TypeError):
+            column = "-"
+            row="-"
         return [
-            str(i)
-            for i in [
-                self.error,
-                self.source,
-                self.column,
-                row,
-                self.message,
-            ]
+        str(i)
+        for i in [self.error, self.source, column, row , self.message]
         ]
-
 
 class DatasetValidator:
     """Dataset as DataFrame validation class"""
@@ -181,8 +185,8 @@ class DatasetValidator:
                 DFError(
                     "Dataset Parsing Error",
                     self.dataset_name,
-                    None,
-                    None,
+                    '-',
+                    '-',
                     e,
                 )
             )

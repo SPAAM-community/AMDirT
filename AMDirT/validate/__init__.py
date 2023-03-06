@@ -27,7 +27,7 @@ def run_validation(
         v.check_duplicate_dois()
     if multi_values and v.parsing_ok: 
         v.check_multi_values(column_names=multi_values)
-    if online_archive:
+    if online_archive and v.parsing_ok:
         v.check_sample_accession(remote=remote)
     if markdown:
         v.to_markdown()
