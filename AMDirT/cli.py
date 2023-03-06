@@ -5,15 +5,15 @@ from AMDirT.validate import run_validation
 from AMDirT.viewer import run_app
 from AMDirT.convert import run_convert
 from AMDirT.core import get_json_path
+from AMDirT.autofill import run_autofill
 from json import load
 
 
 def get_table_list():
     json_path = get_json_path()
-    print(json_path)
     with open(json_path, "r") as f:
         table_list = load(f)
-        return table_list["samples"].keys()
+        return list(table_list["samples"].keys())
 
 
 @click.group()
@@ -142,6 +142,37 @@ def convert(ctx, no_args_is_help=True, **kwargs):
     TABLE_NAME: name of table to convert
     """
     run_convert(**kwargs, **ctx.obj)
+
+
+###################
+# Autofill tool #
+###################
+
+@cli.command()
+@click.argument("accession", type=str)
+@click.argument("output", type=click.Path(writable=True))
+@click.option(
+    "-t",
+    "--table_name", 
+    type=click.Choice(get_table_list()),
+    default='ancientmetagenome-hostassociated',
+    show_default=True
+    )
+@click.option(
+    "-a",
+    "--accession_type", 
+    type=click.Choice(['project','sample']),
+    default='sample',
+    show_default=True)
+@click.pass_context
+def autofill(ctx, no_args_is_help=True, **kwargs):
+    """\b
+    Autofills library table from using ENA accession numbers
+    \b
+    ACCESSION: ENA accession number
+    OUTPUT: path to output table file
+    """
+    run_autofill(**kwargs, **ctx.obj)
 
 
 if __name__ == "__main__":
