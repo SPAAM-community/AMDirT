@@ -82,7 +82,7 @@ class ENAPortalAPI(ENA):
         super().__init__()
         self.base_url = "https://www.ebi.ac.uk/ena/portal/api/"
 
-    def list_results(self) -> List[Dict]:
+    def _get_results(self) -> List[Dict]:
         """Get list of available results
 
         Returns:
@@ -90,11 +90,20 @@ class ENAPortalAPI(ENA):
         """
         url = os.path.join(self.base_url, "results?dataPortal=ena&format=json")
         json_resp = self.__get_json__(url)
+        return json_resp
+
+    def list_results(self) -> None:
+        """Display list of available results
+
+        Returns:
+            List[Dict]: list of available results
+        """
+        json_resp = self._get_results()
         for result in json_resp:
             logging.info(f"{result['resultId']} - {result['description']}")
         return json_resp
 
-    def list_fields(self, result_type: str) -> List:
+    def _get_fields(self, result_type: str) -> List:
         """Get list of available fields
 
         Args:
@@ -108,10 +117,21 @@ class ENAPortalAPI(ENA):
             f"returnFields?dataPortal=ena&format=json&result={result_type}",
         )
         json_resp = self.__get_json__(url)
+        return json_resp
+
+    def list_fields(self, result_type: str) -> None:
+        """Display list of available fields
+
+        Args:
+            result_type(str): A result is a set of data that can
+            be searched against and returned
+        Returns:
+            List: list of available fields
+        """
+        json_resp = self._get_fields(result_type=result_type)
         for field in json_resp:
             logging.info(f"{field['columnId']} - {field['description']}")
         logging.info(f"Available fields for {result_type} are: {json_resp}")
-        return json_resp
 
     def _check_result_type(self, result_type: str) -> bool:
         """Check if result type is allowed
@@ -122,7 +142,7 @@ class ENAPortalAPI(ENA):
         Returns:
             bool: True if result type is valid, False otherwise
         """
-        all_results = self.list_results()
+        all_results = self._get_results()
         results = [result["resultId"] for result in all_results]
         if result_type not in results:
             logging.warning(f"{result_type} is not a valid result type")
@@ -139,7 +159,7 @@ class ENAPortalAPI(ENA):
         Returns:
             bool: True if fields are valid, False otherwise
         """
-        all_fields = self.list_fields(result_type)
+        all_fields = self._get_fields(result_type)
         fields = [field["columnId"] for field in all_fields]
         for field in fields:
             if field not in fields:

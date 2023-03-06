@@ -26,7 +26,7 @@ setup(
     url="https://github.com/SPAAM-community/AMDirT",
     long_description_content_type="text/markdown",
     license="GNU-GPLv3",
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     install_requires=[
         "click",
         "pandas",

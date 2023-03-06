@@ -25,22 +25,34 @@ class DFError:
     column: str
     row: str
     message: str
+    line_offset: int = 2 # Offset to add to row number to account for header and 0 based indexing
 
     def to_dict(self):
+        try:
+            column = str(self.column)
+            row = str(int(self.row) + self.line_offset)
+        except (ValueError, TypeError):
+            column = "-"
+            row="-"
         return {
             "Error": str(self.error),
             "Source": str(self.source),
-            "Column": str(self.column),
-            "Row": str(self.row),
+            "Column": column,
+            "Row": row,
             "Message": str(self.message),
         }
 
     def to_list(self):
+        try:
+            column = str(self.column)
+            row = str(int(self.row) + self.line_offset)
+        except (ValueError, TypeError):
+            column = "-"
+            row="-"
         return [
-            str(i)
-            for i in [self.error, self.source, self.column, self.row, self.message]
+        str(i)
+        for i in [self.error, self.source, column, row , self.message]
         ]
-
 
 class DatasetValidator:
     """Dataset as DataFrame validation class"""
@@ -62,6 +74,8 @@ class DatasetValidator:
 
         """
         self.errors = list()
+        self.dataset_path = Path(dataset)
+        self.schema_path = Path(schema)
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)
@@ -94,12 +108,13 @@ class DatasetValidator:
                 return json.load(s)
         except json.JSONDecodeError as e:
             msg = str(e.with_traceback(e.__traceback__))
+            print(re.findall(".*line.(\d+).*", msg))
             self.add_error(
                 DFError(
                     error = "Schema Error",
                     source = e.msg,
                     column = str(*re.findall(".*column.(\d+).*", msg)),
-                    row = str(*re.findall(".*line.(\d+).*", msg)),
+                    row = int(re.findall(".*line.(\d+).*", msg)[0]),
                     message = "JSON parsing error"
                 )
             )
@@ -157,8 +172,8 @@ class DatasetValidator:
                 DFError(
                     "Dataset Parsing Error",
                     self.dataset_name,
-                    None,
-                    None,
+                    '-',
+                    '-',
                     e,
                 )
             )
@@ -221,7 +236,7 @@ class DatasetValidator:
         if "enum" in error.schema:
             if len(error.schema["enum"]) > 3:
                 error.message = f"'{error.instance}' is not an accepted value.\nPlease check [link={self.schema['items']['properties'][err_column]['$ref']}]{self.schema['items']['properties'][err_column]['$ref']}[/link]"
-        err_line = str(error.path[0] + 2)
+        err_line = str(error.path[0])
         return DFError(
             "Schema Validation Error",
             error.instance,
