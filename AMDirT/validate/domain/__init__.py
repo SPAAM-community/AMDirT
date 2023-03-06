@@ -109,7 +109,7 @@ class DatasetValidator:
             dict: JSON schema
         """
         try:
-            if schema.startswith("http"):
+            if str(schema).startswith("http"):
                 res = requests.get(schema)
                 if res.status_code == 200:
                     return res.json()
