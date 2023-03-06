@@ -8,6 +8,7 @@ import pandas as pd
 
 def run_autofill(accession, accession_type, table_name=None, schema=None, dataset=None, output=None, verbose=False):
     """Autofill the metadata of a table from ENA
+
     Args:
         accession (str): ENA project accession
         accession_type (str): ENA project accession type
@@ -15,6 +16,9 @@ def run_autofill(accession, accession_type, table_name=None, schema=None, datase
         schema (str): Path to the schema file
         dataset (str): Path to the dataset file
         output (str): Path to the output table file
+
+    Returns:
+        pd.DataFrame: ENA metadata run level table
     """
 
     if schema is None and dataset is None:

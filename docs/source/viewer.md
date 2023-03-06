@@ -1,12 +1,12 @@
-# AMDirT filter
+# AMDirT viewer
 
 ## Downloading the sequencing data of selected libraries
 
-AMDirT provides three different methods to download the sequencing data of selected libraries from public archives: 
+AMDirT provides three different methods to download the sequencing data of selected libraries from public archives:
 
-  - direct download from the FTP server using curl
-  - direct download via the FASP protocol using ASPERA
-  - indirect download via the Nextflow pipeline nf-core/fetchngs
+- direct download from the FTP server using curl
+- direct download via the FASP protocol using ASPERA
+- indirect download via the Nextflow pipeline nf-core/fetchngs
 
 ### Downloading via curl
 
