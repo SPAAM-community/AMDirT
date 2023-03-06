@@ -98,6 +98,32 @@ def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     elif orientation == "rev":
         return rev
 
+def parse_to_mag(selected_libraries):
+
+    selected_libraries["short_reads_1"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="fwd"
+    )
+    selected_libraries["short_reads_2"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="rev"
+    )
+    selected_libraries["short_reads_2"] = selected_libraries["short_reads_2"].replace(
+        "NA", ""
+    )
+    selected_libraries["longs_reads"] = ""
+    col2keep = [
+        "archive_data_accession",
+        "archive_sample_accession",
+        "short_reads_1",
+        "short_reads_2",
+        "longs_reads",
+    ]
+    selected_libraries = selected_libraries[col2keep].rename(
+        columns={
+            "archive_data_accession": "sample",
+            "archive_sample_accession": "group",
+        }
+    )
+    return selected_libraries
 
 @st.cache()
 def prepare_eager_table(
@@ -186,6 +212,55 @@ def prepare_eager_table(
 
     return selected_libraries
 
+
+@st.cache()
+def prepare_mag_table(
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    table_name: str,
+    supported_archives: Iterable[str],
+) -> pd.DataFrame:
+    """Prepare nf-core/mag tsv input table
+
+    Args:
+        sample (pd.dataFrame): selected samples table
+        library (pd.dataFrame): library table
+        table_name (str): Name of the table
+        supported_archives (list): list of supported archives
+    """
+    stacked_samples = (
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
+        .str.split(",", expand=True)
+        .stack()
+        .reset_index(level=0)
+        .set_index("level_0")
+        .rename(columns={0: "archive_accession"})
+        .join(samples.drop("archive_accession", axis=1))
+    )
+    
+    sel_col = ["archive_accession"]
+
+    libraries = libraries.merge(
+        stacked_samples[sel_col],
+        left_on="archive_sample_accession",
+        right_on="archive_accession",
+    )
+    select_libs = list(stacked_samples["archive_accession"])
+    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
+
+    # Create a DataFrame for "SINGLE" values
+    single_libraries = selected_libraries[selected_libraries["library_layout"] == "SINGLE"]
+
+    # Create a DataFrame for "PAIRED" values
+    paired_libraries = selected_libraries[selected_libraries["library_layout"] == "PAIRED"]
+
+    if not single_libraries.empty:
+        single_libraries = parse_to_mag(single_libraries)
+    if not paired_libraries.empty:
+        paired_libraries = parse_to_mag(paired_libraries)
+
+    return single_libraries, paired_libraries
 
 @st.cache()
 def prepare_accession_table(

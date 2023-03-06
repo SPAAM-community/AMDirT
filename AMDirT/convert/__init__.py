@@ -4,6 +4,7 @@ from AMDirT.core import (
     prepare_accession_table,
     prepare_bibtex_file,
     prepare_eager_table,
+    prepare_mag_table,
     prepare_aMeta_table,
     is_merge_size_zero,
 )
@@ -22,6 +23,7 @@ def run_convert(
     eager=False,
     fetchngs=False,
     ameta=False,
+    mag=False,
     verbose=False,
 ):
     """Run the AMDirT conversion application to input samplesheet tables for different pipelines
@@ -80,6 +82,23 @@ def run_convert(
             supported_archives=supported_archives,
         )
         aMeta_table.to_csv(f"{output}/aMeta_input_table.tsv", sep="\t", index=False)
+    
+    if mag == True:
+        logger.info("Preparing nf-core/mag table")
+        mag_table_single, mag_table_paired = prepare_mag_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        if not mag_table_single.empty:
+            mag_table_single.to_csv(
+                f"{output}/mag_input_single_table.csv", index=False
+            )
+        if not mag_table_paired.empty:
+            mag_table_paired.to_csv(
+                f"{output}/mag_input_paired_table.csv", index=False
+            )
 
     logger.info("Preparing Bibtex citation file")
     with open("AncientMetagenomeDir_citations.bib", "w") as fw:
