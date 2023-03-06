@@ -23,7 +23,6 @@ logger.addHandler(ch)
 
 def get_json_path():
     path = os.path.join(get_module_dir("AMDirT.assets"), "tables.json")
-    print(path)
     return path
 
 
