@@ -58,7 +58,7 @@ def run_autofill(accession, accession_type, table_name=None, schema=None, datase
     query_res = ena.query(accession, fields=[
         "study_accession",
         "run_accession",
-        "sample_accession",
+        "secondary_sample_accession",
         "sample_alias",
         "fastq_ftp",
         "fastq_md5",
@@ -81,7 +81,7 @@ def run_autofill(accession, accession_type, table_name=None, schema=None, datase
         columns={
             "study_accession": "archive_project",
             "run_accession":"archive_data_accession",
-            "sample_accession": "archive_sample_accession",
+            "secondary_sample_accession": "archive_sample_accession",
             "sample_alias": "sample_name",
             "fastq_ftp": "download_links",
             "fastq_md5": "download_md5s",
