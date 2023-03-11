@@ -112,7 +112,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 )
 @click.option(
     "-o",
-    "--output",
+    "--library_output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
     default=".",
     show_default=True,
@@ -154,28 +154,37 @@ def convert(ctx, no_args_is_help=True, **kwargs):
 ###################
 
 @cli.command()
-@click.argument("accession", type=str)
-@click.argument("output", type=click.Path(writable=True))
 @click.option(
-    "-t",
+    "-a",
+    "--accession",
+    type=str, 
+    multiple=True,
+    help="ENA accession(s). Repeat for multiple accessions (e.g. -a PRJNA123 -a PRJNA456)"
+)
+@click.option(
+    "-n",
     "--table_name", 
     type=click.Choice(get_table_list()),
     default='ancientmetagenome-hostassociated',
     show_default=True
-    )
+)
 @click.option(
-    "-a",
-    "--accession_type", 
-    type=click.Choice(['project','sample']),
-    default='sample',
-    show_default=True)
+    "-l",
+    "--library_output",
+    type=click.Path(writable=True),
+    help="path to library output table file"
+)
+@click.option(
+    "-s",
+    "--sample_output",
+    type=click.Path(writable=True),
+    help="path to sample output table file"
+)
 @click.pass_context
 def autofill(ctx, no_args_is_help=True, **kwargs):
     """\b
-    Autofills library table from using ENA accession numbers
+    Autofills library and/or sample table(s) using ENA API and accession numbers
     \b
-    ACCESSION: ENA accession number
-    OUTPUT: path to output table file
     """
     run_autofill(**kwargs, **ctx.obj)
 

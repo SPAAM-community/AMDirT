@@ -6,16 +6,16 @@ import json
 import sys
 import pandas as pd
 
-def run_autofill(accession, accession_type, table_name=None, schema=None, dataset=None, output=None, verbose=False):
+def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_output=None, library_output=None, verbose=False):
     """Autofill the metadata of a table from ENA
 
     Args:
-        accession (str): ENA project accession
-        accession_type (str): ENA project accession type
+        accession (tuple(str)): ENA project accession
         table_name (str): Name of the table to be filled
         schema (str): Path to the schema file
         dataset (str): Path to the dataset file
-        output (str): Path to the output table file
+        sample_output (str): Path to the sample output table file
+        library_output (str): Path to the library output table file
 
     Returns:
         pd.DataFrame: ENA metadata run level table
@@ -49,35 +49,34 @@ def run_autofill(accession, accession_type, table_name=None, schema=None, datase
     sample_df = sample.dataset.iloc[:0, :].copy()
     libraries_df = libraries.dataset.iloc[:0, :].copy()
 
+    print(sample_df.columns)
+
     ena = ENAPortalAPI()
     if ena.status():
         logger.info("ENA API is up")
     else:
         logger.error("ENA API is down")
         sys.exit(1)
-    query_res = ena.query(accession, fields=[
-        "study_accession",
-        "run_accession",
-        "secondary_sample_accession",
-        "sample_alias",
-        "fastq_ftp",
-        "fastq_md5",
-        "fastq_bytes",
-        "library_name",
-        "instrument_model",
-        "library_layout",
-        "library_strategy",
-        "read_count",
-    ])
-    res = pd.DataFrame.from_dict(query_res)
-    if accession_type == "project":
-        res['archive_project'] = accession
-    elif accession_type == "sample":
-        res["archive_sample_accession"] = accession
-    else:
-        logger.error("Accession type not recognized")
-        sys.exit(1)
-    res.rename(
+    query_dict = list()
+    for a in accession:
+        query_res = ena.query(a, fields=[
+            "study_accession",
+            "run_accession",
+            "secondary_sample_accession",
+            "sample_alias",
+            "fastq_ftp",
+            "fastq_md5",
+            "fastq_bytes",
+            "library_name",
+            "instrument_model",
+            "library_layout",
+            "library_strategy",
+            "read_count",
+        ])
+        query_dict += query_res
+    df_out = pd.DataFrame.from_dict(query_dict)
+
+    df_out.rename(
         columns={
             "study_accession": "archive_project",
             "run_accession":"archive_data_accession",
@@ -89,11 +88,35 @@ def run_autofill(accession, accession_type, table_name=None, schema=None, datase
         },
         inplace=True
         )
+    
+    # sample table
+    sample_out = df_out.copy(deep=True)
+    sample_out.rename(
+        columns={
+            "archive_sample_accession": "archive_accession",
+        },
+        inplace=True
+    )
+    for col in sample_df.columns:
+        if col not in sample_out.columns:
+            sample_out[col] = None
+    sample_out = sample_out[sample_df.columns]
+    sample_out = sample_out.loc[:,~sample_out.columns.duplicated()].copy()
+    sample_out = sample_out.drop_duplicates(subset=["archive_accession"])
+
+    # library table
+    lib_out = df_out.copy(deep=True)
     for col in libraries_df.columns:
-        if col not in res.columns:
-            res[col] = None
-    res = res[libraries_df.columns]
-    res = res.loc[:,~res.columns.duplicated()].copy()
-    logger.info(f"Found {res.shape[0]} libraries")
-    logger.info(f"Writing libraries metadata to {output}")
-    res.to_csv(output, index=False, sep="\t")
+        if col not in lib_out.columns:
+            lib_out[col] = None
+    lib_out = lib_out[libraries_df.columns]
+    lib_out = lib_out.loc[:,~lib_out.columns.duplicated()].copy()
+
+    if library_output:
+        logger.info(f"Found {lib_out.shape[0]} libraries")
+        logger.info(f"Writing libraries metadata to {library_output}")
+        lib_out.to_csv(library_output, index=False, sep="\t")
+    if sample_output:
+        logger.info(f"Found {sample_out.shape[0]} samples")
+        logger.info(f"Writing samples metadata to {sample_output}")
+        sample_out.to_csv(sample_output, index=False, sep="\t")
