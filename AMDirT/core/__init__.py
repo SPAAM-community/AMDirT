@@ -4,21 +4,22 @@ import requests
 from numpy import where
 import pandas as pd
 import streamlit as st
-import logging
 from packaging import version
 from importlib.resources import files as get_module_dir
 import os
+import logging
+import colorlog
 
 pd.options.mode.chained_assignment = None
 
 
-logger = logging.getLogger("AMDirT")
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-formatter = logging.Formatter("%(message)s")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+handler = colorlog.StreamHandler()
+handler.setFormatter(colorlog.ColoredFormatter(
+	'%(log_color)s%(name)s [%(levelname)s]: %(message)s'))
+
+logger = colorlog.getLogger('AMDirT')
+logger.addHandler(handler)
+logger.propagate = False
 
 
 def get_json_path():

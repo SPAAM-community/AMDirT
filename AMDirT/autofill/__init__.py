@@ -49,8 +49,6 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     sample_df = sample.dataset.iloc[:0, :].copy()
     libraries_df = libraries.dataset.iloc[:0, :].copy()
 
-    print(sample_df.columns)
-
     ena = ENAPortalAPI()
     if ena.status():
         logger.info("ENA API is up")
@@ -119,4 +117,5 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     if sample_output:
         logger.info(f"Found {sample_out.shape[0]} samples")
         logger.info(f"Writing samples metadata to {sample_output}")
+        logger.warning("Sample name must match that reported in publication and/or sample-level table. ENA reported sample-name may be correct! Check before submission.")
         sample_out.to_csv(sample_output, index=False, sep="\t")

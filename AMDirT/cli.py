@@ -23,8 +23,7 @@ def get_table_list():
 def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     """\b
     AMDirT: Performs validity check of ancientMetagenomeDir datasets
-    Authors: Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov
-    Contact: <maxime_borry[at]eva.mpg.de>
+    Authors: AMDirT development team and the SPAAM community
     Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
     """
