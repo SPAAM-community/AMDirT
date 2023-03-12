@@ -33,7 +33,6 @@ def merge_new_df(
         warnings.filterwarnings("ignore")
 
     schema = remote_resources[f"{table_type}_schema"][table_name]
-    print(schema)
     dataset_valid = list()
     v = AMDirValidator(schema, dataset)
     dataset_valid.append(v.parsing_ok)

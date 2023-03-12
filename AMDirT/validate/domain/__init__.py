@@ -113,7 +113,6 @@ class DatasetValidator:
         """
         try:
             if str(schema).startswith("http"):
-                print(f"Fetching schema from URL {schema}")
                 res = requests.get(schema)
                 if res.status_code == 200:
                     return res.json()
