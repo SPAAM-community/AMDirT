@@ -78,7 +78,7 @@ class DatasetValidator:
         """
         self.errors = list()
         self.dataset_path = Path(dataset)
-        if schema.startswith("http"):
+        if str(schema).startswith("http"):
             self.schema_path = schema
         else:
             self.schema_path = Path(schema)
