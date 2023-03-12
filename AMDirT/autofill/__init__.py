@@ -1,6 +1,7 @@
 from AMDirT.validate.domain import DatasetValidator
 from AMDirT.core import get_json_path, logger
 from AMDirT.core.ena import ENAPortalAPI
+from AMDirT.validate.exceptions import NetworkError
 import json
 
 import sys
@@ -53,8 +54,8 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     if ena.status():
         logger.info("ENA API is up")
     else:
-        logger.error("ENA API is down")
-        sys.exit(1)
+        raise NetworkError("ENA API is unreachable")
+    
     query_dict = list()
     for a in accession:
         query_res = ena.query(a, fields=[

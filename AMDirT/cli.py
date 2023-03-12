@@ -6,6 +6,7 @@ from AMDirT.viewer import run_app
 from AMDirT.convert import run_convert
 from AMDirT.core import get_json_path
 from AMDirT.autofill import run_autofill
+from AMDirT.merge import merge_new_df
 from json import load
 
 
@@ -148,9 +149,9 @@ def convert(ctx, no_args_is_help=True, **kwargs):
     run_convert(**kwargs, **ctx.obj)
 
 
-###################
+#################
 # Autofill tool #
-###################
+#################
 
 @cli.command()
 @click.option(
@@ -187,6 +188,51 @@ def autofill(ctx, no_args_is_help=True, **kwargs):
     """
     run_autofill(**kwargs, **ctx.obj)
 
+
+################
+# Merging tool #
+################
+
+
+@cli.command()
+@click.argument("dataset", type=click.Path(exists=True))
+@click.option(
+    "-n",
+    "--table_name", 
+    type=click.Choice(get_table_list()),
+    default='ancientmetagenome-hostassociated',
+    show_default=True
+)
+@click.option(
+    "-t",
+    "--table_type", 
+    type=click.Choice(['samples', 'libraries']),
+    default='libraries',
+    show_default=True
+)
+@click.option(
+    "-m", 
+    "--markdown", 
+    is_flag=True, 
+    help="Output is in markdown format"
+)
+@click.option(
+    "-o",
+    "--outdir",
+    type=click.Path(writable=True),
+    default=".",
+    show_default=True,
+    help="path to sample output table file"
+)
+@click.pass_context
+def merge(ctx, no_args_is_help=True, **kwargs):
+    """\b
+    Merges new dataset with existing table
+    \b
+
+    DATASET: path to tsv file of new dataset to merge
+    """
+    merge_new_df(**kwargs, **ctx.obj)
 
 if __name__ == "__main__":
     cli()

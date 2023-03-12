@@ -3,6 +3,7 @@ from AMDirT.validate.domain import DatasetValidator, DFError
 from AMDirT.core import get_json_path
 from AMDirT.core.diff import get_sample_diff
 from AMDirT.core.ena import ENAPortalAPI
+from rich.progress import track
 from pathlib import Path
 import pandas as pd
 import json
@@ -13,10 +14,10 @@ class AMDirValidator(DatasetValidator):
 
     def check_duplicate_dois(self) -> bool:
         project_dois = self.dataset.groupby("project_name")[
-            "data_publication_doi"
+            "publication_doi"
         ].unique()
         doi_unique = self.dataset.groupby("project_name")[
-            "data_publication_doi"
+            "publication_doi"
         ].nunique()
         err_cnt = 0
         for project in doi_unique.index:
@@ -26,7 +27,7 @@ class AMDirValidator(DatasetValidator):
                     DFError(
                         error="Duplicated DOI Error",
                         source=project_dois[project],
-                        column="data_publication_doi",
+                        column="publication_doi",
                         row="",
                         message=f"Duplicate DOI for {project} project. Make sure each project has a single DOI",
                     )
@@ -89,6 +90,9 @@ class AMDirValidator(DatasetValidator):
             inplace=True, keep="last", subset=list(df_change.columns)[:-1]
         )
         is_ok = True
+        
+        print(df_change)
+
         if df_change.shape[0] > 0:
             e = ENAPortalAPI()
             change_dict = {}
@@ -111,7 +115,7 @@ class AMDirValidator(DatasetValidator):
                 else:
                     continue
 
-            for project in change_dict:
+            for project in track(change_dict, description="Checking ENA/SRA accessions..."):
                 json_result = e.query(
                     accession=project,
                     result_type="read_experiment",

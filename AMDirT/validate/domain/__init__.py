@@ -78,7 +78,10 @@ class DatasetValidator:
         """
         self.errors = list()
         self.dataset_path = Path(dataset)
-        self.schema_path = Path(schema)
+        if schema.startswith("http"):
+            self.schema_path = schema
+        else:
+            self.schema_path = Path(schema)
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)
@@ -110,6 +113,7 @@ class DatasetValidator:
         """
         try:
             if str(schema).startswith("http"):
+                print(f"Fetching schema from URL {schema}")
                 res = requests.get(schema)
                 if res.status_code == 200:
                     return res.json()
