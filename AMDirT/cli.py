@@ -154,13 +154,7 @@ def convert(ctx, no_args_is_help=True, **kwargs):
 #################
 
 @cli.command()
-@click.option(
-    "-a",
-    "--accession",
-    type=str, 
-    multiple=True,
-    help="ENA accession(s). Repeat for multiple accessions (e.g. -a PRJNA123 -a PRJNA456)"
-)
+@click.argument("accession", type=str)
 @click.option(
     "-n",
     "--table_name", 
@@ -185,6 +179,8 @@ def autofill(ctx, no_args_is_help=True, **kwargs):
     """\b
     Autofills library and/or sample table(s) using ENA API and accession numbers
     \b
+
+    ACCESSION: ENA accession(s). Multiple accessions can be space separated (e.g. PRJNA123 PRJNA456)
     """
     run_autofill(**kwargs, **ctx.obj)
 
