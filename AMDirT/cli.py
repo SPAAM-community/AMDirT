@@ -154,7 +154,7 @@ def convert(ctx, no_args_is_help=True, **kwargs):
 #################
 
 @cli.command()
-@click.argument("accession", type=str)
+@click.argument("accession", type=str, nargs=-1)
 @click.option(
     "-n",
     "--table_name", 

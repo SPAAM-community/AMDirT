@@ -11,7 +11,7 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     """Autofill the metadata of a table from ENA
 
     Args:
-        accession (str): ENA project accession. Multiple accessions can be space separated (e.g. PRJNA123 PRJNA456)
+        accession (tuple(str)): ENA project accession. Multiple accessions can be space separated (e.g. PRJNA123 PRJNA456)
         table_name (str): Name of the table to be filled
         schema (str): Path to the schema file
         dataset (str): Path to the dataset file
@@ -21,7 +21,6 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     Returns:
         pd.DataFrame: ENA metadata run level table
     """
-    accession = accession.split()
 
     if schema is None and dataset is None:
         json_conf = get_json_path()
