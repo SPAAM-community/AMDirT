@@ -15,10 +15,15 @@ Dataset conversion
 
 .. autofunction:: AMDirT.convert.run_convert
 
-Dataset filtering
+Dataset viewing/filtering
+-------------------------
+
+.. autofunction:: AMDirT.viewer.run_app
+
+Autofill
 ------------------
 
-.. autofunction:: AMDirT.filter.run_app
+.. autofunction:: AMDirT.autofill.run_autofill
 
 ENA API
 ------------------

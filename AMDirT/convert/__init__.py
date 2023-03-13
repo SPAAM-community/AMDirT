@@ -52,17 +52,17 @@ def run_convert(
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
     if eager == True:
-        logger.info("Preparing Eager table")
+        logger.info("Preparing nf-core/eager table")
         eager_table = prepare_eager_table(
             samples=samples,
             libraries=libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        eager_table.to_csv(f"{output}/eager_input_table.tsv", sep="\t", index=False)
+        eager_table.to_csv(f"{output}/nf_core_eager_input_table.tsv", sep="\t", index=False)
 
     if fetchngs == True:
-        logger.info("Preparing FetchNGS table")
+        logger.info("Preparing nf-core/fetchngs table")
         accession_table = prepare_accession_table(
             samples=samples,
             libraries=libraries,
@@ -70,7 +70,7 @@ def run_convert(
             supported_archives=supported_archives,
         )
         accession_table["df"].to_csv(
-            f"{output}/fetchNGS_input_table.tsv", sep="\t", header=False, index=False
+            f"{output}/nf_core_fetchngs_input_table.tsv", sep="\t", header=False, index=False
         )
 
     if ameta == True:
@@ -93,11 +93,11 @@ def run_convert(
         )
         if not mag_table_single.empty:
             mag_table_single.to_csv(
-                f"{output}/mag_input_single_table.csv", index=False
+                f"{output}/nf_core_mag_input_single_table.csv", index=False
             )
         if not mag_table_paired.empty:
             mag_table_paired.to_csv(
-                f"{output}/mag_input_paired_table.csv", index=False
+                f"{output}/nf_core_mag_input_paired_table.csv", index=False
             )
 
     logger.info("Preparing Bibtex citation file")

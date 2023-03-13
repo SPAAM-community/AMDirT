@@ -18,6 +18,7 @@ __ homepage_
    API
    CLI
    tutorial
+   viewer
 
 
 
