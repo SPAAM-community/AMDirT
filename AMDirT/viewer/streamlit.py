@@ -14,6 +14,7 @@ from AMDirT.core import (
     prepare_mag_table,
     prepare_accession_table,
     prepare_aMeta_table,
+    prepare_taxprofiler_table,
     is_merge_size_zero,
     get_amdir_tags,
 )
@@ -161,10 +162,11 @@ if st.session_state.table_name != "No table selected":
             (
                 button_fastq, 
                 button_samplesheet_eager, 
-                button_samplesheet_mag, 
-                button_samplesheet_ameta, 
+                button_samplesheet_mag,
+                button_samplesheet_taxprofiler, 
+                button_samplesheet_ameta,
                 button_bibtex
-            ) = st.columns(5)
+            ) = st.columns(6)
             
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
@@ -281,6 +283,23 @@ if st.session_state.table_name != "No table selected":
                         )
 
                 #################
+                ## TAXPROFILER TABLE ##
+                #################
+                with button_samplesheet_taxprofiler:
+                    st.download_button(
+                        label="Download nf-core/taxprofiler input CSV",
+                        data=prepare_taxprofiler_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )
+                        .to_csv(index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_taxprofiler_input.csv",
+                    )
+
+                #################
                 ## AMETA TABLE ##
                 #################
                 with button_samplesheet_ameta:
@@ -296,7 +315,6 @@ if st.session_state.table_name != "No table selected":
                         .encode("utf-8"),
                         file_name="ancientMetagenomeDir_aMeta_input.csv",
                     )
-
 
                 #################
                 ## BIBTEX FILE ##

@@ -333,6 +333,79 @@ def prepare_accession_table(
         "aspera_script": dl_script_header + aspera_script,
     }
 
+@st.cache()
+def prepare_taxprofiler_table(
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    table_name: str,
+    supported_archives: Iterable[str],
+) -> pd.DataFrame:
+    """Prepare taxprofiler csv input table
+
+    Args:
+        sample (pd.dataFrame): selected samples table
+        library (pd.dataFrame): library table
+        table_name (str): Name of the table
+        supported_archives (list): list of supported archives
+    """
+    stacked_samples = (
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
+        .str.split(",", expand=True)
+        .stack()
+        .reset_index(level=0)
+        .set_index("level_0")
+        .rename(columns={0: "archive_accession"})
+        .join(samples.drop("archive_accession", axis=1))
+    )
+
+    if table_name in [
+        "ancientmetagenome-environmental",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
+    libraries = libraries.merge(
+        stacked_samples[sel_col],
+        left_on="archive_sample_accession",
+        right_on="archive_accession",
+    )
+    select_libs = list(stacked_samples["archive_accession"])
+    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
+
+    selected_libraries["fastq_1"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="fwd"
+    )
+
+    selected_libraries["fastq_2"] = selected_libraries["download_links"].apply(
+        get_filename, orientation="rev"
+    )
+
+    selected_libraries["fastq_2"] = selected_libraries["fastq_2"].replace(
+        "NA", ""
+    )
+
+    selected_libraries["fasta"] = ""
+
+    selected_libraries['instrument_model'] = where(selected_libraries['instrument_model'].str.lower().str.contains('illumina|nextseq|hiseq|miseq'), 'ILLUMINA',
+        where(selected_libraries['instrument_model'].str.lower().str.contains('torrent'), 'ION_TORRENT',
+        where(selected_libraries['instrument_model'].str.lower().str.contains('helicos'), 'HELICOS',
+        where(selected_libraries['instrument_model'].str.lower().str.contains('bgiseq'), 'BGISEQ',
+        where(selected_libraries['instrument_model'].str.lower().str.contains('454'), 'LS454',
+        selected_libraries['instrument_model']))))
+    )
+
+    col2keep = ["sample_name", "library_name", "instrument_model", "fastq_1", "fastq_2", "fasta"]
+    selected_libraries = selected_libraries[col2keep].rename(
+        columns={
+            "sample_name": "sample",
+            "library_name": "run_accession",
+            "instrument_model": "instrument_platform"
+        }
+    )
+
+    return selected_libraries
+
 
 @st.cache()
 def prepare_aMeta_table(
@@ -406,7 +479,6 @@ def prepare_aMeta_table(
     )
 
     return selected_libraries
-
 
 @st.cache(suppress_st_warning=True)
 def prepare_bibtex_file(samples: pd.DataFrame) -> str:
