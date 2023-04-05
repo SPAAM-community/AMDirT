@@ -284,7 +284,7 @@ if st.session_state.table_name != "No table selected":
 
                 #################
                 ## TAXPROFILER TABLE ##
-                #################
+                #######################
                 with button_samplesheet_taxprofiler:
                     st.download_button(
                         label="Download nf-core/taxprofiler input CSV",
