@@ -242,7 +242,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_eager_input.tsv",
+                        file_name="ancientMetagenomeDir_nf_core_eager_input.tsv",
                     )
 
                 #######################
@@ -258,17 +258,17 @@ if st.session_state.table_name != "No table selected":
                     'ancientMetagenomeDir_mag_input.zip', mode='w')
                 if not mag_table_single.empty:
                     mag_table_single.to_csv(
-                        "mag_input_single_table.csv", index=False
+                        "nf_core_mag_input_single_table.csv", index=False
                         )
                     zip_file.write(
-                        'mag_input_single_table.csv'
+                        'nf_core_mag_input_single_table.csv'
                         )
                 if not mag_table_paired.empty:
                     mag_table_paired.to_csv(
-                        "mag_input_paired_table.csv", index=False
+                        "nf_core_mag_input_paired_table.csv", index=False
                         )
                     zip_file.write(
-                        'mag_input_paired_table.csv'
+                        'nf_core_mag_input_paired_table.csv'
                         )
                 zip_file.close()
                 with open("ancientMetagenomeDir_mag_input.zip", "rb") as zip_file:
@@ -276,7 +276,7 @@ if st.session_state.table_name != "No table selected":
                         st.download_button(
                             label="Download nf-core/mag input CSV",
                             data=zip_file,
-                            file_name="ancientMetagenomeDir_mag_input.zip",
+                            file_name="ancientMetagenomeDir_nf_core_mag_input.zip",
                             mime="application/zip",
                         )
 

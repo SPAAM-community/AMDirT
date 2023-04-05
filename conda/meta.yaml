@@ -34,6 +34,7 @@ requirements:
     - streamlit=1.14.1
     - watchdog=2.1.7
     - xmltodict=0.12.0
+    - colorlog>=6.7.0
     - pip:
       - streamlit-aggrid==0.3.3
 

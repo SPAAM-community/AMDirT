@@ -5,15 +5,16 @@ from AMDirT.validate import run_validation
 from AMDirT.viewer import run_app
 from AMDirT.convert import run_convert
 from AMDirT.core import get_json_path
+from AMDirT.autofill import run_autofill
+from AMDirT.merge import merge_new_df
 from json import load
 
 
 def get_table_list():
     json_path = get_json_path()
-    print(json_path)
     with open(json_path, "r") as f:
         table_list = load(f)
-        return table_list["samples"].keys()
+        return list(table_list["samples"].keys())
 
 
 @click.group()
@@ -23,8 +24,7 @@ def get_table_list():
 def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     """\b
     AMDirT: Performs validity check of ancientMetagenomeDir datasets
-    Authors: Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov
-    Contact: <maxime_borry[at]eva.mpg.de>
+    Authors: AMDirT development team and the SPAAM community
     Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
     """
@@ -112,7 +112,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 )
 @click.option(
     "-o",
-    "--output",
+    "--library_output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
     default=".",
     show_default=True,
@@ -148,6 +148,87 @@ def convert(ctx, no_args_is_help=True, **kwargs):
     """
     run_convert(**kwargs, **ctx.obj)
 
+
+#################
+# Autofill tool #
+#################
+
+@cli.command()
+@click.argument("accession", type=str, nargs=-1)
+@click.option(
+    "-n",
+    "--table_name", 
+    type=click.Choice(get_table_list()),
+    default='ancientmetagenome-hostassociated',
+    show_default=True
+)
+@click.option(
+    "-l",
+    "--library_output",
+    type=click.Path(writable=True),
+    help="path to library output table file"
+)
+@click.option(
+    "-s",
+    "--sample_output",
+    type=click.Path(writable=True),
+    help="path to sample output table file"
+)
+@click.pass_context
+def autofill(ctx, no_args_is_help=True, **kwargs):
+    """\b
+    Autofills library and/or sample table(s) using ENA API and accession numbers
+    \b
+
+    ACCESSION: ENA accession(s). Multiple accessions can be space separated (e.g. PRJNA123 PRJNA456)
+    """
+    run_autofill(**kwargs, **ctx.obj)
+
+
+################
+# Merging tool #
+################
+
+
+@cli.command()
+@click.argument("dataset", type=click.Path(exists=True))
+@click.option(
+    "-n",
+    "--table_name", 
+    type=click.Choice(get_table_list()),
+    default='ancientmetagenome-hostassociated',
+    show_default=True
+)
+@click.option(
+    "-t",
+    "--table_type", 
+    type=click.Choice(['samples', 'libraries']),
+    default='libraries',
+    show_default=True
+)
+@click.option(
+    "-m", 
+    "--markdown", 
+    is_flag=True, 
+    help="Output is in markdown format"
+)
+@click.option(
+    "-o",
+    "--outdir",
+    type=click.Path(writable=True),
+    default=".",
+    show_default=True,
+    help="path to sample output table file"
+)
+@click.pass_context
+def merge(ctx, no_args_is_help=True, **kwargs):
+    """\b
+    Merges new dataset with existing table
+    \b
+
+    DATASET: path to tsv file of new dataset to merge
+    """
+    merge_new_df(**kwargs, **ctx.obj)
 
 if __name__ == "__main__":
     cli()

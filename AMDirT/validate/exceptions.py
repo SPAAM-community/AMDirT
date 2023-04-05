@@ -68,6 +68,18 @@ class ParsingError(Error):
     def __init__(self, message):
         self.message = message
 
+class NetworkError(Error):
+    """Exception raised for parsing errors
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    name = "Network Error"
+
+    def __init__(self, message):
+        self.message = message
+
 
 class DuplicateEntryError(Error):
     """Exception raised for errors due to duplicated entries in columns"

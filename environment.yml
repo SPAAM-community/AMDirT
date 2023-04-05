@@ -18,5 +18,6 @@ dependencies:
   - streamlit=1.14.1
   - watchdog=2.1.7
   - tox
+  - colorlog>=6.7.0
   - pip:
       - streamlit-aggrid==0.3.3

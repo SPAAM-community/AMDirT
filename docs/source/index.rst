@@ -16,9 +16,10 @@ __ homepage_
 
    README
    API
-   reference
-   tutorials
-   how_to/index
+   CLI
+   tutorial
+   viewer
+
 
 
 Indices and tables
