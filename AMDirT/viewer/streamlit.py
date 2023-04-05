@@ -4,20 +4,24 @@ import pandas as pd
 
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import argparse
+import zipfile
 import json
 import os
 from AMDirT import __version__
 from AMDirT.core import (
     prepare_bibtex_file,
     prepare_eager_table,
+    prepare_mag_table,
     prepare_accession_table,
+    prepare_aMeta_table,
     is_merge_size_zero,
     get_amdir_tags,
 )
 
 
+
 st.set_page_config(
-    page_title="AMDirT Filter",
+    page_title="AMDirT viewer",
     page_icon="https://raw.githubusercontent.com/SPAAM-community/AncientMetagenomeDir/master/assets/images/logos/spaam-AncientMetagenomeDir_logo_mini.png",
     layout="wide",
 )
@@ -59,7 +63,7 @@ with st.sidebar:
 """,
         unsafe_allow_html=True,
     )
-    st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) filter tool")
+    st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) viewer tool")
     st.write(f"\n Version: {__version__}")
     st.session_state.tag_name = st.selectbox(
         label="Select an AncientMetagenomeDir release", options=tags
@@ -154,7 +158,14 @@ if st.session_state.table_name != "No table selected":
         placeholder = st.empty()
 
         with placeholder.container():
-            button_fastq, button_samplesheet, button_bibtex = st.columns(3)
+            (
+                button_fastq, 
+                button_samplesheet_eager, 
+                button_samplesheet_mag, 
+                button_samplesheet_ameta, 
+                button_bibtex
+            ) = st.columns(5)
+            
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
                 acc_table = prepare_accession_table(
@@ -174,6 +185,9 @@ if st.session_state.table_name != "No table selected":
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
 
+                ############################
+                ## FASTQ DOWNLOAD SCRIPTS ##
+                ############################
                 with button_fastq:
                     if st.session_state.dl_method == "nf-core/fetchngs":
                         st.download_button(
@@ -213,7 +227,11 @@ if st.session_state.table_name != "No table selected":
                             )["curl_script"],
                             file_name="ancientMetagenomeDir_curl_download_script.sh",
                         )
-                with button_samplesheet:
+
+                #################
+                ## EAGER TABLE ##
+                #################
+                with button_samplesheet_eager:
                     st.download_button(
                         label="Download nf-core/eager input TSV",
                         data=prepare_eager_table(
@@ -224,8 +242,65 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_eager_input.csv",
+                        file_name="ancientMetagenomeDir_eager_input.tsv",
                     )
+
+                #######################
+                ## NF-CORE/MAG TABLE ##
+                #######################
+                mag_table_single, mag_table_paired = prepare_mag_table(
+                        pd.DataFrame(df_mod["selected_rows"]),
+                        library,
+                        st.session_state.table_name,
+                        supported_archives,
+                    )
+                zip_file = zipfile.ZipFile(
+                    'ancientMetagenomeDir_mag_input.zip', mode='w')
+                if not mag_table_single.empty:
+                    mag_table_single.to_csv(
+                        "mag_input_single_table.csv", index=False
+                        )
+                    zip_file.write(
+                        'mag_input_single_table.csv'
+                        )
+                if not mag_table_paired.empty:
+                    mag_table_paired.to_csv(
+                        "mag_input_paired_table.csv", index=False
+                        )
+                    zip_file.write(
+                        'mag_input_paired_table.csv'
+                        )
+                zip_file.close()
+                with open("ancientMetagenomeDir_mag_input.zip", "rb") as zip_file:
+                    with button_samplesheet_mag:
+                        st.download_button(
+                            label="Download nf-core/mag input CSV",
+                            data=zip_file,
+                            file_name="ancientMetagenomeDir_mag_input.zip",
+                            mime="application/zip",
+                        )
+
+                #################
+                ## AMETA TABLE ##
+                #################
+                with button_samplesheet_ameta:
+                    st.download_button(
+                        label="Download aMeta input TSV",
+                        data=prepare_aMeta_table(
+                            pd.DataFrame(df_mod["selected_rows"]),
+                            library,
+                            st.session_state.table_name,
+                            supported_archives,
+                        )
+                        .to_csv(sep="\t", index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_aMeta_input.csv",
+                    )
+
+
+                #################
+                ## BIBTEX FILE ##
+                #################
                 with button_bibtex:
                     st.download_button(
                         label="Download Citations as BibTex",
