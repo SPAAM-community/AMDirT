@@ -282,7 +282,7 @@ if st.session_state.table_name != "No table selected":
                             mime="application/zip",
                         )
 
-                #################
+                #######################
                 ## TAXPROFILER TABLE ##
                 #######################
                 with button_samplesheet_taxprofiler:
