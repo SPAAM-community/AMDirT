@@ -23,6 +23,7 @@ def run_convert(
     eager=False,
     fetchngs=False,
     ameta=False,
+    taxprofiler=False,
     mag=False,
     verbose=False,
 ):
