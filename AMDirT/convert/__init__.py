@@ -23,6 +23,7 @@ def run_convert(
     eager=False,
     fetchngs=False,
     ameta=False,
+    taxprofiler=False,
     mag=False,
     verbose=False,
 ):
@@ -71,6 +72,18 @@ def run_convert(
         )
         accession_table["df"].to_csv(
             f"{output}/nf_core_fetchngs_input_table.tsv", sep="\t", header=False, index=False
+        )
+
+    if taxprofiler == True:
+        logger.info("Preparing nf-core/taxprofiler table")
+        accession_table = prepare_taxprofiler_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        accession_table["df"].to_csv(
+            f"{output}/nf_core_taxprofiler_input_table.csv", header=False, index=False
         )
 
     if ameta == True:

@@ -138,6 +138,11 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     is_flag=True,
     help="Convert filtered samples and libraries tables to nf-core/mag input tables",
 )
+@click.option(
+    "--taxprofiler",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to nf-core/taxprofiler input tables",
+)
 @click.pass_context
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
