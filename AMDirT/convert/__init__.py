@@ -7,6 +7,7 @@ from AMDirT.core import (
     prepare_mag_table,
     prepare_aMeta_table,
     is_merge_size_zero,
+    get_libraries
 )
 from AMDirT.core import get_json_path
 from json import load
@@ -116,6 +117,15 @@ def run_convert(
     logger.info("Preparing Bibtex citation file")
     with open("AncientMetagenomeDir_citations.bib", "w") as fw:
         fw.write(prepare_bibtex_file(samples))
+
+    logger.info("Writing filtered libraries table")
+    (get_libraries(
+        samples=samples,
+        libraries=libraries,
+        table_name=table_name,
+        supported_archives=supported_archives
+    )
+    .to_csv(f"{output}/AncientMetagenomeDir_filtered_libraries.tsv", sep="\t", index=False))
 
     with open(f"{output}/ancientMetagenomeDir_curl_download_script.sh", "w") as fw:
         fw.write(accession_table["curl_script"])
