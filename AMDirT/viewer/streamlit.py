@@ -17,6 +17,7 @@ from AMDirT.core import (
     prepare_taxprofiler_table,
     is_merge_size_zero,
     get_amdir_tags,
+    get_libraries
 )
 
 
@@ -165,8 +166,9 @@ if st.session_state.table_name != "No table selected":
                 button_samplesheet_mag,
                 button_samplesheet_taxprofiler, 
                 button_samplesheet_ameta,
-                button_bibtex
-            ) = st.columns(6)
+                button_bibtex,
+                button_libraries
+            ) = st.columns(7)
             
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
@@ -325,6 +327,25 @@ if st.session_state.table_name != "No table selected":
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="ancientMetagenomeDir_citations.bib",
                     )
+
+                ###################
+                ## LIBRARY TABLE ##
+                ###################
+
+                with button_libraries:
+                    st.download_button(
+                        label="Download Library Table",
+                        data=get_libraries(
+                            table_name=st.session_state.table_name,
+                            libraries=library,
+                            samples=pd.DataFrame(df_mod["selected_rows"]),
+                            supported_archives=supported_archives,
+                        )
+                        .to_csv(sep="\t", index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_library_table.csv",
+                    )
+                
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"

@@ -76,6 +76,45 @@ def doi2bib(doi: str) -> str:
 
     return r.text
 
+@st.cache_data
+def get_libraries(table_name: str, samples: pd.DataFrame, libraries: pd.DataFrame, supported_archives: Iterable[str]):
+    """Get filtered libraries from samples and libraries tables
+
+    Args:
+        table_name (str): Name of the table of the table to convert
+        samples (pd.DataFrame): Sample table
+        libraries (pd.DataFrame): Library table
+        supported_archives (Iterable[str]): Supported archives list
+
+    Returns:
+        pd.DataFrame: filtered libraries table
+    """
+    stacked_samples = (
+        samples.query("archive in @supported_archives")
+        .loc[:, "archive_accession"]
+        .str.split(",", expand=True)
+        .stack()
+        .reset_index(level=0)
+        .set_index("level_0")
+        .rename(columns={0: "archive_accession"})
+        .join(samples.drop("archive_accession", axis=1))
+    )
+
+    if table_name in [
+        "ancientmetagenome-environmental",
+    ]:
+        sel_col = ["archive_accession"]
+    else:
+        sel_col = ["archive_accession", "sample_host"]
+    libraries = libraries.merge(
+        stacked_samples[sel_col],
+        left_on="archive_sample_accession",
+        right_on="archive_accession",
+    )
+    select_libs = list(stacked_samples["archive_accession"])
+    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
+
+    return selected_libraries
 
 def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     """
@@ -141,30 +180,12 @@ def prepare_eager_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    stacked_samples = (
-        samples.query("archive in @supported_archives")
-        .loc[:, "archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(samples.drop("archive_accession", axis=1))
+    selected_libraries = get_libraries(
+        table_name=table_name,
+        samples=samples,
+        libraries=libraries,
+        supported_archives=supported_archives,
     )
-
-    if table_name in [
-        "ancientmetagenome-environmental",
-    ]:
-        sel_col = ["archive_accession"]
-    else:
-        sel_col = ["archive_accession", "sample_host"]
-    libraries = libraries.merge(
-        stacked_samples[sel_col],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
-    )
-    select_libs = list(stacked_samples["archive_accession"])
-    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     selected_libraries["Colour_Chemistry"] = selected_libraries[
         "instrument_model"
@@ -229,26 +250,13 @@ def prepare_mag_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    stacked_samples = (
-        samples.query("archive in @supported_archives")
-        .loc[:, "archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(samples.drop("archive_accession", axis=1))
-    )
-    
-    sel_col = ["archive_accession"]
 
-    libraries = libraries.merge(
-        stacked_samples[sel_col],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
+    selected_libraries = get_libraries(
+        table_name=table_name,
+        samples=samples,
+        libraries=libraries,
+        supported_archives=supported_archives,
     )
-    select_libs = list(stacked_samples["archive_accession"])
-    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     # Create a DataFrame for "SINGLE" values
     single_libraries = selected_libraries[selected_libraries["library_layout"] == "SINGLE"]
@@ -279,29 +287,12 @@ def prepare_accession_table(
         supported_archives (list): list of supported archives
     """
 
-    stacked_samples = (
-        samples.query("archive in @supported_archives")
-        .loc[:, "archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(samples.drop("archive_accession", axis=1))
+    selected_libraries = get_libraries(
+        table_name=table_name,
+        samples=samples,
+        libraries=libraries,
+        supported_archives=supported_archives,
     )
-    if table_name in [
-        "ancientmetagenome-environmental",
-    ]:
-        sel_col = ["archive_accession"]
-    else:
-        sel_col = ["archive_accession", "sample_host"]
-    libraries = libraries.merge(
-        stacked_samples[sel_col],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
-    )
-    select_libs = list(stacked_samples["archive_accession"])
-    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     # Downloading with curl or aspera instead of fetchngs
     urls = set(selected_libraries["download_links"])
@@ -348,30 +339,12 @@ def prepare_taxprofiler_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    stacked_samples = (
-        samples.query("archive in @supported_archives")
-        .loc[:, "archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(samples.drop("archive_accession", axis=1))
+    selected_libraries = get_libraries(
+        table_name=table_name,
+        samples=samples,
+        libraries=libraries,
+        supported_archives=supported_archives,
     )
-
-    if table_name in [
-        "ancientmetagenome-environmental",
-    ]:
-        sel_col = ["archive_accession"]
-    else:
-        sel_col = ["archive_accession", "sample_host"]
-    libraries = libraries.merge(
-        stacked_samples[sel_col],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
-    )
-    select_libs = list(stacked_samples["archive_accession"])
-    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     selected_libraries["fastq_1"] = selected_libraries["download_links"].apply(
         get_filename, orientation="fwd"
@@ -422,30 +395,12 @@ def prepare_aMeta_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    stacked_samples = (
-        samples.query("archive in @supported_archives")
-        .loc[:, "archive_accession"]
-        .str.split(",", expand=True)
-        .stack()
-        .reset_index(level=0)
-        .set_index("level_0")
-        .rename(columns={0: "archive_accession"})
-        .join(samples.drop("archive_accession", axis=1))
+    selected_libraries = get_libraries(
+        table_name=table_name,
+        samples=samples,
+        libraries=libraries,
+        supported_archives=supported_archives,
     )
-
-    if table_name in [
-        "ancientmetagenome-environmental",
-    ]:
-        sel_col = ["archive_accession"]
-    else:
-        sel_col = ["archive_accession", "sample_host"]
-    libraries = libraries.merge(
-        stacked_samples[sel_col],
-        left_on="archive_sample_accession",
-        right_on="archive_accession",
-    )
-    select_libs = list(stacked_samples["archive_accession"])
-    selected_libraries = libraries.query("archive_sample_accession in @select_libs")
 
     selected_libraries["Colour_Chemistry"] = selected_libraries[
         "instrument_model"
