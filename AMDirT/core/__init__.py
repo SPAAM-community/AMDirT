@@ -27,7 +27,7 @@ def get_json_path():
     return path
 
 
-@st.cache
+@st.cache_data
 def get_amdir_tags():
     r = requests.get(
         "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
@@ -126,7 +126,7 @@ def parse_to_mag(selected_libraries):
     )
     return selected_libraries
 
-@st.cache()
+@st.cache_data
 def prepare_eager_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
@@ -214,7 +214,7 @@ def prepare_eager_table(
     return selected_libraries
 
 
-@st.cache()
+@st.cache_data
 def prepare_mag_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
@@ -263,7 +263,7 @@ def prepare_mag_table(
 
     return single_libraries, paired_libraries
 
-@st.cache()
+@st.cache_data
 def prepare_accession_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
@@ -334,7 +334,7 @@ def prepare_accession_table(
     }
 
 
-@st.cache()
+@st.cache_data
 def prepare_aMeta_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
@@ -408,7 +408,7 @@ def prepare_aMeta_table(
     return selected_libraries
 
 
-@st.cache(suppress_st_warning=True)
+@st.cache_data
 def prepare_bibtex_file(samples: pd.DataFrame) -> str:
     dois = set()
     failed_dois = set()
