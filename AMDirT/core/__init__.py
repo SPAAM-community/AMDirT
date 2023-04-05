@@ -333,7 +333,7 @@ def prepare_accession_table(
         "aspera_script": dl_script_header + aspera_script,
     }
 
-@st.cache_date
+@st.cache_data
 def prepare_taxprofiler_table(
     samples: pd.DataFrame,
     libraries: pd.DataFrame,
