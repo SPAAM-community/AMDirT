@@ -296,7 +296,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_taxprofiler_input.csv",
+                        file_name="ancientMetagenomeDir_nf_core_taxprofiler_input.csv",
                     )
 
                 #################
