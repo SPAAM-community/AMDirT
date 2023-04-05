@@ -1,5 +1,5 @@
 import requests
-import logging
+from AMDirT.core import logger
 import os
 from typing import List, Dict
 
@@ -41,7 +41,7 @@ class ENA:
         )
         with open(pdf, "wb") as fw:
             fw.write(r.content)
-        logging.info(
+        logger.info(
             f"{self.__class__.__name__} documentation has been written to {pdf}"
         )
 
@@ -58,7 +58,7 @@ class ENA:
             if len(resp.json()) > 0:
                 return resp.json()
             else:
-                logging.warning("No results found")
+                logger.warning("No results found")
                 return []
 
 
@@ -100,7 +100,7 @@ class ENAPortalAPI(ENA):
         """
         json_resp = self._get_results()
         for result in json_resp:
-            logging.info(f"{result['resultId']} - {result['description']}")
+            logger.info(f"{result['resultId']} - {result['description']}")
         return json_resp
 
     def _get_fields(self, result_type: str) -> List:
@@ -130,8 +130,8 @@ class ENAPortalAPI(ENA):
         """
         json_resp = self._get_fields(result_type=result_type)
         for field in json_resp:
-            logging.info(f"{field['columnId']} - {field['description']}")
-        logging.info(f"Available fields for {result_type} are: {json_resp}")
+            logger.info(f"{field['columnId']} - {field['description']}")
+        logger.info(f"Available fields for {result_type} are: {json_resp}")
 
     def _check_result_type(self, result_type: str) -> bool:
         """Check if result type is allowed
@@ -145,7 +145,7 @@ class ENAPortalAPI(ENA):
         all_results = self._get_results()
         results = [result["resultId"] for result in all_results]
         if result_type not in results:
-            logging.warning(f"{result_type} is not a valid result type")
+            logger.warning(f"{result_type} is not a valid result type")
             return False
         return True
 
@@ -163,7 +163,7 @@ class ENAPortalAPI(ENA):
         fields = [field["columnId"] for field in all_fields]
         for field in fields:
             if field not in fields:
-                logging.warning(f"{field} is not a valid field")
+                logger.warning(f"{field} is not a valid field")
                 return False
         return True
 

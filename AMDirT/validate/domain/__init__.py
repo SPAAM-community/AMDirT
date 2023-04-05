@@ -10,6 +10,7 @@ from rich.console import Console
 from dataclasses import dataclass
 from jsonschema import Draft7Validator, exceptions as json_exceptions
 from typing import AnyStr, BinaryIO, TextIO, Union
+import requests
 import re
 
 Schema = Union[AnyStr, BinaryIO, TextIO]
@@ -25,7 +26,9 @@ class DFError:
     column: str
     row: str
     message: str
-    line_offset: int = 2 # Offset to add to row number to account for header and 0 based indexing
+    line_offset: int = (
+        2  # Offset to add to row number to account for header and 0 based indexing
+    )
 
     def to_dict(self):
         try:
@@ -75,15 +78,20 @@ class DatasetValidator:
         """
         self.errors = list()
         self.dataset_path = Path(dataset)
-        self.schema_path = Path(schema)
+        if str(schema).startswith("http"):
+            self.schema_path = schema
+        else:
+            self.schema_path = Path(schema)
         self.dataset_name = Path(dataset).name
         self.schema_name = Path(schema).name
         self.schema = self.read_schema(schema)
         if self.schema:
-            self.dataset = self.read_dataset(dataset,self.schema)
+            self.dataset = self.read_dataset(dataset, self.schema)
         else:
             self.dataset = False
-        self.parsing_ok =  True if isinstance(self.dataset, pd.DataFrame) and self.schema else False
+        self.parsing_ok = (
+            True if isinstance(self.dataset, pd.DataFrame) and self.schema else False
+        )
         if self.parsing_ok:
             self.dataset_json = self.dataset_to_json()
 
@@ -104,18 +112,24 @@ class DatasetValidator:
             dict: JSON schema
         """
         try:
-            with open(schema, "r") as s:
-                return json.load(s)
+            if str(schema).startswith("http"):
+                res = requests.get(schema)
+                if res.status_code == 200:
+                    return res.json()
+                else:
+                    raise Exception("Could not fetch schema from URL")
+            else:
+                with open(schema, "r") as s:
+                    return json.load(s)
         except json.JSONDecodeError as e:
             msg = str(e.with_traceback(e.__traceback__))
-            print(re.findall(".*line.(\d+).*", msg))
             self.add_error(
                 DFError(
-                    error = "Schema Error",
-                    source = e.msg,
-                    column = str(*re.findall(".*column.(\d+).*", msg)),
-                    row = int(re.findall(".*line.(\d+).*", msg)[0]),
-                    message = "JSON parsing error"
+                    error="Schema Error",
+                    source=e.msg,
+                    column=str(*re.findall(".*column.(\d+).*", msg)),
+                    row=int(re.findall(".*line.(\d+).*", msg)[0]),
+                    message="JSON parsing error",
                 )
             )
             return False
@@ -129,22 +143,24 @@ class DatasetValidator:
             pd.DataFrame: Dataset as pandas dataframe
         """
         string_to_dtype_conversions = {
-            'string': str,
-            'integer': pd.Int64Dtype(),
-            'number': float
+            "string": str,
+            "integer": pd.Int64Dtype(),
+            "number": float,
         }
         column_dtypes = {}
-        for column_keys in schema['items']['properties']:
-            coltype = schema['items']['properties'][column_keys]['type']
-            if isinstance(coltype,list):
-                if ('null' in coltype and len(coltype) > 2) or (len(coltype) >1 and 'null' not in coltype):
+        for column_keys in schema["items"]["properties"]:
+            coltype = schema["items"]["properties"][column_keys]["type"]
+            if isinstance(coltype, list):
+                if ("null" in coltype and len(coltype) > 2) or (
+                    len(coltype) > 1 and "null" not in coltype
+                ):
                     self.add_error(
                         DFError(
-                            error = "Schema Error",
-                            source = coltype,
-                            column = column_keys,
-                            row = '-',
-                            message = "No mixed data types allowed"
+                            error="Schema Error",
+                            source=coltype,
+                            column=column_keys,
+                            row="",
+                            message="No mixed data types allowed",
                         )
                     )
                     return False
@@ -152,14 +168,14 @@ class DatasetValidator:
                     coltype = coltype[0]
             if coltype in string_to_dtype_conversions:
                 column_dtypes[column_keys] = string_to_dtype_conversions[coltype]
-            elif coltype == 'null':
+            elif coltype == "null":
                 self.add_error(
                     DFError(
-                        error = "Schema Error",
-                        source = coltype,
-                        column = column_keys,
-                        row = '-',
-                        message = "Default/first type of column in schema can not be null"
+                        error="Schema Error",
+                        source=coltype,
+                        column=column_keys,
+                        row="",
+                        message="Default/first type of column in schema can not be null",
                     )
                 )
                 return False
