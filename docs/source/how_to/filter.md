@@ -47,7 +47,7 @@ Once opened you should see a side bar and a empty pane. You can use the side bar
 
 Once you have selected a version and a table, the table itself should open in the empty pane.
 
-> In most cases the most version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively
+> In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively
 
 To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
 
