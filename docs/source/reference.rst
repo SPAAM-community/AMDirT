@@ -1,5 +1,6 @@
-CLI
-===
+
+Reference
+===============
 
 To access the help menu:
 
