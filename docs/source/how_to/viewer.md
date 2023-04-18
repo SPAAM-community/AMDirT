@@ -1,14 +1,16 @@
-# filter
+# viewer
 
 ## What
 
-The purpose of the `filter` command is to provide a easy-to-use graphical-user interface to allow users to:
+The purpose of the `viewer` command is to provide a easy-to-use graphical-user interface to allow users to:
 
 - **explore** the different AncientMetagenomeDir tables via drop down menus
 - **filter** a given table based on different criteria using a standard tabular interface
 - **download** the resulting sequencing data via different methods
 - **download** prepared input samplesheets for pipelines
 - **download** citation information of selected samples
+
+> ⚠️ __The `viewer` tool was previously named `filter`, and might still be referred as such in some parts of the documentation.__
 
 ## When
 
@@ -18,15 +20,15 @@ You should use this tool when you wish to find particular types of ancient metag
 
 ### Loading the interface
 
-Before using `AMDirT filter` make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
+Before using `AMDirT viewer` make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
 
 To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)) and run:
 
 ```bash
-AMDirT filter
+AMDirT viewer
 ```
 
-Your web-browser should automatically open a new tab and have the `filter` interface open for you. If your browser does not automatically open, just copy and paste one of the URLs present in the console in your web browsers URL bar.
+Your web-browser should automatically open a new tab and have the `viewer` interface open for you. If your browser does not automatically open, just copy and paste one of the URLs present in the console in your web browsers URL bar.
 
 ```text
   Local URL: http://localhost:8501
@@ -34,6 +36,8 @@ Your web-browser should automatically open a new tab and have the `filter` inter
 ```
 
 > ⚠️ _The first time you run the command, you first may get some prompts in your terminal. You can just say 'no' to all - this will not affect the usage of the tool._
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/EANpFh__6V8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ![AMDirT welcome page with sidebar](images/amdirt-filter-welcome.png)
 
@@ -50,6 +54,10 @@ Once you have selected a version and a table, the table itself should open in th
 > In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively
 
 To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dUzeJfSTQCU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DFHlGQcREy0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### Exploring the Tables
 
@@ -71,6 +79,8 @@ With this pane and tabs you can:
 
 You can also re-order the order of columns across the table by click and holding the column name, and dragging left and right.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uRPkvGum19A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 ### Exporting Information
 
 Now, select all the samples you wish to download and/or analyse.
@@ -80,6 +90,8 @@ You can select all samples currently displayed by clicking the empty box on the 
 ![AMDirT Selecting all samples currently in table](images/amdirt-filter-select-all.png)
 
 ![AMDirT Selecting individual samples from the current table](images/amdirt-filter-select-single-samples.png)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Re6YAdGmm7w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 Now validate your selection! Press the 'Validate selection' button at the bottom of the table.
 
@@ -120,3 +132,5 @@ The **citations bibtex** file contains all the citation information of your sele
 If you have finished your selection and file downloading, you can close the interface simply by closing the tab, and then pressing <kbd>Ctrl</kbd> + <kbd>c</kbd> on your terminal.
 
 If you wish to generate a new selection in the same session, you **must** press the 'Start New Selection' button at the bottom of the interface, select the new samples, and press 'Validate selection' again. If you do not press 'Start New Selection', you will export the same set of files and samples from your first selection.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iWrHJFG7Ky0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

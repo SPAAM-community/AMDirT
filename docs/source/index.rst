@@ -11,15 +11,13 @@ Homepage: `github.com/SPAAM-community/AMDirT`__
 __ homepage_ 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    README
    API
-   CLI
-   tutorial
-   viewer
-
+   reference
+   how_to/index
 
 
 Indices and tables
