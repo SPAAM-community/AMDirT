@@ -7,6 +7,7 @@ from AMDirT.core import (
     prepare_mag_table,
     prepare_aMeta_table,
     is_merge_size_zero,
+    prepare_taxprofiler_table,
     get_libraries
 )
 from AMDirT.core import get_json_path
