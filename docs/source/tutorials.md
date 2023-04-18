@@ -1,10 +1,10 @@
 # Tutorials
 
-On this page we provide step-by-step video tutorials on how to use the AMDirT graphical-user-interface (GUI) of the `filter` command.
+On this page we provide step-by-step video tutorials on how to use the AMDirT graphical-user-interface (GUI) of the `viewer` command.
 
 A [full walkthrough](#full-walkthrough) can be seen at the end of this page.
 
-## Loading AMDirT filter
+## Loading AMDirT viewer
 
 This tutorial shows how to activate a [pre-created](README#install) conda environment from a command-line interface, and load the graphical-user interface (GUI) in your browser.
 
