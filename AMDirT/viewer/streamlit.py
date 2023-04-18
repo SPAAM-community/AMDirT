@@ -160,14 +160,15 @@ if st.session_state.table_name != "No table selected":
         placeholder = st.empty()
 
         with placeholder.container():
+            
             (
+                button_libraries,
                 button_fastq, 
                 button_samplesheet_eager, 
                 button_samplesheet_mag,
                 button_samplesheet_taxprofiler, 
                 button_samplesheet_ameta,
-                button_bibtex,
-                button_libraries
+                button_bibtex
             ) = st.columns(7)
             
             if st.session_state.force_validation:
@@ -188,6 +189,24 @@ if st.session_state.table_name != "No table selected":
                     total_size_str = f"{total_size / 1e12:.2f}TB"
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
+
+                ###################
+                ## LIBRARY TABLE ##
+                ###################
+
+                with button_libraries:
+                    st.download_button(
+                        label="Download AncientMetagenomeDir Library Table",
+                        data=get_libraries(
+                            table_name=st.session_state.table_name,
+                            libraries=library,
+                            samples=pd.DataFrame(df_mod["selected_rows"]),
+                            supported_archives=supported_archives,
+                        )
+                        .to_csv(sep="\t", index=False)
+                        .encode("utf-8"),
+                        file_name="ancientMetagenomeDir_library_table.csv",
+                    )
 
                 ############################
                 ## FASTQ DOWNLOAD SCRIPTS ##
@@ -327,25 +346,10 @@ if st.session_state.table_name != "No table selected":
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="ancientMetagenomeDir_citations.bib",
                     )
-
-                ###################
-                ## LIBRARY TABLE ##
-                ###################
-
-                with button_libraries:
-                    st.download_button(
-                        label="Download Library Table",
-                        data=get_libraries(
-                            table_name=st.session_state.table_name,
-                            libraries=library,
-                            samples=pd.DataFrame(df_mod["selected_rows"]),
-                            supported_archives=supported_archives,
-                        )
-                        .to_csv(sep="\t", index=False)
-                        .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_library_table.csv",
-                    )
                 
+                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
+                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
