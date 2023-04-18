@@ -112,7 +112,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 )
 @click.option(
     "-o",
-    "--library_output",
+    "--output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
     default=".",
     show_default=True,
