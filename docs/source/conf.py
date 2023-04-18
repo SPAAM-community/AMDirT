@@ -20,7 +20,7 @@ from AMDirT import __version__
 
 project = "AMDirT"
 copyright = "2022, Maxime Borry"
-author = "Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov"
+author = "Maxime Borry, Jasmin Frangenberg, Nikolay Oskolov, & the SPAAM Community"
 
 # The full version, including alpha/beta/rc tags
 release = __version__
@@ -71,6 +71,13 @@ exclude_patterns = []
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_theme = "sphinx_rtd_theme"
+
+html_theme_options = {
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+}
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:

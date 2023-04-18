@@ -4,11 +4,11 @@
 
 The purpose of the `convert` command is to convert AncientMetagenomeDir tables to input sheets for different pipelines and software. It will also download citation information for you.
 
-It is a partial command-line equivalent to the `filter` graphical user interface.
+It is a partial command-line equivalent to the `viewer` graphical user interface.
 
 ## When
 
-You typically will use `convert` if you are a command-line power user, and have already performed table filtering and sample selection programmtically (e.g. in R or python), rather than using the AMDirT `filter` graphical-user-interface.
+You typically will use `convert` if you are a command-line power user, and have already performed table filtering and sample selection programmatically (e.g. in R or python), rather than using the AMDirT `viewer` graphical-user-interface.
 
 ## How
 
@@ -20,10 +20,10 @@ To generate sample sheets of the support pipelines: open a terminal (activating 
 
 ```bash
 mkdir samplesheets/
-AMDirT convert ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv ancientmetagenome-hostassociated -o samplesheets/
+AMDirT convert ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv ancientmetagenome-hostassociated -o samplesheets/ --<tool>
 ```
 
-where you provide the filtered TSV, which AncientMetagenomeDir samples table the filtered table is derived from, and then the output directory where the samplesheets should be saved into.
+where you provide the filtered TSV, which AncientMetagenomeDir samples table the filtered table is derived from,then the output directory where the samplesheets should be saved into, and which tool to generate a samplesheet from.
 
 The output is as follows:
 

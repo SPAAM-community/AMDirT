@@ -1,6 +1,8 @@
-# Tutorials
+# viewer
 
 On this page we provide step-by-step video tutorials on how to use the AMDirT graphical-user-interface (GUI) of the `viewer` command.
+
+> ℹ️ _The `viewer` subcommand was previously known as `filter`._
 
 A [full walkthrough](#full-walkthrough) can be seen at the end of this page.
 
@@ -12,7 +14,7 @@ This tutorial shows how to activate a [pre-created](README#install) conda enviro
 
 ## Selecting Table
 
-This tutorial shows you how to select which release of AncientMetagenomeDir you wish to explore, as well as how to select the given reserch-area specific AncientMetagenomeDir table of interest.
+This tutorial shows you how to select which release of AncientMetagenomeDir you wish to explore, as well as how to select the given research-area specific AncientMetagenomeDir table of interest.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dUzeJfSTQCU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
