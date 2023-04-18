@@ -161,8 +161,6 @@ if st.session_state.table_name != "No table selected":
 
         with placeholder.container():
             
-            st.warning("By default all download scripts/inputs include ALL libraries of the selected samples. We highly recommend reviewing the AncientMetagenomeDir library table prior using any other table, to ensure you only download/use relevant libraries!")
-
             (
                 button_libraries,
                 button_fastq, 
@@ -349,6 +347,9 @@ if st.session_state.table_name != "No table selected":
                         file_name="ancientMetagenomeDir_citations.bib",
                     )
                 
+                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
+                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
