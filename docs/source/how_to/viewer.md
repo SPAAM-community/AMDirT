@@ -1,8 +1,8 @@
-# filter
+# viewer
 
 ## What
 
-The purpose of the `filter` command is to provide a easy-to-use graphical-user interface to allow users to:
+The purpose of the `viewer` command is to provide a easy-to-use graphical-user interface to allow users to:
 
 - **explore** the different AncientMetagenomeDir tables via drop down menus
 - **filter** a given table based on different criteria using a standard tabular interface
@@ -18,15 +18,15 @@ You should use this tool when you wish to find particular types of ancient metag
 
 ### Loading the interface
 
-Before using `AMDirT filter` make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
+Before using `AMDirT viewer` make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
 
-To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)) and run:
+To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](/README)) and run:
 
 ```bash
-AMDirT filter
+AMDirT viewer
 ```
 
-Your web-browser should automatically open a new tab and have the `filter` interface open for you. If your browser does not automatically open, just copy and paste one of the URLs present in the console in your web browsers URL bar.
+Your web-browser should automatically open a new tab and have the `viewer` interface open for you. If your browser does not automatically open, just copy and paste one of the URLs present in the console in your web browsers URL bar.
 
 ```text
   Local URL: http://localhost:8501
@@ -47,7 +47,7 @@ Once opened you should see a side bar and a empty pane. You can use the side bar
 
 Once you have selected a version and a table, the table itself should open in the empty pane.
 
-> In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively
+> ℹ️ _In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively_
 
 To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
 

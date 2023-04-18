@@ -28,10 +28,11 @@ By default, no schema validation checks will be performed however it will check 
 
 The tool offers different types of validations that are activated by options.
 
-- **schema validation** (`-v`): compares the TSV against the schema
+- **schema validation** (`-s`): compares the TSV against the schema
 - **duplicate line checking** (`-d`): checks there are no duplicate lines
 - **column presence/absence checking** (`-c`): checks that all expected columns are present
 - **doi duplication checking** (`-i`): checks there are not the same DOI across two different publications
+- **ENA accession validation** (`-a`): checks the ENA accession code is valid and corresponds to the PRJ associated code
 - **multi-value column checking**: allows you to check there are no duplicates within a comma separate column with multiple values (e.g. sample accessions)
 
 You can also change the output console formatting from a python-rich format (default) to a markdown formatting with (`-m`). The markdown formatting is primarily for the AncientMetagenomeDir automatic checks on GitHub.
@@ -39,7 +40,7 @@ You can also change the output console formatting from a python-rich format (def
 For example, to check all columns are present, there are no duplicate lines, and the table matches the schema you can run
 
 ```bash
-AMDirT validate -v -d ancientmetagenome-hostassociated_samples.tsv ancientmetagenome-hostassociated_samples_schema.json
+AMDirT validate -s -d ancientmetagenome-hostassociated_samples.tsv ancientmetagenome-hostassociated_samples_schema.json
 ```
 
 If the table is valid you will get a corresponding message as follows:
