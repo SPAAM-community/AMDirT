@@ -148,15 +148,15 @@ All possible output is as follows:
 - `AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv`: 
     - An input sheet containing ERS/SRS accession numbers in a format compatible with the [nf-core/fetchngs](https://nf-co.re/fetchngs) input samplesheet.
 - `AncientMetagenomeDir_nf_core_eager_input_table.tsv`:
-    - An input sheet metadata in a format compatible with the [nf-core/eager](https://nf-co.re/eager) input samplesheet.
+    - An input sheet with metadata in a format compatible with the [nf-core/eager](https://nf-co.re/eager) input samplesheet.
     - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
 - `AncientMetagenomeDir_nf_core_taxprofiler_input_table.csv`: 
-    - An input sheet metadata in a format compatible with the [nf-core/taxprofiler](https://nf-co.re/eager) input samplesheet.
+    - An input sheet with metadata in a format compatible with the [nf-core/taxprofiler](https://nf-co.re/eager) input samplesheet.
     - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
 - `AncientMetagenomeDir_aMeta_input_table.tsv`:
-    - An input sheet metadata in a format compatible with the [aMeta](https://github.com/NBISweden/aMeta) input samplesheet.
+    - An input sheet with metadata in a format compatible with the [aMeta](https://github.com/NBISweden/aMeta) input samplesheet.
     - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
-- `AncientMetagenomeDir_nf_core_mag_input_{single,paired}_table.csv`: 
-    - An input sheet metadata in a format compatible with the [nf-core/mag](https://nf-co.re/eager) input samplesheet.
+- `AncientMetagenomeDir_mag_input.zip`: 
+    - Input sheets in a format compatible with the [nf-core/mag](https://nf-co.re/eager) input samplesheet.
+    - nf-core/mag does not support paired- and single-end data in the same run, therefore paired- and/or input sheets are downloaded as a Zip file that must be extracted before being supplied to the pipeline.
     - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
-    - nf-core/mag does not support paired- and single-end data in the same run, therefore two sheets will be generated if your selected samples contain both types of libraries.
