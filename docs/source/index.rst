@@ -26,7 +26,3 @@ __ homepage_
    how_to/index
    reference
    API
-
-Indices and tables
-==================
-
