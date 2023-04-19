@@ -91,9 +91,9 @@ Once the select is validated, more buttons will appear allowing you to download 
 
 In this case we suggest you press:
 
-- a download script: contains a bash script with download commands
-- a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
-- a citations file: citation information in BibTex format for selected samples
+- Download Curl sample download script: contains a bash script with download commands for _all_ the sequencing libraries of the selected samples
+- Download nf-core/eager input/tsv: a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
+- Download citations as BibTex: citation information in BibTex format for selected samples
 
 See [Output](#output) for descriptions of all output possible files.
 
@@ -104,14 +104,13 @@ To use the **download** script, you can simply run:
 ```bash
 bash ancientMetagenomeDir_curl_download_script.sh
 ```
+> ⚠️ _We highly recommend downloading and reviewing `AncientMetagenomeDir_filtered_libraries.tsv` **before** running the curl download script to ensure you have in the download scripts and/or pipeline input sheets only the actual library types you wish to use (e.g. you may only want paired-end data, or non-UDG treated data)._ 
 
-and the sequencing files of the selected samples will be downloaded to the directory you run the script from.
+The sequencing files of the selected samples will then have been downloaded to the directory you run the script from.
 
-> ⚠️ _You must already have the download tool you have selected configured on your machine to use the bash script!_
+> ⚠️ _You must already have the download tool you have selected installed and configured on your machine to use the bash script!_
 
 > ⚠️ _Make sure you only run this script on the machine you will run your analyses from, i.e. in most cases on a server or HPC!_
-
-> ⚠️ _We highly recommend downloading and reviewing `AncientMetagenomeDir_filtered_libraries.tsv` **before** running the curl download script to ensure you have in the download scripts and/or pipeline input sheets only the actual library types you wish to use (e.g. you may only want paired-end data, or non-UDG treated data)._ 
 
 To use the **pipeline input samplesheet**, you should always double check the sheet is correctly configured. Once you have validated it, you can supply it to your selected pipeline as follows (using nf-core/eager as an example):
 
