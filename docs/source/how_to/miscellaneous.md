@@ -69,7 +69,7 @@ The output from `AMDirT viewer`/`convert` will contain a list of accessions in a
 
 ```bash
 nextflow pull nf-core/fetchngs
-nextflow run nf-core/fetchngs --input ancientMetagenomeDir_fetchngs_download_script.sh`
+nextflow run nf-core/fetchngs --input ancientMetagenomeDir_accession_table.csv`
 ```
 
 <!--
