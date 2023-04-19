@@ -119,6 +119,26 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="conversion output directory",
 )
 @click.option(
+    "--bibliography",
+    is_flag=True,
+    help="Generate BibTeX file of all publications in input table",
+)
+@click.option(
+    "--librarymetadata",
+    is_flag=True,
+    help="Generate AncientMetagenomeDir libraries table of all samples in input table",
+)
+@click.option(
+    "--curl",
+    is_flag=True,
+    help="Generate bash script with curl-based download commands for all libraries of samples in input table",
+)
+@click.option(
+    "--aspera",
+    is_flag=True,
+    help="Generate bash script with Aspera-based download commands for all libraries of samples in input table",
+)
+@click.option(
     "--eager",
     is_flag=True,
     help="Convert filtered samples and libraries tables to eager input tables",
@@ -126,7 +146,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 @click.option(
     "--fetchngs",
     is_flag=True,
-    help="Convert filtered samples and libraries tables to fetchNGS input tables",
+    help="Convert filtered samples and libraries tables to nf-core/fetchngs input tables",
 )
 @click.option(
     "--ameta",
