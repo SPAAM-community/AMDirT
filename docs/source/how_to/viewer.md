@@ -156,6 +156,7 @@ All possible output is as follows:
 - `AncientMetagenomeDir_aMeta_input_table.tsv`:
     - An input sheet with metadata in a format compatible with the [aMeta](https://github.com/NBISweden/aMeta) input samplesheet.
     - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
+    - ⚠️ As of version/commit 1a03f3d (and earlier) aMeta does not support paired-end data! For paired-end data you must merge pairs yourself manually before using the sample sheet. 
 - `AncientMetagenomeDir_mag_input.zip`: 
     - Input sheets in a format compatible with the [nf-core/mag](https://nf-co.re/eager) input samplesheet.
     - nf-core/mag does not support paired- and single-end data in the same run, therefore paired- and/or input sheets are downloaded as a Zip file that must be extracted before being supplied to the pipeline.
