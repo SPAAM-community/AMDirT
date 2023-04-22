@@ -151,6 +151,7 @@ def run_convert(
 
     if ameta == True:
         logger.info("Preparing aMeta table")
+        logger.warning("aMeta does not support pairs. You must manually merge pair-end data before using samplesheet.")
         aMeta_table = prepare_aMeta_table(
             samples=samples,
             libraries=libraries,
