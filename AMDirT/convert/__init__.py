@@ -8,7 +8,7 @@ from AMDirT.core import (
     prepare_aMeta_table,
     is_merge_size_zero,
     prepare_taxprofiler_table,
-    get_libraries
+    get_libraries,
 )
 from AMDirT.core import get_json_path
 from json import load
@@ -22,6 +22,10 @@ def run_convert(
     table_name,
     tables=None,
     output=".",
+    bibliography=False,
+    librarymetadata=False,
+    curl=False,
+    aspera=False,
     eager=False,
     fetchngs=False,
     ameta=False,
@@ -54,15 +58,53 @@ def run_convert(
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
-    if eager == True:
-        logger.info("Preparing nf-core/eager table")
-        eager_table = prepare_eager_table(
+    logger.warning("We provide no warranty to the accuracy of the generated input sheets.")
+
+    if bibliography == True:
+        logger.info("Preparing Bibtex citation file")
+        with open(f"{output}/AncientMetagenomeDir_bibliography.bib", "w") as fw:
+            fw.write(prepare_bibtex_file(samples))
+
+    if librarymetadata == True:
+        logger.info("Writing filtered libraries table")
+        librarymetadata = get_libraries(
             samples=samples,
             libraries=libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        eager_table.to_csv(f"{output}/nf_core_eager_input_table.tsv", sep="\t", index=False)
+        librarymetadata.to_csv(
+            f"{output}/AncientMetagenomeDir_filtered_libraries.tsv",
+            sep="\t",
+            index=False,
+        )
+
+    if curl == True:
+        logger.info("Writing curl download script")
+        accession_table = prepare_accession_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        with open(f"{output}/AncientMetagenomeDir_curl_download_script.sh", "w") as fw:
+            fw.write(accession_table["curl_script"])
+
+    if aspera == True:
+        logger.info("Writing Aspera download script")
+        logger.warning(
+            "You will need to set the ${ASPERA_PATH} environment variable. See https://amdirt.readthedocs.io for more information."
+        )
+        accession_table = prepare_accession_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        with open(
+            f"{output}/AncientMetagenomeDir_aspera_download_script.sh", "w"
+        ) as fw:
+            fw.write(accession_table["aspera_script"])
 
     if fetchngs == True:
         logger.info("Preparing nf-core/fetchngs table")
@@ -73,7 +115,24 @@ def run_convert(
             supported_archives=supported_archives,
         )
         accession_table["df"].to_csv(
-            f"{output}/nf_core_fetchngs_input_table.tsv", sep="\t", header=False, index=False
+            f"{output}/AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
+            sep="\t",
+            header=False,
+            index=False,
+        )
+
+    if eager == True:
+        logger.info("Preparing nf-core/eager table")
+        eager_table = prepare_eager_table(
+            samples=samples,
+            libraries=libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+        eager_table.to_csv(
+            f"{output}/AncientMetagenomeDir_nf_core_eager_input_table.tsv",
+            sep="\t",
+            index=False,
         )
 
     if taxprofiler == True:
@@ -85,19 +144,26 @@ def run_convert(
             supported_archives=supported_archives,
         )
         accession_table["df"].to_csv(
-            f"{output}/nf_core_taxprofiler_input_table.csv", header=False, index=False
+            f"{output}/AncientMetagenomeDir_nf_core_taxprofiler_input_table.csv",
+            header=False,
+            index=False,
         )
 
     if ameta == True:
         logger.info("Preparing aMeta table")
+        logger.warning("aMeta does not support pairs. You must manually merge pair-end data before using samplesheet.")
         aMeta_table = prepare_aMeta_table(
             samples=samples,
             libraries=libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        aMeta_table.to_csv(f"{output}/aMeta_input_table.tsv", sep="\t", index=False)
-    
+        aMeta_table.to_csv(
+            f"{output}/AncientMetagenomeDir_aMeta_input_table.tsv",
+            sep="\t",
+            index=False,
+        )
+
     if mag == True:
         logger.info("Preparing nf-core/mag table")
         mag_table_single, mag_table_paired = prepare_mag_table(
@@ -108,28 +174,11 @@ def run_convert(
         )
         if not mag_table_single.empty:
             mag_table_single.to_csv(
-                f"{output}/nf_core_mag_input_single_table.csv", index=False
+                f"{output}/AncientMetagenomeDir_nf_core_mag_input_single_table.csv",
+                index=False,
             )
         if not mag_table_paired.empty:
             mag_table_paired.to_csv(
-                f"{output}/nf_core_mag_input_paired_table.csv", index=False
+                f"{output}/AncientMetagenomeDir_nf_core_mag_input_paired_table.csv",
+                index=False,
             )
-
-    logger.info("Preparing Bibtex citation file")
-    with open("AncientMetagenomeDir_citations.bib", "w") as fw:
-        fw.write(prepare_bibtex_file(samples))
-
-    logger.info("Writing filtered libraries table")
-    (get_libraries(
-        samples=samples,
-        libraries=libraries,
-        table_name=table_name,
-        supported_archives=supported_archives
-    )
-    .to_csv(f"{output}/AncientMetagenomeDir_filtered_libraries.tsv", sep="\t", index=False))
-
-    with open(f"{output}/ancientMetagenomeDir_curl_download_script.sh", "w") as fw:
-        fw.write(accession_table["curl_script"])
-
-    with open(f"{output}/ancientMetagenomeDir_aspera_download_script.sh", "w") as fw:
-        fw.write(accession_table["aspera_script"])

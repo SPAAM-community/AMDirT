@@ -205,7 +205,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_library_table.csv",
+                        file_name="AncientMetagenomeDir_filtered_libraries.csv",
                     )
 
                 ############################
@@ -224,7 +224,7 @@ if st.session_state.table_name != "No table selected":
                             )["df"]
                             .to_csv(sep="\t", header=False, index=False)
                             .encode("utf-8"),
-                            file_name="ancientMetagenomeDir_accession_table.csv",
+                            file_name="AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
                         )
                     elif st.session_state.dl_method == "aspera":
                         st.download_button(
@@ -236,7 +236,7 @@ if st.session_state.table_name != "No table selected":
                                 st.session_state.table_name,
                                 supported_archives,
                             )["aspera_script"],
-                            file_name="ancientMetagenomeDir_aspera_download_script.sh",
+                            file_name="AncientMetagenomeDir_aspera_download_script.sh",
                         )
                     else:
                         st.download_button(
@@ -248,7 +248,7 @@ if st.session_state.table_name != "No table selected":
                                 st.session_state.table_name,
                                 supported_archives,
                             )["curl_script"],
-                            file_name="ancientMetagenomeDir_curl_download_script.sh",
+                            file_name="AncientMetagenomeDir_curl_download_script.sh",
                         )
 
                 #################
@@ -265,7 +265,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_nf_core_eager_input.tsv",
+                        file_name="AncientMetagenomeDir_nf_core_eager_input_table.tsv",
                     )
 
                 #######################
@@ -299,7 +299,7 @@ if st.session_state.table_name != "No table selected":
                         st.download_button(
                             label="Download nf-core/mag input CSV",
                             data=zip_file,
-                            file_name="ancientMetagenomeDir_nf_core_mag_input.zip",
+                            file_name="AncientMetagenomeDir_nf_core_mag_input.zip",
                             mime="application/zip",
                         )
 
@@ -317,7 +317,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_nf_core_taxprofiler_input.csv",
+                        file_name="AncientMetagenomeDir_nf_core_taxprofiler_input_table.csv",
                     )
 
                 #################
@@ -334,7 +334,7 @@ if st.session_state.table_name != "No table selected":
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
-                        file_name="ancientMetagenomeDir_aMeta_input.csv",
+                        file_name="AncientMetagenomeDir_aMeta_input_table.tsv",
                     )
 
                 #################
@@ -344,7 +344,7 @@ if st.session_state.table_name != "No table selected":
                     st.download_button(
                         label="Download Citations as BibTex",
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
-                        file_name="ancientMetagenomeDir_citations.bib",
+                        file_name="AncientMetagenomeDir_bibliography.bib",
                     )
                 
                 st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
