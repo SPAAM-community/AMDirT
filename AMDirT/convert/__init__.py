@@ -62,7 +62,7 @@ def run_convert(
 
     if bibliography == True:
         logger.info("Preparing Bibtex citation file")
-        with open("AncientMetagenomeDir_bibliography.bib", "w") as fw:
+        with open(f"{output}/AncientMetagenomeDir_bibliography.bib", "w") as fw:
             fw.write(prepare_bibtex_file(samples))
 
     if librarymetadata == True:
