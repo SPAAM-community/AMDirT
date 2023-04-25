@@ -34,6 +34,7 @@ pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/A
 - Create the conda environment `conda env create -f environment.yml`
 - Activate the environment `conda activate amdirt`
 - Install amdirt in development mode `pip install -e .`
+    - In some cases you may need to force update streamlit with `pip install --upgrade steamlit`
 
 To locally render documentation:
 

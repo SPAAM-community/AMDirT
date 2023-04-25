@@ -10,8 +10,9 @@ The purpose of the `viewer` command is to provide a easy-to-use graphical-user i
 - **download** prepared input samplesheets for pipelines
 - **download** citation information of selected samples
 
-> ⚠️ __The `viewer` tool was previously named `filter`, and might still be referred as such in some parts of the documentation.__
+> ⚠️ _The `viewer` tool was previously named `filter`, and might still be referred as such in some parts of the documentation._
 
+For video based walkthroughs please see [Tutorials](/tutorials/viewer.md).
 ## When
 
 You should use this tool when you wish to find particular types of ancient metagenomic data, but wish to explore the dataset manually and interactively (i.e., don't know exactly what you're looking for yet), and/or if you do not wish to download the AncientMetagenomeDir full tables yourself and filter them within languages such as R or Python (with pandas).
@@ -22,7 +23,7 @@ You should use this tool when you wish to find particular types of ancient metag
 
 Before using `AMDirT viewer` make sure you have modern web-browser (Chrome, Firefox, Edge, Safari etc.) available on your machine. This will in most cases be your own laptop or desktop - not a server.
 
-To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](https://github.com/SPAAM-community/AMDirT/)) and run:
+To open the graphical user interface, open a terminal (activating software environments if necessary, see [AMDirT Installation Page](/README)) and run:
 
 ```bash
 AMDirT viewer
@@ -37,8 +38,6 @@ Your web-browser should automatically open a new tab and have the `viewer` inter
 
 > ⚠️ _The first time you run the command, you first may get some prompts in your terminal. You can just say 'no' to all - this will not affect the usage of the tool._
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/EANpFh__6V8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 ![AMDirT welcome page with sidebar](images/amdirt-filter-welcome.png)
 
 Once opened you should see a side bar and a empty pane. You can use the side bar to select various aspects of the displayed data from the AncientMetagenomeDir tables, such as the release, which table you view (e.g., environmental or host-associated metagenomics) and the number of rows to display. The data download option controls which tool the resulting download script will use to get the data.
@@ -51,14 +50,9 @@ Once opened you should see a side bar and a empty pane. You can use the side bar
 
 Once you have selected a version and a table, the table itself should open in the empty pane.
 
-> In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively
+> ℹ️ _In most cases the most recent version is recommended, whereby you pick the most recent date e.g. v22.12 over v22.09 from December and September 2022 respectively_
 
 To help decide which download method to use, see the [Miscellaneous page](miscellaneous.md).
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dUzeJfSTQCU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DFHlGQcREy0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 ### Exploring the Tables
 
 To navigate the tables you can scroll up and down with your mouse. To side scroll you can hold shift and scroll. To go to the next page of samples, you can find the forward/back buttons in the bottom right of the table to navigate across pages of data entries.
@@ -79,8 +73,6 @@ With this pane and tabs you can:
 
 You can also re-order the order of columns across the table by click and holding the column name, and dragging left and right.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/uRPkvGum19A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 ### Exporting Information
 
 Now, select all the samples you wish to download and/or analyse.
@@ -91,17 +83,19 @@ You can select all samples currently displayed by clicking the empty box on the 
 
 ![AMDirT Selecting individual samples from the current table](images/amdirt-filter-select-single-samples.png)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Re6YAdGmm7w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 Now validate your selection! Press the 'Validate selection' button at the bottom of the table.
 
 > ⚠️ _If you wish to download the data, make sure you have already selected your 'Data download method' in the sidebar before pressing 'Validate selection'!_
 
-Once the select is validated, more buttons will appear allowing you to download different files:
+Once the select is validated, more buttons will appear allowing you to download different files
 
-- a download script: contains a bash script with download commands
-- a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
-- a citations file: citation information in BibTex format for selected samples
+In this case we suggest you press:
+
+- Download Curl sample download script: contains a bash script with download commands for _all_ the sequencing libraries of the selected samples
+- Download nf-core/eager input/tsv: a pipeline input samplesheet: a pre-configured input sheet for a pipeline, based on the downloaded files
+- Download citations as BibTex: citation information in BibTex format for selected samples
+
+See [Output](#output) for descriptions of all output possible files.
 
 ![AMDirT buttons after selection validation](images/amdirt-filter-validate-buttons.png)
 
@@ -110,10 +104,11 @@ To use the **download** script, you can simply run:
 ```bash
 bash ancientMetagenomeDir_curl_download_script.sh
 ```
+> ⚠️ _We highly recommend downloading and reviewing `AncientMetagenomeDir_filtered_libraries.tsv` **before** running the curl download script to ensure you have in the download scripts and/or pipeline input sheets only the actual library types you wish to use (e.g. you may only want paired-end data, or non-UDG treated data)._ 
 
-and the sequencing files of the selected samples will be downloaded to the directory you run the script from.
+The sequencing files of the selected samples will then have been downloaded to the directory you run the script from.
 
-> ⚠️ _You must already have the download tool you have selected configured on your machine to use the bash script!_
+> ⚠️ _You must already have the download tool you have selected installed and configured on your machine to use the bash script!_
 
 > ⚠️ _Make sure you only run this script on the machine you will run your analyses from, i.e. in most cases on a server or HPC!_
 
@@ -133,4 +128,36 @@ If you have finished your selection and file downloading, you can close the inte
 
 If you wish to generate a new selection in the same session, you **must** press the 'Start New Selection' button at the bottom of the interface, select the new samples, and press 'Validate selection' again. If you do not press 'Start New Selection', you will export the same set of files and samples from your first selection.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iWrHJFG7Ky0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+## Output
+
+> ⚠️ _We highly recommend generating and reviewing `AncientMetagenomeDir_filtered_libraries.tsv` **before** downloading or running any pipelines to ensure you have in the download scripts and/or pipeline input sheets only the actual library types you wish to use (e.g. you may only want paired-end data, or non-UDG treated data)._ 
+
+> ⚠️ _To use a **pipeline input samplesheet**, you should always double check the sheet is correctly configured. We cannot guarantee accuracy between metadata and sequencing files._ 
+
+All possible output is as follows:
+
+- `<outdir>`: where all the pipeline samplesheets are placed (by default `.`)
+- `AncientMetagenomeDir_bibliography.bib`: 
+    - A BibTex format citation information file with all references (where available) present in the filtered sample table.
+- `AncientMetagenomeDir_filtered_libraries.tsv`: 
+    - The associated AncientMetagenomeDir curated metadata for all _libraries_ of the samples in the input table.
+- `AncientMetagenomeDir_curl_download_script.sh`:
+    - A bash script containing curl commands for all libraries in the input samples list.
+- `AncientMetagenomeDir_aspera_download_script.sh`:
+    - A bash script containing Aspera commands for all libraries in the input samples list. See [How Tos](/how_to/miscellaneous) for Aspera configuration information.
+- `AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv`: 
+    - An input sheet containing ERS/SRS accession numbers in a format compatible with the [nf-core/fetchngs](https://nf-co.re/fetchngs) input samplesheet.
+- `AncientMetagenomeDir_nf_core_eager_input_table.tsv`:
+    - An input sheet with metadata in a format compatible with the [nf-core/eager](https://nf-co.re/eager) input samplesheet.
+    - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
+- `AncientMetagenomeDir_nf_core_taxprofiler_input_table.csv`: 
+    - An input sheet with metadata in a format compatible with the [nf-core/taxprofiler](https://nf-co.re/eager) input samplesheet.
+    - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
+- `AncientMetagenomeDir_aMeta_input_table.tsv`:
+    - An input sheet with metadata in a format compatible with the [aMeta](https://github.com/NBISweden/aMeta) input samplesheet.
+    - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
+    - ⚠️ As of version/commit 1a03f3d (and earlier) aMeta does not support paired-end data! For paired-end data you must merge pairs yourself manually before using the sample sheet. 
+- `AncientMetagenomeDir_mag_input.zip`: 
+    - Input sheets in a format compatible with the [nf-core/mag](https://nf-co.re/eager) input samplesheet.
+    - nf-core/mag does not support paired- and single-end data in the same run, therefore paired- and/or input sheets are downloaded as a Zip file that must be extracted before being supplied to the pipeline.
+    - Contained paths are relative to the directory output when using the `curl` and `aspera` download scripts (i.e., input sheet assumes files are in the same directory as the input sheet itself).
