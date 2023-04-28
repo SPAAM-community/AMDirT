@@ -318,9 +318,12 @@ class DatasetValidator:
         """
         df = pd.DataFrame(columns=["Error", "Source", "Column", "Row", "Message"])
         for error in self.errors:
-            df = df.append(
-                error.to_dict(),
-                ignore_index=True,
+            df = pd.concat(
+                [
+                    df,
+                    pd.Series(error.to_dict())
+                ],
+                ignore_index=True
             )
         if len(df) > 0:
             raise SystemExit(
