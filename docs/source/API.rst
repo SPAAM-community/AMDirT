@@ -25,6 +25,12 @@ Autofill
 
 .. autofunction:: AMDirT.autofill.run_autofill
 
+
+Merge
+------------------
+
+.. autofunction:: AMDirT.merge.merge_new_df
+
 ENA API
 ------------------
 

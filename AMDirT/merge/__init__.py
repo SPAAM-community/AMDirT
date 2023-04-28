@@ -23,6 +23,24 @@ def merge_new_df(
     line_dup=True,
     columns=True,
 ):  
+    """Merge a new dataset with the remote master dataset
+
+    Args:
+        dataset (Path): Path to new dataset
+        table_type (str): Type of table to merge (samples or libraries)
+        table_name (str): Kind of table to merge (e.g. ancientmetagenome-hostassociated, ancientmetagenome-environmental, etc.)
+        markdown (bool): Log in markdown format
+        outdir (Path): Path to output directory
+        verbose (bool): Enable verbose mode
+        schema_check (bool, optional): Enable schema check. Defaults to True.
+        line_dup (bool, optional): Enable line duplication check. Defaults to True.
+        columns (bool, optional): Enable columns presence/absence check. Defaults to True.
+
+    Raises:
+        ValueError: Table type must be either 'samples' or 'libraries'
+        ValueError: Table name not found in AncientMetagenomeDir file
+        DatasetValidationError: New dataset is not valid
+    """      
     remote_resources = get_remote_resources()
 
     if table_type not in ['samples', 'libraries']:
