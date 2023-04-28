@@ -52,11 +52,11 @@ def merge_new_df(
         raise DatasetValidationError("New Dataset is not valid")
     
     else:
-        remote_dataset = pd.read_table(remote_resources[table_type][table_name])
+        remote_dataset = pd.read_table(remote_resources[table_type][table_name], dtype=dict(v.dataset.dtypes))
 
         logger.info("New Dataset is valid")
         logger.info(f"Merging new dataset with remote {table_name} {table_type} dataset")
         dataset = pd.concat([remote_dataset, v.dataset])
         dataset.drop_duplicates(inplace=True)
-        dataset.to_csv(join(outdir,f"{table_name}_{table_type}.tsv"), sep="\t", index=False)
+        dataset.to_csv(join(outdir,f"{table_name}_{table_type}.tsv"), sep="\t", na_rep= "NA", index=False)
         logger.info(f"New {table_name} {table_type} dataset written to {join(outdir,f'{table_name}_{table_type}.tsv')}")

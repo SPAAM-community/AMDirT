@@ -102,6 +102,7 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     sample_out = sample_out[sample_df.columns]
     sample_out = sample_out.loc[:,~sample_out.columns.duplicated()].copy()
     sample_out = sample_out.drop_duplicates(subset=["archive_accession"])
+    sample_out = sample_out.astype(sample_df.dtypes.to_dict())
 
     # library table
     lib_out = df_out.copy(deep=True)
@@ -110,6 +111,7 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
             lib_out[col] = None
     lib_out = lib_out[libraries_df.columns]
     lib_out = lib_out.loc[:,~lib_out.columns.duplicated()].copy()
+    lib_out = lib_out.astype(libraries_df.dtypes.to_dict())
 
     if library_output:
         logger.info(f"Found {lib_out.shape[0]} libraries")
