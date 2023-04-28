@@ -35,9 +35,6 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
     else:
         logger.error("Not implemented yet")
 
-
-    
-
     sample = DatasetValidator(
         schema=samples_schema[table_name], dataset=samples[table_name]
     )
