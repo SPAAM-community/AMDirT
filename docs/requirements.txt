@@ -15,3 +15,4 @@ xmltodict
 python-dotenv
 simplejson
 streamlit-aggrid
+colorlog
