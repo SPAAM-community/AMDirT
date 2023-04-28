@@ -7,3 +7,4 @@ rich==12.2.0
 streamlit==1.14.1
 watchdog==2.1.7
 streamlit-aggrid==0.3.3
+amdirt==1.4
