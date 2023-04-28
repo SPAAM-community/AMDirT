@@ -194,6 +194,11 @@ if st.session_state.table_name != "No table selected":
                 ## LIBRARY TABLE ##
                 ###################
 
+                if st.session_state.table_name in ["ancientmetagenome-environmental"]:
+                    col_drop = ["archive_accession"]
+                else:
+                    col_drop = ["archive_accession", "sample_host"]
+
                 with button_libraries:
                     st.download_button(
                         label="Download AncientMetagenomeDir Library Table",
@@ -202,6 +207,8 @@ if st.session_state.table_name != "No table selected":
                             libraries=library,
                             samples=pd.DataFrame(df_mod["selected_rows"]),
                             supported_archives=supported_archives,
+                        ).drop(
+                            col_drop, axis=1
                         )
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
@@ -221,7 +228,7 @@ if st.session_state.table_name != "No table selected":
                                 library,
                                 st.session_state.table_name,
                                 supported_archives,
-                            )["df"]
+                            )["df"]['archive_accession']
                             .to_csv(sep="\t", header=False, index=False)
                             .encode("utf-8"),
                             file_name="AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",

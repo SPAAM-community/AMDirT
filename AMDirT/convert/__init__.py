@@ -65,6 +65,11 @@ def run_convert(
         with open(f"{output}/AncientMetagenomeDir_bibliography.bib", "w") as fw:
             fw.write(prepare_bibtex_file(samples))
 
+    if table_name in ["ancientmetagenome-environmental"]:
+        col_drop = ["archive_accession"]
+    else:
+        col_drop = ["archive_accession", "sample_host"]
+
     if librarymetadata == True:
         logger.info("Writing filtered libraries table")
         librarymetadata = get_libraries(
@@ -72,6 +77,8 @@ def run_convert(
             libraries=libraries,
             table_name=table_name,
             supported_archives=supported_archives,
+        ).drop(
+            col_drop, axis=1
         )
         librarymetadata.to_csv(
             f"{output}/AncientMetagenomeDir_filtered_libraries.tsv",
@@ -114,7 +121,7 @@ def run_convert(
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        accession_table["df"].to_csv(
+        accession_table["df"]['archive_accession'].to_csv(
             f"{output}/AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
             sep="\t",
             header=False,
