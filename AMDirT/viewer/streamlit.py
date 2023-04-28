@@ -17,9 +17,9 @@ from AMDirT.core import (
     prepare_taxprofiler_table,
     is_merge_size_zero,
     get_amdir_tags,
-    get_libraries
+    get_libraries,
+    get_json_path
 )
-
 
 
 st.set_page_config(
@@ -40,7 +40,11 @@ if "table_name" not in st.session_state:
 
 def parse_args():
     parser = argparse.ArgumentParser("Run Streamlit app")
-    parser.add_argument("-c", "--config", help="json config file", required=True)
+    parser.add_argument(
+        "-c", 
+        "--config", 
+        help="json config file", 
+        default=get_json_path())
     try:
         args = parser.parse_args()
     except SystemExit as e:
