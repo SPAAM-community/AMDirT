@@ -23,7 +23,7 @@ def get_table_list():
 @click.option("--verbose", is_flag=True, help="Verbose mode")
 def cli(ctx, verbose, no_args_is_help=True, **kwargs):
     """\b
-    AMDirT: Performs validity check of ancientMetagenomeDir datasets
+    AMDirT: Performs validity check of AncientMetagenomeDir datasets
     Authors: AMDirT development team and the SPAAM community
     Homepage & Documentation: https://github.com/SPAAM-community/AMDirT
     \b
@@ -70,7 +70,7 @@ def cli(ctx, verbose, no_args_is_help=True, **kwargs):
 @click.pass_context
 def validate(ctx, no_args_is_help=True, **kwargs):
     """\b
-    Run validity check of ancientMetagenomeDir datasets
+    Run validity check of AncientMetagenomeDir datasets
     \b
     DATASET: path to tsv file of dataset to check
     SCHEMA: path to JSON schema file
@@ -168,7 +168,7 @@ def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager, ameta, taxprofiler, and fetchNGS input tables
     \b
-    SAMPLES: path to filtered ancientMetagenomeDir samples tsv file
+    SAMPLES: path to filtered AncientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
     """
     run_convert(**kwargs, **ctx.obj)
