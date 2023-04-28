@@ -1,0 +1,17 @@
+project_name	publication_year	publication_doi	site_name	latitude	longitude	geo_loc_name	sample_name	sample_host	sample_age	sample_age_doi	community_type	material	sampling_date	archive	archive_project	archive_accession
+Warinner2014	2014	10.1038/ng.2906	Dalheim	51.565	8.84	Germany	B61	Homo sapiens	900	10.1038/ng.2906	oral	dental calculus	NA	SRA	PRJNA216965	SRS473742,SRS473743,SRS473744,SRS473745
+Warinner2014	2014	10.1038/ng.2906	Dalheim	51.565	8.84	Germany	G12	Homo sapiens	900	10.1038/ng.2906	oral	dental calculus	NA	SRA	PRJNA216965	SRS473747,SRS473746,SRS473748,SRS473749,SRS473750
+Weyrich2017	2017	10.1038/nature21674	Gola Forest	7.657	-10.841	Sierra Leone	Chimp	Pan troglodytes	100	10.1038/nature21674	oral	dental calculus	NA	SRA	PRJNA685265	SRS7890499
+Weyrich2017	2017	10.1038/nature21675	El Sidrón Cave	43.386	-5.328	Spain	ElSidron1	Homo sapiens neandertnsis	49000	10.1038/nature21674	oral	dental calculus	NA	SRA	PRJNA685265	SRS7890498
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS01	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	"ERS2985742,ERS2985790,ERS3881508                    "
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS02	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985742,ERS2985790,ERS3881508
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS02	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985742,ERS2985790,ERS3881508
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS03	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985744,ERS2985792,ERS3881510
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS04	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985745,ERS2985793,ERS3881511
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS05	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985794,ERS3881512
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS06	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985795,ERS3881513
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS06	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985795,ERS3881513
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS07	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985746,ERS2985796,ERS3881514
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS08	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985747,ERS2985797,ERS3881515
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS09	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985748,ERS2985798,ERS3881516
+Velsko2018	2018	10.1186/s40168-019-0717-3	Radcliffe Infirmary	51.752	-1.257	United Kingdom	CS10	Homo sapiens	200	10.1186/s40168-019-0717-3	oral	dental calculus	NA	ENA	PRJEB30331	ERS2985749,ERS2985799,ERS3881517

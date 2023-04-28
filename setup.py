@@ -19,19 +19,28 @@ def get_version(rel_path):
 
 
 setup(
-    name="ancientMetagenomeDirCheck",
-    version=get_version("ancientMetagenomeDirCheck/__init__.py"),
-    description="Performs validity check of ancientMetagenomeDir datasets",
+    name="AMDirT",
+    version=get_version("AMDirT/__init__.py"),
+    description="AMDirT: AncientMetagenomeDir Toolkit",
     long_description=open("README.md").read(),
-    url="https://github.com/SPAAM-workshop/ancientMetagenomeDirCheck",
+    url="https://github.com/SPAAM-community/AMDirT",
     long_description_content_type="text/markdown",
     license="GNU-GPLv3",
-    python_requires=">=3.6",
-    install_requires=["click", "pandas", "jsonschema", "rich"],
-    packages=find_packages(include=["ancientMetagenomeDirCheck"]),
-    entry_points={
-        "console_scripts": [
-            "ancientMetagenomeDirCheck = ancientMetagenomeDirCheck.cli:cli"
-        ]
-    },
+    python_requires=">=3.9",
+    install_requires=[
+        "click",
+        "pandas",
+        "tabulate",
+        "jsonschema",
+        "rich",
+        "streamlit",
+        "streamlit-aggrid",
+        "numpy",
+        "requests",
+        "colorlog"
+    ],
+    packages=find_packages(exclude="test"),
+    entry_points={"console_scripts": ["AMDirT = AMDirT.cli:cli"]},
+    include_package_data=True,
+    package_data={"": ["assets/tables.json"]},
 )
