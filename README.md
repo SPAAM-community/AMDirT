@@ -10,15 +10,17 @@ For documentation on using the tool, please see [How Tos](how_to/index), [Tutori
 
 ## Install
 
-Before we release AMDirt on (bio)Conda, please follow the instructions below.
-
 ### 1. With pip
 
-...upon release of v 1.4
+```bash
+pip install amdirt
+```
 
 ### 2. With conda
 
-...upon release of v 1.4
+```bash
+conda install -c bioconda amdirt
+```
 
 ### The latest development version, directly from GitHub
 
@@ -34,7 +36,7 @@ pip install --upgrade --force-reinstall git+https://github.com/SPAAM-community/A
 - Create the conda environment `conda env create -f environment.yml`
 - Activate the environment `conda activate amdirt`
 - Install amdirt in development mode `pip install -e .`
-    - In some cases you may need to force update streamlit with `pip install --upgrade steamlit`
+  - In some cases you may need to force update streamlit with `pip install --upgrade steamlit`
 
 To locally render documentation:
 
