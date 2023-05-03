@@ -1,28 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>stlite app</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.0/build/stlite.css"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.0/build/stlite.css" />
+</head>
+
+<body>
     <div id="root"></div>
     <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.0/build/stlite.js"></script>
     <script>
-stlite.mount(
-  {
-    requirements: ["AMDirT", "streamlit-aggrid"],
-    entrypoint: "streamlit_app.py",
-    files: {
-"streamlit_app.py": `import streamlit as st
+        stlite.mount(
+            {
+                requirements: ["AMDirT", "streamlit-aggrid", "pyodide-http"],
+                entrypoint: "streamlit_app.py",
+                files: {
+                    "streamlit_app.py": `import streamlit as st
 import pandas as pd
 
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
@@ -30,7 +26,6 @@ import argparse
 import zipfile
 import json
 import os
-import requests
 import importlib
 from io import StringIO
 from packaging import version
@@ -48,9 +43,27 @@ from AMDirT.core import (
     get_json_path
 )
 
+import pyodide_http
+pyodide_http.patch_all()  # Patch all libraries
+import requests
+
+
+
 if importlib.util.find_spec("pyodide") is not None:
     from pyodide.http import open_url
 
+
+def doi2bib(doi: str) -> str:
+    """
+    Return a bibTeX string of metadata for a given DOI.
+    """
+
+    url = "http://doi.org/" + doi
+
+    headers = {"accept": "application/x-bibtex"}
+    r = requests.get(url, headers=headers)
+
+    return url_contents
 
 
 def read_dataframe(url:str, **kwargs):
@@ -139,7 +152,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) viewer tool")
-    st.write(f"\n Version: {__version__}")
+    st.write(f"Version: {__version__}")
     st.session_state.tag_name = st.selectbox(
         label="Select an AncientMetagenomeDir release", options=tags
     )
@@ -153,7 +166,7 @@ with st.sidebar:
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
-            "You will need to set the \`${ASPERA_PATH}\` environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
+            "You will need to set the ASPERA_PATH environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
         )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
@@ -427,7 +440,7 @@ if st.session_state.table_name != "No table selected":
                         file_name="AncientMetagenomeDir_bibliography.bib",
                     )
                 
-                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
+                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
                 st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
 
                 if st.button("Start New Selection", type="primary"):
@@ -437,12 +450,13 @@ if st.session_state.table_name != "No table selected":
                     placeholder.empty()
 `,
 
-},
-  },
-  document.getElementById("root")
-)
+                },
+            },
+            document.getElementById("root")
+        )
 
     </script>
-  </body>
-  <!-- Generated from stlite sharing (https://edit.share.stlite.net/), and the source version is 5a218baf08caf57d7dbe6872effe2415cb85efcf  # 5a218baf08caf57d7dbe6872effe2415cb85efcf is available on GitHub Actions: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables -->
+</body>
+<!-- Generated from stlite sharing (https://edit.share.stlite.net/), and the source version is 5a218baf08caf57d7dbe6872effe2415cb85efcf  # 5a218baf08caf57d7dbe6872effe2415cb85efcf is available on GitHub Actions: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables -->
+
 </html>
