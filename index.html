@@ -434,14 +434,15 @@ if st.session_state.table_name != "No table selected":
                 ## BIBTEX FILE ##
                 #################
                 with button_bibtex:
-                    st.download_button(
-                        label="Download Citations as BibTex",
-                        data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
-                        file_name="AncientMetagenomeDir_bibliography.bib",
-                    )
+                    st.markdown("⚠️ _Bibtex export not yet supported with this online version_")
+                #     st.download_button(
+                #         label="Download Citations as BibTex",
+                #         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
+                #         file_name="AncientMetagenomeDir_bibliography.bib",
+                #     )
                 
-                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
-                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+                # st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
+                # st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
 
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
