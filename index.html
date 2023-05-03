@@ -15,7 +15,7 @@
     <script>
         stlite.mount(
             {
-                requirements: ["AMDirT", "streamlit-aggrid", "pyodide-http"],
+                requirements: ["AMDirT", "streamlit-aggrid"],
                 entrypoint: "streamlit_app.py",
                 files: {
                     "streamlit_app.py": `import streamlit as st
@@ -32,7 +32,6 @@ from packaging import version
 
 from AMDirT import __version__
 from AMDirT.core import (
-    prepare_bibtex_file,
     prepare_eager_table,
     prepare_mag_table,
     prepare_accession_table,
@@ -42,10 +41,6 @@ from AMDirT.core import (
     get_libraries,
     get_json_path
 )
-
-import pyodide_http
-pyodide_http.patch_all()  # Patch all libraries
-import requests
 
 
 
@@ -58,12 +53,12 @@ def doi2bib(doi: str) -> str:
     Return a bibTeX string of metadata for a given DOI.
     """
 
-    url = "http://doi.org/" + doi
 
-    headers = {"accept": "application/x-bibtex"}
-    r = requests.get(url, headers=headers)
+    url = f"http://api.crossref.org/works/{doi}/transform/application/x-bibtex"
 
-    return url_contents
+    r = open_url(url)
+
+    return r.read()
 
 
 def read_dataframe(url:str, **kwargs):
@@ -80,6 +75,32 @@ def read_dataframe(url:str, **kwargs):
         url_contents,
         **kwargs
     )
+
+@st.cache_data
+def prepare_bibtex_file(samples: pd.DataFrame) -> str:
+    dois = set()
+    failed_dois = set()
+    dois_set = set(list(samples["publication_doi"]))
+    dois_set.add("10.1038/s41597-021-00816-y")
+    for doi in dois_set:
+        try:
+            bibtex_str = doi2bib(doi)
+            if len(bibtex_str) == 0:
+                failed_dois.add(doi)
+            else:
+                dois.add(bibtex_str)
+        except Exception as e:
+            pass
+    # Print warning for DOIs that do not have an entry
+    if len(failed_dois) > 0:
+        st.warning(
+            "Citation information could not be resolved for the "
+            "following DOIs: " + ", ".join(failed_dois) + ". Please "
+            "check how to cite these publications manually!"
+        )
+
+    dois_string = "\\n".join(list(dois))
+    return dois_string
 
 @st.cache_data
 def get_amdir_tags():
@@ -434,15 +455,14 @@ if st.session_state.table_name != "No table selected":
                 ## BIBTEX FILE ##
                 #################
                 with button_bibtex:
-                    st.markdown("⚠️ _Bibtex export not yet supported with this online version_")
-                #     st.download_button(
-                #         label="Download Citations as BibTex",
-                #         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
-                #         file_name="AncientMetagenomeDir_bibliography.bib",
-                #     )
+                    st.download_button(
+                        label="Download Citations as BibTex",
+                        data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
+                        file_name="AncientMetagenomeDir_bibliography.bib",
+                    )
                 
-                # st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
-                # st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
+                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
 
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
