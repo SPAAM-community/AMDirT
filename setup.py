@@ -41,6 +41,7 @@ setup(
     ],
     packages=find_packages(exclude="test"),
     entry_points={"console_scripts": ["AMDirT = AMDirT.cli:cli"]},
+    package_dir={"AMDirT": "AMDirT"},
     include_package_data=True,
-    package_data={"": ["assets/tables.json"]},
+    package_data={"AMDirT.assets": ["tables.json"]},
 )
