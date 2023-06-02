@@ -322,5 +322,5 @@ class DatasetValidator:
                 f"Invalid dataset `{self.dataset_name}`\n\n{df.to_markdown(index=False)}"
             )
         else:
-            logger.info(f"{self.dataset_name} is valid")
+            print(f"`{self.dataset_name}` is valid")
             return True
