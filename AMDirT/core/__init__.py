@@ -12,6 +12,7 @@ import colorlog
 
 pd.options.mode.chained_assignment = None
 
+logging.basicConfig(level=logging.INFO)
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter(
@@ -25,7 +26,6 @@ logger.propagate = False
 def get_json_path():
     path = get_module_dir("AMDirT.assets").joinpath("tables.json")
     return path
-
 
 @st.cache_data
 def get_amdir_tags():
