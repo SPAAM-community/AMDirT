@@ -2,13 +2,13 @@
 
 <div align="center">
   
-![AMDirT](assets/logo_rectangular.png#gh-light-mode-only) 
+![AMDirT](https://raw.githubusercontent.com/SPAAM-community/AMDirT/master/assets/logo_rectangular.png#gh-light-mode-only) 
 
 </div>
 
 <div align="center">
   
-![AMDirT](assets/logo_rectangular_dark.png#gh-dark-mode-only)
+![AMDirT](https://raw.githubusercontent.com/SPAAM-community/AMDirT/master/assets/logo_rectangular_dark.png#gh-dark-mode-only)
 
 </div>
 
