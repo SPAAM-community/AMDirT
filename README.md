@@ -2,7 +2,7 @@
 
 <div align="center">
   
-![AMDirT](assets/logo_rectangular.png.png#gh-light-mode-only) 
+![AMDirT](assets/logo_rectangular.png#gh-light-mode-only) 
 
 </div>
 
