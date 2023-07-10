@@ -7,6 +7,7 @@ import argparse
 import zipfile
 import json
 import os
+import urllib.request  ## TODO EXAMPLE: JUST FOR DEMO CAN BE REPLACED!
 from AMDirT import __version__
 from AMDirT.core import (
     prepare_bibtex_file,
@@ -17,9 +18,8 @@ from AMDirT.core import (
     prepare_taxprofiler_table,
     is_merge_size_zero,
     get_amdir_tags,
-    get_libraries
+    get_libraries,
 )
-
 
 
 st.set_page_config(
@@ -29,6 +29,30 @@ st.set_page_config(
 )
 
 supported_archives = ["ENA", "SRA"]
+
+## TODO CAN PROBABLY BE IMPORTED IN A BETTER WAY JUST FOR DEMO
+enum_url_strandtype = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/strand_type.json"
+).read()
+enum_url_polymerase = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/library_polymerase.json"
+).read()
+enum_url_librarytreatment = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/library_treatment.json"
+).read()
+enum_url_instrumentmodel = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/instrument_model.json"
+).read()
+enum_url_librarylayout = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/library_layout.json"
+).read()
+enum_url_librarystrategy = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/library_strategy.json"
+).read()
+enum_url_filetype = urllib.request.urlopen(
+    "https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/enums/file_type.json"
+).read()
+
 
 if "compute" not in st.session_state:
     st.session_state.compute = False
@@ -136,6 +160,54 @@ if st.session_state.table_name != "No table selected":
             data_return_mode="filtered",
             update_mode="selection_changed",
         )
+
+        ## Library filter buttons
+        ## TODO JUST FRONt END EXAMPLE, DOES NOTHING!
+
+        filter_placeholder = st.empty()
+
+        with st.expander(
+            "**Advanced Library Filters (Optional) [CURRENTLY DOES NOTHING]**",
+            expanded=False,
+        ):
+            (
+                select_strandtype,
+                select_polymerase,
+                select_librarytreatment,
+                select_librarystrategy,
+                select_librarylayout,
+                select_instrumentmodel,
+                select_filetype,
+            ) = st.columns(7)
+
+            with select_strandtype:
+                st.selectbox("**Strand Type**", json.loads(enum_url_strandtype)["enum"])
+            with select_polymerase:
+                st.multiselect(
+                    "**Library Polymerase**",
+                    json.loads(enum_url_polymerase)["enum"],
+                )
+            with select_librarytreatment:
+                st.multiselect(
+                    "**Library Treatment**",
+                    json.loads(enum_url_librarytreatment)["enum"],
+                )
+            with select_librarystrategy:
+                st.multiselect(
+                    "**Library Strategy**",
+                    json.loads(enum_url_librarystrategy)["enum"],
+                )
+            with select_librarylayout:
+                st.selectbox(
+                    "**Library Layout**", json.loads(enum_url_librarylayout)["enum"]
+                )
+            with select_instrumentmodel:
+                st.multiselect(
+                    "**Platform**", json.loads(enum_url_instrumentmodel)["enum"]
+                )
+            with select_filetype:
+                st.multiselect("**File Type**", json.loads(enum_url_filetype)["enum"])
+
         if st.form_submit_button("Validate selection", type="primary"):
             if len(df_mod["selected_rows"]) == 0:
                 st.error(
@@ -160,17 +232,16 @@ if st.session_state.table_name != "No table selected":
         placeholder = st.empty()
 
         with placeholder.container():
-            
             (
                 button_libraries,
-                button_fastq, 
-                button_samplesheet_eager, 
+                button_fastq,
+                button_samplesheet_eager,
                 button_samplesheet_mag,
-                button_samplesheet_taxprofiler, 
+                button_samplesheet_taxprofiler,
                 button_samplesheet_ameta,
-                button_bibtex
+                button_bibtex,
             ) = st.columns(7)
-            
+
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
                 acc_table = prepare_accession_table(
@@ -207,9 +278,8 @@ if st.session_state.table_name != "No table selected":
                             libraries=library,
                             samples=pd.DataFrame(df_mod["selected_rows"]),
                             supported_archives=supported_archives,
-                        ).drop(
-                            col_drop, axis=1
                         )
+                        .drop(col_drop, axis=1)
                         .to_csv(sep="\t", index=False)
                         .encode("utf-8"),
                         file_name="AncientMetagenomeDir_filtered_libraries.csv",
@@ -228,7 +298,7 @@ if st.session_state.table_name != "No table selected":
                                 library,
                                 st.session_state.table_name,
                                 supported_archives,
-                            )["df"]['archive_accession']
+                            )["df"]["archive_accession"]
                             .to_csv(sep="\t", header=False, index=False)
                             .encode("utf-8"),
                             file_name="AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
@@ -279,27 +349,24 @@ if st.session_state.table_name != "No table selected":
                 ## NF-CORE/MAG TABLE ##
                 #######################
                 mag_table_single, mag_table_paired = prepare_mag_table(
-                        pd.DataFrame(df_mod["selected_rows"]),
-                        library,
-                        st.session_state.table_name,
-                        supported_archives,
-                    )
+                    pd.DataFrame(df_mod["selected_rows"]),
+                    library,
+                    st.session_state.table_name,
+                    supported_archives,
+                )
                 zip_file = zipfile.ZipFile(
-                    'ancientMetagenomeDir_mag_input.zip', mode='w')
+                    "ancientMetagenomeDir_mag_input.zip", mode="w"
+                )
                 if not mag_table_single.empty:
                     mag_table_single.to_csv(
                         "nf_core_mag_input_single_table.csv", index=False
-                        )
-                    zip_file.write(
-                        'nf_core_mag_input_single_table.csv'
-                        )
+                    )
+                    zip_file.write("nf_core_mag_input_single_table.csv")
                 if not mag_table_paired.empty:
                     mag_table_paired.to_csv(
                         "nf_core_mag_input_paired_table.csv", index=False
-                        )
-                    zip_file.write(
-                        'nf_core_mag_input_paired_table.csv'
-                        )
+                    )
+                    zip_file.write("nf_core_mag_input_paired_table.csv")
                 zip_file.close()
                 with open("ancientMetagenomeDir_mag_input.zip", "rb") as zip_file:
                     with button_samplesheet_mag:
@@ -353,9 +420,13 @@ if st.session_state.table_name != "No table selected":
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="AncientMetagenomeDir_bibliography.bib",
                     )
-                
-                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
-                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+
+                st.markdown(
+                    "ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_"
+                )
+                st.markdown(
+                    "⚠️ _We provide no warranty to the accuracy of the generated input sheets._"
+                )
 
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
