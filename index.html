@@ -334,7 +334,7 @@ if st.session_state.table_name != "No table selected":
                         ).drop(
                             col_drop, axis=1
                         )
-                        .to_csv(sep="\t", index=False)
+                        .to_csv(sep=",", index=False)
                         .encode("utf-8"),
                         file_name="AncientMetagenomeDir_filtered_libraries.csv",
                     )
