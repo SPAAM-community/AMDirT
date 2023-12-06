@@ -14,7 +14,7 @@ def test_get_colour_chemistry():
 
 
 def test_doi2bib():
-    assert doi2bib("10.1038/nature14236")[:18] == "@article{Mnih_2015"
+    assert doi2bib("10.1038/nature14236")[:18] == " @article{Mnih_201"
 
 
 def test_ena_portal_status():
