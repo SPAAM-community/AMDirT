@@ -165,7 +165,8 @@ if st.session_state.table_name != "No table selected":
 
         with placeholder.container():
             
-            (
+            (   
+                button_sample_table,
                 button_libraries,
                 button_fastq, 
                 button_samplesheet_eager, 
@@ -173,7 +174,7 @@ if st.session_state.table_name != "No table selected":
                 button_samplesheet_taxprofiler, 
                 button_samplesheet_ameta,
                 button_bibtex
-            ) = st.columns(7)
+            ) = st.columns(8)
             
             if st.session_state.force_validation:
                 # Calculate the fastq file size of the selected libraries
@@ -198,6 +199,22 @@ if st.session_state.table_name != "No table selected":
                 ## LIBRARY TABLE ##
                 ###################
 
+                with button_sample_table:
+                    st.download_button(
+                        label="Download AncientMetagenomeDir Sample Table",
+                        data=(
+                            pd.DataFrame(df_mod["selected_rows"])
+                            .drop('_selectedRowNodeInfo', axis=1)
+                            .to_csv(sep=",", index=False)
+                            .encode("utf-8")
+                            ),
+                            file_name="AncientMetagenomeDir_filtered_samples.csv",
+                    )
+
+                ###################
+                ## LIBRARY TABLE ##
+                ###################
+
                 if st.session_state.table_name in ["ancientmetagenome-environmental"]:
                     col_drop = ["archive_accession"]
                 else:
@@ -214,7 +231,7 @@ if st.session_state.table_name != "No table selected":
                         ).drop(
                             col_drop, axis=1
                         )
-                        .to_csv(sep="\t", index=False)
+                        .to_csv(sep=",", index=False)
                         .encode("utf-8"),
                         file_name="AncientMetagenomeDir_filtered_libraries.csv",
                     )
