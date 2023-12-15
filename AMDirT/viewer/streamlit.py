@@ -196,7 +196,6 @@ if st.session_state.table_name != "No table selected":
                         samples=pd.DataFrame(df_mod["selected_rows"]),
                         supported_archives=supported_archives,
                     )
-                    print(libs)
                     lib_sel = AgGrid(
                         libs,
                         gridOptions=gridOptions_library,
@@ -218,8 +217,6 @@ if st.session_state.table_name != "No table selected":
                                 "You didn't select any library! Please select at least one library."
                             )
                         else:
-                            print("Selected libraries:\n\n\n\n")
-                            print(lib_mod)
                             st.session_state.force_lib_validation = True
 
         placeholder_buttons = st.empty()
