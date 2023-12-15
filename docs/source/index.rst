@@ -5,7 +5,7 @@
 Welcome to AMDirT's documentation!
 ====================================
 
-.. image:: https://github.com/SPAAM-community/AncientMetagenomeDir/raw/master/assets/images/logos/spaam-AncientMetagenomeDir_socialmedia.png
+.. image:: https://github.com/SPAAM-community/AMDirT/raw/master/assets/logo_rectangular_web.png
    :width: 400
    :alt: AncientMetagenomeDir Logo
 

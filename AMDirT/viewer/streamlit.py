@@ -226,6 +226,7 @@ if st.session_state.table_name != "No table selected":
 
         with placeholder_buttons.container():
             (
+                button_sample_table,
                 button_libraries,
                 button_fastq,
                 button_samplesheet_eager,
@@ -233,7 +234,7 @@ if st.session_state.table_name != "No table selected":
                 button_samplesheet_taxprofiler,
                 button_samplesheet_ameta,
                 button_bibtex,
-            ) = st.columns(7)
+            ) = st.columns(8)
 
             if (
                 st.session_state.force_samp_validation
@@ -256,6 +257,22 @@ if st.session_state.table_name != "No table selected":
                     total_size_str = f"{total_size / 1e12:.2f}TB"
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
+
+                ###################
+                ## SAMPLE TABLE ##
+                ###################
+
+                with button_sample_table:
+                    st.download_button(
+                        label="Download AncientMetagenomeDir Sample Table",
+                        data=(
+                            pd.DataFrame(df_mod["selected_rows"])
+                            .drop("_selectedRowNodeInfo", axis=1)
+                            .to_csv(sep=",", index=False)
+                            .encode("utf-8")
+                        ),
+                        file_name="AncientMetagenomeDir_filtered_samples.csv",
+                    )
 
                 ###################
                 ## LIBRARY TABLE ##
