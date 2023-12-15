@@ -20,7 +20,7 @@ For documentation on using the tool, please see [How Tos](https://amdirt.readthe
 
 ## Install
 
-### 1. With pip
+### 1. With [pip](https://pip.pypa.io/en/stable/getting-started/)
 
 ```bash
 pip install amdirt
@@ -28,11 +28,13 @@ pip install amdirt
 
 ### 2. With conda
 
-Installing AMDirT in a dedicated conda environment
+Installing AMDirT in a dedicated [conda](https://docs.conda.io/projects/miniconda/en/latest/index.html) environment
 
 ```bash
-conda create -n amdirt -c bioconda amdirt
-conda activate amdirt
+conda create -n amdirt -c bioconda amdirt #install amdirt in a dedicated conda environment
+conda activate amdirt # activate the conda environment
+# use amdirt
+conda deactivate amdirt # deactivate the conda environment
 ```
 
 ### The latest development version, directly from GitHub

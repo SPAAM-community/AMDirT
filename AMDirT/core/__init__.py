@@ -15,10 +15,11 @@ pd.options.mode.chained_assignment = None
 logging.basicConfig(level=logging.INFO)
 
 handler = colorlog.StreamHandler()
-handler.setFormatter(colorlog.ColoredFormatter(
-	'%(log_color)s%(name)s [%(levelname)s]: %(message)s'))
+handler.setFormatter(
+    colorlog.ColoredFormatter("%(log_color)s%(name)s [%(levelname)s]: %(message)s")
+)
 
-logger = colorlog.getLogger('AMDirT')
+logger = colorlog.getLogger("AMDirT")
 logger.addHandler(handler)
 logger.propagate = False
 
@@ -29,14 +30,20 @@ def monkeypatch_get_storage_manager():
     else:
         # When running in "raw mode", we can't access the CacheStorageManager,
         # so we're falling back to InMemoryCache.
+        # https://github.com/streamlit/streamlit/issues/6620
         # _LOGGER.warning("No runtime found, using MemoryCacheStorageManager")
-        return st.runtime.caching.storage.dummy_cache_storage.MemoryCacheStorageManager()
+        return (
+            st.runtime.caching.storage.dummy_cache_storage.MemoryCacheStorageManager()
+        )
+
 
 st.runtime.caching._data_caches.get_storage_manager = monkeypatch_get_storage_manager
+
 
 def get_json_path():
     path = get_module_dir("AMDirT.assets").joinpath("tables.json")
     return path
+
 
 @st.cache_data
 def get_amdir_tags():
@@ -87,8 +94,14 @@ def doi2bib(doi: str) -> str:
 
     return r.text
 
+
 @st.cache_data
-def get_libraries(table_name: str, samples: pd.DataFrame, libraries: pd.DataFrame, supported_archives: Iterable[str]):
+def get_libraries(
+    table_name: str,
+    samples: pd.DataFrame,
+    libraries: pd.DataFrame,
+    supported_archives: Iterable[str],
+):
     """Get filtered libraries from samples and libraries tables
 
     Args:
@@ -127,6 +140,7 @@ def get_libraries(table_name: str, samples: pd.DataFrame, libraries: pd.DataFram
 
     return selected_libraries
 
+
 def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     """
     Get Fastq Filename from download_links column
@@ -149,8 +163,8 @@ def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
     elif orientation == "rev":
         return rev
 
-def parse_to_mag(selected_libraries):
 
+def parse_to_mag(selected_libraries):
     selected_libraries["short_reads_1"] = selected_libraries["download_links"].apply(
         get_filename, orientation="fwd"
     )
@@ -175,6 +189,7 @@ def parse_to_mag(selected_libraries):
         }
     )
     return selected_libraries
+
 
 @st.cache_data
 def prepare_eager_table(
@@ -270,10 +285,14 @@ def prepare_mag_table(
     )
 
     # Create a DataFrame for "SINGLE" values
-    single_libraries = selected_libraries[selected_libraries["library_layout"] == "SINGLE"]
+    single_libraries = selected_libraries[
+        selected_libraries["library_layout"] == "SINGLE"
+    ]
 
     # Create a DataFrame for "PAIRED" values
-    paired_libraries = selected_libraries[selected_libraries["library_layout"] == "PAIRED"]
+    paired_libraries = selected_libraries[
+        selected_libraries["library_layout"] == "PAIRED"
+    ]
 
     if not single_libraries.empty:
         single_libraries = parse_to_mag(single_libraries)
@@ -281,6 +300,7 @@ def prepare_mag_table(
         paired_libraries = parse_to_mag(paired_libraries)
 
     return single_libraries, paired_libraries
+
 
 @st.cache_data
 def prepare_accession_table(
@@ -335,6 +355,7 @@ def prepare_accession_table(
         "aspera_script": dl_script_header + aspera_script,
     }
 
+
 @st.cache_data
 def prepare_taxprofiler_table(
     samples: pd.DataFrame,
@@ -365,26 +386,53 @@ def prepare_taxprofiler_table(
         get_filename, orientation="rev"
     )
 
-    selected_libraries["fastq_2"] = selected_libraries["fastq_2"].replace(
-        "NA", ""
-    )
+    selected_libraries["fastq_2"] = selected_libraries["fastq_2"].replace("NA", "")
 
     selected_libraries["fasta"] = ""
 
-    selected_libraries['instrument_model'] = where(selected_libraries['instrument_model'].str.lower().str.contains('illumina|nextseq|hiseq|miseq'), 'ILLUMINA',
-        where(selected_libraries['instrument_model'].str.lower().str.contains('torrent'), 'ION_TORRENT',
-        where(selected_libraries['instrument_model'].str.lower().str.contains('helicos'), 'HELICOS',
-        where(selected_libraries['instrument_model'].str.lower().str.contains('bgiseq'), 'BGISEQ',
-        where(selected_libraries['instrument_model'].str.lower().str.contains('454'), 'LS454',
-        selected_libraries['instrument_model']))))
+    selected_libraries["instrument_model"] = where(
+        selected_libraries["instrument_model"]
+        .str.lower()
+        .str.contains("illumina|nextseq|hiseq|miseq"),
+        "ILLUMINA",
+        where(
+            selected_libraries["instrument_model"].str.lower().str.contains("torrent"),
+            "ION_TORRENT",
+            where(
+                selected_libraries["instrument_model"]
+                .str.lower()
+                .str.contains("helicos"),
+                "HELICOS",
+                where(
+                    selected_libraries["instrument_model"]
+                    .str.lower()
+                    .str.contains("bgiseq"),
+                    "BGISEQ",
+                    where(
+                        selected_libraries["instrument_model"]
+                        .str.lower()
+                        .str.contains("454"),
+                        "LS454",
+                        selected_libraries["instrument_model"],
+                    ),
+                ),
+            ),
+        ),
     )
 
-    col2keep = ["sample_name", "library_name", "instrument_model", "fastq_1", "fastq_2", "fasta"]
+    col2keep = [
+        "sample_name",
+        "library_name",
+        "instrument_model",
+        "fastq_1",
+        "fastq_2",
+        "fasta",
+    ]
     selected_libraries = selected_libraries[col2keep].rename(
         columns={
             "sample_name": "sample",
             "library_name": "run_accession",
-            "instrument_model": "instrument_platform"
+            "instrument_model": "instrument_platform",
         }
     )
 
