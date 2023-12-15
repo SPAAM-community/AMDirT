@@ -72,8 +72,6 @@ nextflow pull nf-core/fetchngs
 nextflow run nf-core/fetchngs --input AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv`
 ```
 
-<!--
- TODO add more URLs
- TODO describe output
- TODO mention if on HPC that worker nodes need to have internet connection
- -->
+#### Supported hardware/OS
+
+AMDirT has been tested on different Unix systems (macOS and Ubuntu) using Intel and AMD chips. If you suspect that AMDirT isn't working properly because you use a different hardware/OS, please open an [issue on GitHub](https://github.com/SPAAM-community/AMDirT/issues).

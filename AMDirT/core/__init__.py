@@ -23,6 +23,17 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
+def monkeypatch_get_storage_manager():
+    if st.runtime.exists():
+        return st.runtime.get_instance().cache_storage_manager
+    else:
+        # When running in "raw mode", we can't access the CacheStorageManager,
+        # so we're falling back to InMemoryCache.
+        # _LOGGER.warning("No runtime found, using MemoryCacheStorageManager")
+        return st.runtime.caching.storage.dummy_cache_storage.MemoryCacheStorageManager()
+
+st.runtime.caching._data_caches.get_storage_manager = monkeypatch_get_storage_manager
+
 def get_json_path():
     path = get_module_dir("AMDirT.assets").joinpath("tables.json")
     return path

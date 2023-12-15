@@ -28,8 +28,11 @@ pip install amdirt
 
 ### 2. With conda
 
+Installing AMDirT in a dedicated conda environment
+
 ```bash
-conda install -c bioconda amdirt
+conda create -n amdirt -c bioconda amdirt
+conda activate amdirt
 ```
 
 ### The latest development version, directly from GitHub
