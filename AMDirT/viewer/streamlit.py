@@ -77,10 +77,11 @@ with st.sidebar:
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
     st.session_state.height = st.selectbox(
-        "Number of rows to display", (10, 20, 50, 100, 200), index=2
+        "Number of rows to display", (10, 20, 50, 100, 200), index=1
     )
     st.session_state.dl_method = st.selectbox(
-        label="Data download method", options=["curl", "nf-core/fetchngs", "aspera"]
+        label="Data download method",
+        options=["curl", "nf-core/fetchngs", "aspera", "sratookit"],
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
@@ -318,6 +319,18 @@ if st.session_state.table_name != "No table selected":
                                 supported_archives,
                             )["aspera_script"],
                             file_name="AncientMetagenomeDir_aspera_download_script.sh",
+                        )
+                    elif st.session_state.dl_method == "sratookit":
+                        st.download_button(
+                            label="Download SRAtoolkit/fasterq-dump sample download script",
+                            help=f"approx. {total_size_str} of sequencing data selected",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                lib_mod,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["fasterq_dump_script"],
+                            file_name="AncientMetagenomeDir_sratoolkit_download_script.sh",
                         )
                     else:
                         st.download_button(

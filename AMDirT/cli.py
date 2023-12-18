@@ -139,14 +139,19 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="Generate bash script with Aspera-based download commands for all libraries of samples in input table",
 )
 @click.option(
-    "--eager",
-    is_flag=True,
-    help="Convert filtered samples and libraries tables to eager input tables",
-)
-@click.option(
     "--fetchngs",
     is_flag=True,
     help="Convert filtered samples and libraries tables to nf-core/fetchngs input tables",
+)
+@click.option(
+    "--sratoolkit",
+    is_flag=True,
+    help="Generate bash script with SRA Toolkit fasterq-dump based download commands for all libraries of samples in input table",
+)
+@click.option(
+    "--eager",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to eager input tables",
 )
 @click.option(
     "--ameta",
@@ -178,26 +183,27 @@ def convert(ctx, no_args_is_help=True, **kwargs):
 # Autofill tool #
 #################
 
+
 @cli.command()
 @click.argument("accession", type=str, nargs=-1)
 @click.option(
     "-n",
-    "--table_name", 
+    "--table_name",
     type=click.Choice(get_table_list()),
-    default='ancientmetagenome-hostassociated',
-    show_default=True
+    default="ancientmetagenome-hostassociated",
+    show_default=True,
 )
 @click.option(
     "-l",
     "--library_output",
     type=click.Path(writable=True),
-    help="path to library output table file"
+    help="path to library output table file",
 )
 @click.option(
     "-s",
     "--sample_output",
     type=click.Path(writable=True),
-    help="path to sample output table file"
+    help="path to sample output table file",
 )
 @click.pass_context
 def autofill(ctx, no_args_is_help=True, **kwargs):
@@ -219,31 +225,26 @@ def autofill(ctx, no_args_is_help=True, **kwargs):
 @click.argument("dataset", type=click.Path(exists=True))
 @click.option(
     "-n",
-    "--table_name", 
+    "--table_name",
     type=click.Choice(get_table_list()),
-    default='ancientmetagenome-hostassociated',
-    show_default=True
+    default="ancientmetagenome-hostassociated",
+    show_default=True,
 )
 @click.option(
     "-t",
-    "--table_type", 
-    type=click.Choice(['samples', 'libraries']),
-    default='libraries',
-    show_default=True
+    "--table_type",
+    type=click.Choice(["samples", "libraries"]),
+    default="libraries",
+    show_default=True,
 )
-@click.option(
-    "-m", 
-    "--markdown", 
-    is_flag=True, 
-    help="Output is in markdown format"
-)
+@click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.option(
     "-o",
     "--outdir",
     type=click.Path(writable=True),
     default=".",
     show_default=True,
-    help="path to sample output table file"
+    help="path to sample output table file",
 )
 @click.pass_context
 def merge(ctx, no_args_is_help=True, **kwargs):
@@ -254,6 +255,7 @@ def merge(ctx, no_args_is_help=True, **kwargs):
     DATASET: path to tsv file of new dataset to merge
     """
     merge_new_df(**kwargs, **ctx.obj)
+
 
 if __name__ == "__main__":
     cli()

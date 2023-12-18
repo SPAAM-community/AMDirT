@@ -302,6 +302,7 @@ def prepare_accession_table(
 
     # Downloading with curl or aspera instead of fetchngs
     urls = set(libraries["download_links"])
+    accessions = set(libraries["archive_data_accession"])
     links = set()
     for u in urls:
         for s in u.split(";"):
@@ -321,11 +322,15 @@ def prepare_accession_table(
         )
         + "\n"
     )
+    fasterq_dump_script = (
+        "\n".join([f"fasterq-dump --split-files -p {a}" for a in accessions]) + "\n"
+    )
 
     return {
         "df": libraries[["archive_data_accession", "download_sizes"]].drop_duplicates(),
         "curl_script": dl_script_header + curl_script,
         "aspera_script": dl_script_header + aspera_script,
+        "fasterq_dump_script": dl_script_header + fasterq_dump_script,
     }
 
 
