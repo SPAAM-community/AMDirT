@@ -9,8 +9,11 @@ from AMDirT.core import (
     is_merge_size_zero,
     prepare_taxprofiler_table,
     get_libraries,
+    get_remote_resources,
+    get_json_path,
 )
-from AMDirT.core import get_json_path
+from AMDirT.validate import AMDirValidator
+from AMDirT.validate.exceptions import DatasetValidationError
 from json import load
 from AMDirT.core import logger
 import pandas as pd
@@ -47,25 +50,36 @@ def run_convert(
     if not verbose:
         warnings.filterwarnings("ignore")
     supported_archives = ["ENA", "SRA"]
-    if tables is None:
-        table_path = get_json_path()
-    else:
-        table_path = tables
-    with open(table_path, "r") as f:
-        tables = load(f)
-    table_list = list(tables["samples"].keys())
-    if table_name not in table_list:
-        logger.info(f"Table '{table_name}' not found in {table_list}")
-    samples = pd.read_csv(samples, sep="\t")
-    libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
-    ref_sample_tbl = pd.read_csv(tables["samples"][table_name], sep="\t")
 
-    diff_columns = set(samples.columns).difference(set(ref_sample_tbl.columns))
-    if len(diff_columns) != 0:
-        logger.error(
-            f"Columns in input sample table do not match columns in reference {table_name} table. Please check your input table.\n Differing columns: {diff_columns}"
-        )
-        raise SystemExit(1)
+    # Validate input table
+    if tables is None:
+        remote_resources = get_remote_resources()
+    else:
+        with open(tables, "r") as f:
+            remote_resources = load(f)
+
+    if table_name not in remote_resources["samples"]:
+        raise ValueError(f"{table_name} not found in AncientMetagenomeDir file")
+    if not verbose:
+        warnings.filterwarnings("ignore")
+
+    schema = remote_resources[f"samples_schema"][table_name]
+    dataset_valid = list()
+    v = AMDirValidator(schema, samples)
+    dataset_valid.append(v.parsing_ok)
+    if v.parsing_ok:
+        dataset_valid.append(v.validate_schema())
+        dataset_valid.append(v.check_duplicate_rows())
+        dataset_valid.append(v.check_columns())
+
+    dataset_valid = all(dataset_valid)
+    if dataset_valid is False:
+        v.to_rich()
+        raise DatasetValidationError("Input sample dataset is not valid")
+    else:
+        logger.info("Input sample dataset is valid")
+        samples = pd.read_csv(samples, sep="\t")
+        libraries = pd.read_csv(remote_resources["libraries"][table_name], sep="\t")
 
     selected_libraries = get_libraries(
         samples=samples,

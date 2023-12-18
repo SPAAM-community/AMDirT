@@ -2,14 +2,8 @@ from AMDirT.validate.application import AMDirValidator
 from AMDirT.validate.exceptions import DatasetValidationError
 import warnings
 import pandas as pd
-from AMDirT.core import logger, get_json_path
-from json import load
+from AMDirT.core import logger, get_remote_resources
 from os.path import join
-
-def get_remote_resources():
-    json_path = get_json_path()
-    with open(json_path, "r") as f:
-        return load(f)
 
 
 def merge_new_df(
@@ -22,7 +16,7 @@ def merge_new_df(
     schema_check=True,
     line_dup=True,
     columns=True,
-):  
+):
     """Merge a new dataset with the remote master dataset
 
     Args:
@@ -40,10 +34,10 @@ def merge_new_df(
         ValueError: Table type must be either 'samples' or 'libraries'
         ValueError: Table name not found in AncientMetagenomeDir file
         DatasetValidationError: New dataset is not valid
-    """      
+    """
     remote_resources = get_remote_resources()
 
-    if table_type not in ['samples', 'libraries']:
+    if table_type not in ["samples", "libraries"]:
         raise ValueError("table_type must be either 'samples' or 'libraries'")
     if table_name not in remote_resources[table_type]:
         raise ValueError("table_name not found in AncientMetagenomeDir file")
@@ -68,13 +62,24 @@ def merge_new_df(
         else:
             v.to_rich()
         raise DatasetValidationError("New Dataset is not valid")
-    
+
     else:
-        remote_dataset = pd.read_table(remote_resources[table_type][table_name], dtype=dict(v.dataset.dtypes))
+        remote_dataset = pd.read_table(
+            remote_resources[table_type][table_name], dtype=dict(v.dataset.dtypes)
+        )
 
         logger.info("New Dataset is valid")
-        logger.info(f"Merging new dataset with remote {table_name} {table_type} dataset")
+        logger.info(
+            f"Merging new dataset with remote {table_name} {table_type} dataset"
+        )
         dataset = pd.concat([remote_dataset, v.dataset])
         dataset.drop_duplicates(inplace=True)
-        dataset.to_csv(join(outdir,f"{table_name}_{table_type}.tsv"), sep="\t", na_rep= "NA", index=False)
-        logger.info(f"New {table_name} {table_type} dataset written to {join(outdir,f'{table_name}_{table_type}.tsv')}")
+        dataset.to_csv(
+            join(outdir, f"{table_name}_{table_type}.tsv"),
+            sep="\t",
+            na_rep="NA",
+            index=False,
+        )
+        logger.info(
+            f"New {table_name} {table_type} dataset written to {join(outdir,f'{table_name}_{table_type}.tsv')}"
+        )

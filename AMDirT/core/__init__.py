@@ -9,6 +9,8 @@ from importlib.resources import files as get_module_dir
 import os
 import logging
 import colorlog
+from json import load
+
 
 pd.options.mode.chained_assignment = None
 
@@ -43,6 +45,12 @@ st.runtime.caching._data_caches.get_storage_manager = monkeypatch_get_storage_ma
 def get_json_path():
     path = get_module_dir("AMDirT.assets").joinpath("tables.json")
     return path
+
+
+def get_remote_resources():
+    json_path = get_json_path()
+    with open(json_path, "r") as f:
+        return load(f)
 
 
 @st.cache_data
