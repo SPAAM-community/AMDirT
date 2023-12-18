@@ -301,7 +301,6 @@ def prepare_accession_table(
     # )
 
     # Downloading with curl or aspera instead of fetchngs
-    print(libraries.columns)
     urls = set(libraries["download_links"])
     links = set()
     for u in urls:
@@ -324,7 +323,7 @@ def prepare_accession_table(
     )
 
     return {
-        "df": libraries[["archive_accession", "download_sizes"]].drop_duplicates(),
+        "df": libraries[["archive_data_accession", "download_sizes"]].drop_duplicates(),
         "curl_script": dl_script_header + curl_script,
         "aspera_script": dl_script_header + aspera_script,
     }

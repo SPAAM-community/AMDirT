@@ -1,7 +1,7 @@
 from numpy import ALLOW_THREADS
 import streamlit as st
 import pandas as pd
-
+import os
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import argparse
 import zipfile
@@ -265,10 +265,10 @@ if st.session_state.table_name != "No table selected":
                         data=(
                             pd.DataFrame(df_mod["selected_rows"])
                             .drop("_selectedRowNodeInfo", axis=1)
-                            .to_csv(sep=",", index=False)
+                            .to_csv(sep="\t", index=False)
                             .encode("utf-8")
                         ),
-                        file_name="AncientMetagenomeDir_filtered_samples.csv",
+                        file_name="AncientMetagenomeDir_filtered_samples.tsv",
                     )
 
                 ###################
@@ -286,7 +286,7 @@ if st.session_state.table_name != "No table selected":
                         data=(
                             lib_mod.drop(col_drop, axis=1).to_csv(sep="\t", index=False)
                         ).encode("utf-8"),
-                        file_name="AncientMetagenomeDir_filtered_libraries.csv",
+                        file_name="AncientMetagenomeDir_filtered_libraries.tsv",
                     )
 
                 ############################
@@ -349,37 +349,52 @@ if st.session_state.table_name != "No table selected":
                         file_name="AncientMetagenomeDir_nf_core_eager_input_table.tsv",
                     )
 
-                #######################
-                ## NF-CORE/MAG TABLE ##
-                #######################
-                mag_table_single, mag_table_paired = prepare_mag_table(
-                    pd.DataFrame(df_mod["selected_rows"]),
-                    lib_mod,
-                    st.session_state.table_name,
-                    supported_archives,
-                )
-                zip_file = zipfile.ZipFile(
-                    "ancientMetagenomeDir_mag_input.zip", mode="w"
-                )
-                if not mag_table_single.empty:
-                    mag_table_single.to_csv(
-                        "nf_core_mag_input_single_table.csv", index=False
+                    #######################
+                    ## NF-CORE/MAG TABLE ##
+                    #######################
+                with button_samplesheet_mag:
+                    mag_table_single, mag_table_paired = prepare_mag_table(
+                        pd.DataFrame(df_mod["selected_rows"]),
+                        lib_mod,
+                        st.session_state.table_name,
+                        supported_archives,
                     )
-                    zip_file.write("nf_core_mag_input_single_table.csv")
-                if not mag_table_paired.empty:
-                    mag_table_paired.to_csv(
-                        "nf_core_mag_input_paired_table.csv", index=False
+                    zip_file = zipfile.ZipFile(
+                        "AncientMetagenomeDir_nf_core_mag_input.zip", mode="w"
                     )
-                    zip_file.write("nf_core_mag_input_paired_table.csv")
-                zip_file.close()
-                with open("ancientMetagenomeDir_mag_input.zip", "rb") as zip_file:
-                    with button_samplesheet_mag:
+                    if not mag_table_single.empty:
+                        mag_table_single.to_csv(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv",
+                            index=False,
+                        )
+                        zip_file.write(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv"
+                        )
+                        os.remove(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv"
+                        )
+                    if not mag_table_paired.empty:
+                        mag_table_paired.to_csv(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv",
+                            index=False,
+                        )
+                        zip_file.write(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv"
+                        )
+                        os.remove(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv"
+                        )
+                    zip_file.close()
+                    with open(
+                        "AncientMetagenomeDir_nf_core_mag_input.zip", "rb"
+                    ) as zip_file:
                         st.download_button(
                             label="Download nf-core/mag input CSV",
                             data=zip_file,
                             file_name="AncientMetagenomeDir_nf_core_mag_input.zip",
                             mime="application/zip",
                         )
+                    os.remove("AncientMetagenomeDir_nf_core_mag_input.zip")
 
                 #######################
                 ## TAXPROFILER TABLE ##

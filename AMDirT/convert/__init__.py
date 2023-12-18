@@ -58,7 +58,16 @@ def run_convert(
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
 
-    logger.warning("We provide no warranty to the accuracy of the generated input sheets.")
+    selected_libraries = get_libraries(
+        samples=samples,
+        libraries=libraries,
+        table_name=table_name,
+        supported_archives=supported_archives,
+    )
+
+    logger.warning(
+        "We provide no warranty to the accuracy of the generated input sheets."
+    )
 
     if bibliography == True:
         logger.info("Preparing Bibtex citation file")
@@ -72,14 +81,7 @@ def run_convert(
 
     if librarymetadata == True:
         logger.info("Writing filtered libraries table")
-        librarymetadata = get_libraries(
-            samples=samples,
-            libraries=libraries,
-            table_name=table_name,
-            supported_archives=supported_archives,
-        ).drop(
-            col_drop, axis=1
-        )
+        librarymetadata = selected_libraries.drop(col_drop, axis=1)
         librarymetadata.to_csv(
             f"{output}/AncientMetagenomeDir_filtered_libraries.tsv",
             sep="\t",
@@ -90,7 +92,7 @@ def run_convert(
         logger.info("Writing curl download script")
         accession_table = prepare_accession_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
@@ -104,7 +106,7 @@ def run_convert(
         )
         accession_table = prepare_accession_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
@@ -117,11 +119,11 @@ def run_convert(
         logger.info("Preparing nf-core/fetchngs table")
         accession_table = prepare_accession_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        accession_table["df"]['archive_accession'].to_csv(
+        accession_table["df"]["archive_data_accession"].to_csv(
             f"{output}/AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
             sep="\t",
             header=False,
@@ -132,7 +134,7 @@ def run_convert(
         logger.info("Preparing nf-core/eager table")
         eager_table = prepare_eager_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
@@ -146,11 +148,11 @@ def run_convert(
         logger.info("Preparing nf-core/taxprofiler table")
         accession_table = prepare_taxprofiler_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
-        accession_table["df"].to_csv(
+        accession_table.to_csv(
             f"{output}/AncientMetagenomeDir_nf_core_taxprofiler_input_table.csv",
             header=False,
             index=False,
@@ -158,10 +160,12 @@ def run_convert(
 
     if ameta == True:
         logger.info("Preparing aMeta table")
-        logger.warning("aMeta does not support pairs. You must manually merge pair-end data before using samplesheet.")
+        logger.warning(
+            "aMeta does not support pairs. You must manually merge pair-end data before using samplesheet."
+        )
         aMeta_table = prepare_aMeta_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )
@@ -175,7 +179,7 @@ def run_convert(
         logger.info("Preparing nf-core/mag table")
         mag_table_single, mag_table_paired = prepare_mag_table(
             samples=samples,
-            libraries=libraries,
+            libraries=selected_libraries,
             table_name=table_name,
             supported_archives=supported_archives,
         )

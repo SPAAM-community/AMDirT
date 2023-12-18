@@ -9,8 +9,8 @@ from AMDirT.convert import run_convert
 def test_convert(test_data_dir):
     assert (
         run_convert(
-            samples=os.path.join(test_data_dir, "data_test_convert.tsv"),
-            table_name="ancientmetagenome-environmental",
+            samples=os.path.join(test_data_dir, "samples_test_convert.tsv"),
+            table_name="ancientmetagenome-hostassociated",
             eager=True,
             fetchngs=True,
             ameta=True,

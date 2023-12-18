@@ -1,0 +1,3 @@
+project_name	publication_year	publication_doi	site_name	latitude	longitude	geo_loc_name	sample_name	sample_host	sample_age	sample_age_doi	community_type	material	archive	archive_project	archive_accession
+Warinner2014	2014	10.1038/ng.2906	Dalheim	51.565	8.84	Germany	B61	Homo sapiens	900	10.1038/ng.2906	oral	dental calculus	SRA	PRJNA216965	SRS473742,SRS473743,SRS473744,SRS473745
+Weyrich2017	2017	10.1038/nature21674	El Sidrón Cave	43.386	-5.328	Spain	ElSidron1	Homo sapiens neanderthalensis	49000	10.1038/nature21674	oral	dental calculus	SRA	PRJNA685265	SRS7890498
