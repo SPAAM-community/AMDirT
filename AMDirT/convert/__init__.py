@@ -58,6 +58,14 @@ def run_convert(
         logger.info(f"Table '{table_name}' not found in {table_list}")
     samples = pd.read_csv(samples, sep="\t")
     libraries = pd.read_csv(tables["libraries"][table_name], sep="\t")
+    ref_sample_tbl = pd.read_csv(tables["samples"][table_name], sep="\t")
+
+    diff_columns = set(samples.columns).difference(set(ref_sample_tbl.columns))
+    if len(diff_columns) != 0:
+        logger.error(
+            f"Columns in input sample table do not match columns in reference {table_name} table. Please check your input table.\n Differing columns: {diff_columns}"
+        )
+        raise SystemExit(1)
 
     selected_libraries = get_libraries(
         samples=samples,
