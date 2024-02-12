@@ -93,6 +93,7 @@ def run_convert(
             supported_archives=supported_archives,
         )
     else:
+        schema = remote_resources[f"libraries_schema"][table_name]
         dataset_valid = list()
         v = AMDirValidator(schema, libraries)
         dataset_valid.append(v.parsing_ok)
@@ -107,7 +108,13 @@ def run_convert(
             raise DatasetValidationError("Input libraries dataset is not valid")
         else:
             logger.info("Input libraries dataset is valid")
-            selected_libraries = pd.read_csv(libraries, sep="\t")
+            libraries = pd.read_csv(libraries, sep="\t")
+            selected_libraries = get_libraries(
+                samples=samples,
+                libraries=libraries,
+                table_name=table_name,
+                supported_archives=supported_archives,
+            )
 
     accession_table = prepare_accession_table(
         samples=samples,
