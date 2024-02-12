@@ -22,6 +22,7 @@ import warnings
 
 def run_convert(
     samples,
+    libraries,
     table_name,
     tables=None,
     output=".",
@@ -40,9 +41,10 @@ def run_convert(
     """Run the AMDirT conversion application to input samplesheet tables for different pipelines
 
     Args:
-        tables (str): Path to JSON file listing tables
         samples (str): Path to AncientMetagenomeDir filtered samples tsv file
+        libraries(str): Optional path to AncientMetagenomeDir filtered libraries tsv file
         table_name (str): Name of the table of the table to convert
+        tables (str): Path to JSON file listing tables
         output (str): Path to output table. Defaults to "."
     """
     os.makedirs(output, exist_ok=True)
@@ -79,14 +81,33 @@ def run_convert(
     else:
         logger.info("Input sample dataset is valid")
         samples = pd.read_csv(samples, sep="\t")
-        libraries = pd.read_csv(remote_resources["libraries"][table_name], sep="\t")
+        remote_libraries = pd.read_csv(
+            remote_resources["libraries"][table_name], sep="\t"
+        )
 
-    selected_libraries = get_libraries(
-        samples=samples,
-        libraries=libraries,
-        table_name=table_name,
-        supported_archives=supported_archives,
-    )
+    if not libraries:
+        selected_libraries = get_libraries(
+            samples=samples,
+            libraries=remote_libraries,
+            table_name=table_name,
+            supported_archives=supported_archives,
+        )
+    else:
+        dataset_valid = list()
+        v = AMDirValidator(schema, libraries)
+        dataset_valid.append(v.parsing_ok)
+        if v.parsing_ok:
+            dataset_valid.append(v.validate_schema())
+            dataset_valid.append(v.check_duplicate_rows())
+            dataset_valid.append(v.check_columns())
+
+        dataset_valid = all(dataset_valid)
+        if dataset_valid is False:
+            v.to_rich()
+            raise DatasetValidationError("Input libraries dataset is not valid")
+        else:
+            logger.info("Input libraries dataset is valid")
+            selected_libraries = pd.read_csv(libraries, sep="\t")
 
     accession_table = prepare_accession_table(
         samples=samples,

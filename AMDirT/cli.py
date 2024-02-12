@@ -10,6 +10,31 @@ from AMDirT.merge import merge_new_df
 from json import load
 
 
+class MutuallyExclusiveOption(click.Option):
+    # Credits goes to Stan Chang for this code snippet
+    # https://gist.github.com/stanchan/bce1c2d030c76fe9223b5ff6ad0f03db
+
+    def __init__(self, *args, **kwargs):
+        self.mutually_exclusive = set(kwargs.pop("mutually_exclusive", []))
+        help = kwargs.get("help", "")
+        if self.mutually_exclusive:
+            ex_str = ", ".join(self.mutually_exclusive)
+            kwargs["help"] = help + (
+                " NOTE: This argument is mutually exclusive with "
+                " arguments: [" + ex_str + "]."
+            )
+        super(MutuallyExclusiveOption, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        if self.mutually_exclusive.intersection(opts) and self.name in opts:
+            raise click.UsageError(
+                "Illegal usage: `{}` is mutually exclusive with "
+                "arguments `{}`.".format(self.name, ", ".join(self.mutually_exclusive))
+            )
+
+        return super(MutuallyExclusiveOption, self).handle_parse_result(ctx, opts, args)
+
+
 def get_table_list():
     json_path = get_json_path()
     with open(json_path, "r") as f:
@@ -111,6 +136,20 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="(Optional) JSON file listing AncientMetagenomeDir tables",
 )
 @click.option(
+    "--libraries",
+    type=click.Path(readable=True, file_okay=True, dir_okay=False, exists=True),
+    help=("(Optional) Path to libraries table"),
+    cls=MutuallyExclusiveOption,
+    mutually_exclusive=["librarymetadata"],
+)
+@click.option(
+    "--librarymetadata",
+    is_flag=True,
+    help="Generate AncientMetagenomeDir libraries table of all samples in input table",
+    cls=MutuallyExclusiveOption,
+    mutually_exclusive=["libraries"],
+)
+@click.option(
     "-o",
     "--output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
@@ -122,11 +161,6 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     "--bibliography",
     is_flag=True,
     help="Generate BibTeX file of all publications in input table",
-)
-@click.option(
-    "--librarymetadata",
-    is_flag=True,
-    help="Generate AncientMetagenomeDir libraries table of all samples in input table",
 )
 @click.option(
     "--curl",
