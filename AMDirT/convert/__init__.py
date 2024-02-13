@@ -42,7 +42,7 @@ def run_convert(
 
     Args:
         samples (str): Path to AncientMetagenomeDir filtered samples tsv file
-        libraries(str): Optional path to AncientMetagenomeDir filtered libraries tsv file
+        libraries(str): Optional path to AncientMetagenomeDir pre-filtered libraries tsv file
         table_name (str): Name of the table of the table to convert
         tables (str): Path to JSON file listing tables
         output (str): Path to output table. Defaults to "."
