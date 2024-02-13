@@ -138,7 +138,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 @click.option(
     "--libraries",
     type=click.Path(readable=True, file_okay=True, dir_okay=False, exists=True),
-    help=("(Optional) Path to libraries table"),
+    help=("(Optional) Path to a pre-filtered libraries table"),
     cls=MutuallyExclusiveOption,
     mutually_exclusive=["librarymetadata"],
 )
