@@ -206,6 +206,9 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager, ameta, taxprofiler, and fetchNGS input tables
+
+    Note: When supplying a pre-filtered libraries table with `--libraries`, the corresponding sample table is still required!
+
     \b
     SAMPLES: path to filtered AncientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
