@@ -138,7 +138,7 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 @click.option(
     "--libraries",
     type=click.Path(readable=True, file_okay=True, dir_okay=False, exists=True),
-    help=("(Optional) Path to libraries table"),
+    help=("(Optional) Path to a pre-filtered libraries table"),
     cls=MutuallyExclusiveOption,
     mutually_exclusive=["librarymetadata"],
 )
@@ -206,6 +206,9 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager, ameta, taxprofiler, and fetchNGS input tables
+
+    Note: When supplying a pre-filtered libraries table with `--libraries`, the corresponding sample table is still required!
+
     \b
     SAMPLES: path to filtered AncientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
