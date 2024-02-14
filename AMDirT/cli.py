@@ -10,6 +10,31 @@ from AMDirT.merge import merge_new_df
 from json import load
 
 
+class MutuallyExclusiveOption(click.Option):
+    # Credits goes to Stan Chang for this code snippet
+    # https://gist.github.com/stanchan/bce1c2d030c76fe9223b5ff6ad0f03db
+
+    def __init__(self, *args, **kwargs):
+        self.mutually_exclusive = set(kwargs.pop("mutually_exclusive", []))
+        help = kwargs.get("help", "")
+        if self.mutually_exclusive:
+            ex_str = ", ".join(self.mutually_exclusive)
+            kwargs["help"] = help + (
+                " NOTE: This argument is mutually exclusive with "
+                " arguments: [" + ex_str + "]."
+            )
+        super(MutuallyExclusiveOption, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        if self.mutually_exclusive.intersection(opts) and self.name in opts:
+            raise click.UsageError(
+                "Illegal usage: `{}` is mutually exclusive with "
+                "arguments `{}`.".format(self.name, ", ".join(self.mutually_exclusive))
+            )
+
+        return super(MutuallyExclusiveOption, self).handle_parse_result(ctx, opts, args)
+
+
 def get_table_list():
     json_path = get_json_path()
     with open(json_path, "r") as f:
@@ -111,6 +136,20 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="(Optional) JSON file listing AncientMetagenomeDir tables",
 )
 @click.option(
+    "--libraries",
+    type=click.Path(readable=True, file_okay=True, dir_okay=False, exists=True),
+    help=("(Optional) Path to a pre-filtered libraries table"),
+    cls=MutuallyExclusiveOption,
+    mutually_exclusive=["librarymetadata"],
+)
+@click.option(
+    "--librarymetadata",
+    is_flag=True,
+    help="Generate AncientMetagenomeDir libraries table of all samples in input table",
+    cls=MutuallyExclusiveOption,
+    mutually_exclusive=["libraries"],
+)
+@click.option(
     "-o",
     "--output",
     type=click.Path(writable=True, dir_okay=True, file_okay=False),
@@ -124,11 +163,6 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="Generate BibTeX file of all publications in input table",
 )
 @click.option(
-    "--librarymetadata",
-    is_flag=True,
-    help="Generate AncientMetagenomeDir libraries table of all samples in input table",
-)
-@click.option(
     "--curl",
     is_flag=True,
     help="Generate bash script with curl-based download commands for all libraries of samples in input table",
@@ -139,14 +173,19 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
     help="Generate bash script with Aspera-based download commands for all libraries of samples in input table",
 )
 @click.option(
-    "--eager",
-    is_flag=True,
-    help="Convert filtered samples and libraries tables to eager input tables",
-)
-@click.option(
     "--fetchngs",
     is_flag=True,
     help="Convert filtered samples and libraries tables to nf-core/fetchngs input tables",
+)
+@click.option(
+    "--sratoolkit",
+    is_flag=True,
+    help="Generate bash script with SRA Toolkit fasterq-dump based download commands for all libraries of samples in input table",
+)
+@click.option(
+    "--eager",
+    is_flag=True,
+    help="Convert filtered samples and libraries tables to eager input tables",
 )
 @click.option(
     "--ameta",
@@ -167,6 +206,9 @@ def viewer(ctx, no_args_is_help=True, **kwargs):
 def convert(ctx, no_args_is_help=True, **kwargs):
     """\b
     Converts filtered samples and libraries tables to eager, ameta, taxprofiler, and fetchNGS input tables
+
+    Note: When supplying a pre-filtered libraries table with `--libraries`, the corresponding sample table is still required!
+
     \b
     SAMPLES: path to filtered AncientMetagenomeDir samples tsv file
     TABLE_NAME: name of table to convert
@@ -178,26 +220,27 @@ def convert(ctx, no_args_is_help=True, **kwargs):
 # Autofill tool #
 #################
 
+
 @cli.command()
 @click.argument("accession", type=str, nargs=-1)
 @click.option(
     "-n",
-    "--table_name", 
+    "--table_name",
     type=click.Choice(get_table_list()),
-    default='ancientmetagenome-hostassociated',
-    show_default=True
+    default="ancientmetagenome-hostassociated",
+    show_default=True,
 )
 @click.option(
     "-l",
     "--library_output",
     type=click.Path(writable=True),
-    help="path to library output table file"
+    help="path to library output table file",
 )
 @click.option(
     "-s",
     "--sample_output",
     type=click.Path(writable=True),
-    help="path to sample output table file"
+    help="path to sample output table file",
 )
 @click.pass_context
 def autofill(ctx, no_args_is_help=True, **kwargs):
@@ -219,31 +262,26 @@ def autofill(ctx, no_args_is_help=True, **kwargs):
 @click.argument("dataset", type=click.Path(exists=True))
 @click.option(
     "-n",
-    "--table_name", 
+    "--table_name",
     type=click.Choice(get_table_list()),
-    default='ancientmetagenome-hostassociated',
-    show_default=True
+    default="ancientmetagenome-hostassociated",
+    show_default=True,
 )
 @click.option(
     "-t",
-    "--table_type", 
-    type=click.Choice(['samples', 'libraries']),
-    default='libraries',
-    show_default=True
+    "--table_type",
+    type=click.Choice(["samples", "libraries"]),
+    default="libraries",
+    show_default=True,
 )
-@click.option(
-    "-m", 
-    "--markdown", 
-    is_flag=True, 
-    help="Output is in markdown format"
-)
+@click.option("-m", "--markdown", is_flag=True, help="Output is in markdown format")
 @click.option(
     "-o",
     "--outdir",
     type=click.Path(writable=True),
     default=".",
     show_default=True,
-    help="path to sample output table file"
+    help="path to sample output table file",
 )
 @click.pass_context
 def merge(ctx, no_args_is_help=True, **kwargs):
@@ -254,6 +292,7 @@ def merge(ctx, no_args_is_help=True, **kwargs):
     DATASET: path to tsv file of new dataset to merge
     """
     merge_new_df(**kwargs, **ctx.obj)
+
 
 if __name__ == "__main__":
     cli()

@@ -9,6 +9,8 @@ from importlib.resources import files as get_module_dir
 import os
 import logging
 import colorlog
+from json import load
+
 
 pd.options.mode.chained_assignment = None
 
@@ -43,6 +45,12 @@ st.runtime.caching._data_caches.get_storage_manager = monkeypatch_get_storage_ma
 def get_json_path():
     path = get_module_dir("AMDirT.assets").joinpath("tables.json")
     return path
+
+
+def get_remote_resources():
+    json_path = get_json_path()
+    with open(json_path, "r") as f:
+        return load(f)
 
 
 @st.cache_data
@@ -164,17 +172,15 @@ def get_filename(path_string: str, orientation: str) -> Tuple[str, str]:
         return rev
 
 
-def parse_to_mag(selected_libraries):
-    selected_libraries["short_reads_1"] = selected_libraries["download_links"].apply(
+def parse_to_mag(libraries):
+    libraries["short_reads_1"] = libraries["download_links"].apply(
         get_filename, orientation="fwd"
     )
-    selected_libraries["short_reads_2"] = selected_libraries["download_links"].apply(
+    libraries["short_reads_2"] = libraries["download_links"].apply(
         get_filename, orientation="rev"
     )
-    selected_libraries["short_reads_2"] = selected_libraries["short_reads_2"].replace(
-        "NA", ""
-    )
-    selected_libraries["longs_reads"] = ""
+    libraries["short_reads_2"] = libraries["short_reads_2"].replace("NA", "")
+    libraries["longs_reads"] = ""
     col2keep = [
         "archive_data_accession",
         "archive_sample_accession",
@@ -182,13 +188,13 @@ def parse_to_mag(selected_libraries):
         "short_reads_2",
         "longs_reads",
     ]
-    selected_libraries = selected_libraries[col2keep].rename(
+    libraries = libraries[col2keep].rename(
         columns={
             "archive_data_accession": "sample",
             "archive_sample_accession": "group",
         }
     )
-    return selected_libraries
+    return libraries
 
 
 @st.cache_data
@@ -206,36 +212,24 @@ def prepare_eager_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    selected_libraries = get_libraries(
-        table_name=table_name,
-        samples=samples,
-        libraries=libraries,
-        supported_archives=supported_archives,
+
+    libraries["Colour_Chemistry"] = libraries["instrument_model"].apply(
+        get_colour_chemistry
     )
 
-    selected_libraries["Colour_Chemistry"] = selected_libraries[
-        "instrument_model"
-    ].apply(get_colour_chemistry)
+    libraries["UDG_Treatment"] = libraries.library_treatment.str.split(
+        "-", expand=True
+    )[0]
 
-    selected_libraries[
-        "UDG_Treatment"
-    ] = selected_libraries.library_treatment.str.split("-", expand=True)[0]
+    libraries["R1"] = libraries["download_links"].apply(get_filename, orientation="fwd")
 
-    selected_libraries["R1"] = selected_libraries["download_links"].apply(
-        get_filename, orientation="fwd"
-    )
+    libraries["R2"] = libraries["download_links"].apply(get_filename, orientation="rev")
 
-    selected_libraries["R2"] = selected_libraries["download_links"].apply(
-        get_filename, orientation="rev"
-    )
-
-    selected_libraries["Lane"] = 0
-    selected_libraries["SeqType"] = where(
-        selected_libraries["library_layout"] == "SINGLE", "SE", "PE"
-    )
-    selected_libraries["BAM"] = "NA"
+    libraries["Lane"] = 0
+    libraries["SeqType"] = where(libraries["library_layout"] == "SINGLE", "SE", "PE")
+    libraries["BAM"] = "NA"
     if table_name == "ancientmetagenome-environmental":
-        selected_libraries["sample_host"] = "environmental"
+        libraries["sample_host"] = "environmental"
     col2keep = [
         "sample_name",
         "archive_data_accession",
@@ -249,7 +243,7 @@ def prepare_eager_table(
         "R2",
         "BAM",
     ]
-    selected_libraries = selected_libraries[col2keep].rename(
+    libraries = libraries[col2keep].rename(
         columns={
             "sample_name": "Sample_Name",
             "archive_data_accession": "Library_ID",
@@ -258,7 +252,7 @@ def prepare_eager_table(
         }
     )
 
-    return selected_libraries
+    return libraries
 
 
 @st.cache_data
@@ -277,22 +271,11 @@ def prepare_mag_table(
         supported_archives (list): list of supported archives
     """
 
-    selected_libraries = get_libraries(
-        table_name=table_name,
-        samples=samples,
-        libraries=libraries,
-        supported_archives=supported_archives,
-    )
-
     # Create a DataFrame for "SINGLE" values
-    single_libraries = selected_libraries[
-        selected_libraries["library_layout"] == "SINGLE"
-    ]
+    single_libraries = libraries[libraries["library_layout"] == "SINGLE"]
 
     # Create a DataFrame for "PAIRED" values
-    paired_libraries = selected_libraries[
-        selected_libraries["library_layout"] == "PAIRED"
-    ]
+    paired_libraries = libraries[libraries["library_layout"] == "PAIRED"]
 
     if not single_libraries.empty:
         single_libraries = parse_to_mag(single_libraries)
@@ -318,15 +301,16 @@ def prepare_accession_table(
         supported_archives (list): list of supported archives
     """
 
-    selected_libraries = get_libraries(
-        table_name=table_name,
-        samples=samples,
-        libraries=libraries,
-        supported_archives=supported_archives,
-    )
+    # libraries = get_libraries(
+    #     table_name=table_name,
+    #     samples=samples,
+    #     libraries=libraries,
+    #     supported_archives=supported_archives,
+    # )
 
     # Downloading with curl or aspera instead of fetchngs
-    urls = set(selected_libraries["download_links"])
+    urls = set(libraries["download_links"])
+    accessions = set(libraries["archive_data_accession"])
     links = set()
     for u in urls:
         for s in u.split(";"):
@@ -346,13 +330,15 @@ def prepare_accession_table(
         )
         + "\n"
     )
+    fasterq_dump_script = (
+        "\n".join([f"fasterq-dump --split-files -p {a}" for a in accessions]) + "\n"
+    )
 
     return {
-        "df": selected_libraries[
-            ["archive_accession", "download_sizes"]
-        ].drop_duplicates(),
+        "df": libraries[["archive_data_accession", "download_sizes"]].drop_duplicates(),
         "curl_script": dl_script_header + curl_script,
         "aspera_script": dl_script_header + aspera_script,
+        "fasterq_dump_script": dl_script_header + fasterq_dump_script,
     }
 
 
@@ -371,49 +357,37 @@ def prepare_taxprofiler_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    selected_libraries = get_libraries(
-        table_name=table_name,
-        samples=samples,
-        libraries=libraries,
-        supported_archives=supported_archives,
-    )
 
-    selected_libraries["fastq_1"] = selected_libraries["download_links"].apply(
+    libraries["fastq_1"] = libraries["download_links"].apply(
         get_filename, orientation="fwd"
     )
 
-    selected_libraries["fastq_2"] = selected_libraries["download_links"].apply(
+    libraries["fastq_2"] = libraries["download_links"].apply(
         get_filename, orientation="rev"
     )
 
-    selected_libraries["fastq_2"] = selected_libraries["fastq_2"].replace("NA", "")
+    libraries["fastq_2"] = libraries["fastq_2"].replace("NA", "")
 
-    selected_libraries["fasta"] = ""
+    libraries["fasta"] = ""
 
-    selected_libraries["instrument_model"] = where(
-        selected_libraries["instrument_model"]
+    libraries["instrument_model"] = where(
+        libraries["instrument_model"]
         .str.lower()
         .str.contains("illumina|nextseq|hiseq|miseq"),
         "ILLUMINA",
         where(
-            selected_libraries["instrument_model"].str.lower().str.contains("torrent"),
+            libraries["instrument_model"].str.lower().str.contains("torrent"),
             "ION_TORRENT",
             where(
-                selected_libraries["instrument_model"]
-                .str.lower()
-                .str.contains("helicos"),
+                libraries["instrument_model"].str.lower().str.contains("helicos"),
                 "HELICOS",
                 where(
-                    selected_libraries["instrument_model"]
-                    .str.lower()
-                    .str.contains("bgiseq"),
+                    libraries["instrument_model"].str.lower().str.contains("bgiseq"),
                     "BGISEQ",
                     where(
-                        selected_libraries["instrument_model"]
-                        .str.lower()
-                        .str.contains("454"),
+                        libraries["instrument_model"].str.lower().str.contains("454"),
                         "LS454",
-                        selected_libraries["instrument_model"],
+                        libraries["instrument_model"],
                     ),
                 ),
             ),
@@ -428,7 +402,7 @@ def prepare_taxprofiler_table(
         "fastq_2",
         "fasta",
     ]
-    selected_libraries = selected_libraries[col2keep].rename(
+    libraries = libraries[col2keep].rename(
         columns={
             "sample_name": "sample",
             "library_name": "run_accession",
@@ -436,7 +410,7 @@ def prepare_taxprofiler_table(
         }
     )
 
-    return selected_libraries
+    return libraries
 
 
 @st.cache_data
@@ -454,45 +428,33 @@ def prepare_aMeta_table(
         table_name (str): Name of the table
         supported_archives (list): list of supported archives
     """
-    selected_libraries = get_libraries(
-        table_name=table_name,
-        samples=samples,
-        libraries=libraries,
-        supported_archives=supported_archives,
+
+    libraries["Colour_Chemistry"] = libraries["instrument_model"].apply(
+        get_colour_chemistry
     )
 
-    selected_libraries["Colour_Chemistry"] = selected_libraries[
-        "instrument_model"
-    ].apply(get_colour_chemistry)
+    libraries["UDG_Treatment"] = libraries.library_treatment.str.split(
+        "-", expand=True
+    )[0]
 
-    selected_libraries[
-        "UDG_Treatment"
-    ] = selected_libraries.library_treatment.str.split("-", expand=True)[0]
+    libraries["R1"] = libraries["download_links"].apply(get_filename, orientation="fwd")
 
-    selected_libraries["R1"] = selected_libraries["download_links"].apply(
-        get_filename, orientation="fwd"
-    )
+    libraries["R2"] = libraries["download_links"].apply(get_filename, orientation="rev")
 
-    selected_libraries["R2"] = selected_libraries["download_links"].apply(
-        get_filename, orientation="rev"
-    )
-
-    selected_libraries["Lane"] = 0
-    selected_libraries["SeqType"] = where(
-        selected_libraries["library_layout"] == "SINGLE", "SE", "PE"
-    )
-    selected_libraries["BAM"] = "NA"
+    libraries["Lane"] = 0
+    libraries["SeqType"] = where(libraries["library_layout"] == "SINGLE", "SE", "PE")
+    libraries["BAM"] = "NA"
     if table_name == "ancientmetagenome-environmental":
-        selected_libraries["sample_host"] = "environmental"
+        libraries["sample_host"] = "environmental"
     col2keep = ["archive_data_accession", "R1"]
-    selected_libraries = selected_libraries[col2keep].rename(
+    libraries = libraries[col2keep].rename(
         columns={
             "archive_data_accession": "sample",
             "R1": "fastq",
         }
     )
 
-    return selected_libraries
+    return libraries
 
 
 @st.cache_data

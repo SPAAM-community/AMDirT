@@ -25,6 +25,16 @@ AMDirT convert ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv 
 
 where you provide the filtered TSV, which AncientMetagenomeDir samples table the filtered table is derived from,then the output directory where the samplesheets should be saved into, and which tool to generate a samplesheet from.
 
+Alternatively, if you only want specific libraries, and already have pre-filtered the associated AncientMetagenomeDir libraries table, you can also provide it. Here for example:
+
+- the filtered sample table is : `ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv`
+- the matching filtered libraries table is: `ancientmetagenome-hostassociated_libraries_warinnerlibrariesonly.tsv`
+
+```bash
+mkdir -p samplesheets/
+AMDirT convert --libraries ancientmetagenome-hostassociated_libraries_warinnerlibrariesonly.tsv ancientmetagenome-hostassociated_samples_warinnersamplesonly.tsv ancientmetagenome-hostassociated -o samplesheets/ --<tool>
+```
+
 See [Output](#output) for descriptions of all output files.
 
 > ⚠️ _When using a **pipeline input samplesheet**, you should always double check the sheet is correctly configured. We cannot guarantee accuracy between metadata and sequencing files._ 
