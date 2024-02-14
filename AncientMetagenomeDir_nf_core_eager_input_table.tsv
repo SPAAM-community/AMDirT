@@ -1,6 +1,0 @@
-Sample_Name	Library_ID	Lane	Colour_Chemistry	SeqType	Organism	Strandedness	UDG_Treatment	R1	R2	BAM
-B61	SRR957738	0	4	SE	Homo sapiens	double	none	SRR957738.fastq.gz	NA	NA
-B61	SRR957739	0	4	SE	Homo sapiens	double	none	SRR957739.fastq.gz	NA	NA
-B61	SRR957740	0	4	SE	Homo sapiens	double	none	SRR957740.fastq.gz	NA	NA
-B61	SRR957741	0	4	SE	Homo sapiens	double	none	SRR957741.fastq.gz	NA	NA
-ElSidron1	SRR13263123	0	4	PE	Homo sapiens neanderthalensis	double	none	SRR13263123_1.fastq.gz	SRR13263123_2.fastq.gz	NA
