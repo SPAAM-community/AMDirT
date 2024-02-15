@@ -88,7 +88,7 @@ Now validate your selection! Press the 'Validate selection' button at the bottom
 
 > ⚠️ _If you wish to download the data, make sure you have already selected your 'Data download method' in the sidebar before pressing 'Validate selection'!_
 
-Once the select is validated, the library filtering table will appear below
+Once the selection is validated, the library filtering table will appear below
 
 ![AMDirT libraries filtering table](images/amdirt-filter-libraries-table.png)
 
