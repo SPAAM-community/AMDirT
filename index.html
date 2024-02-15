@@ -1,129 +1,49 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>stlite app</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.47.0/build/stlite.css" />
-</head>
-
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.47.0/build/stlite.css"
+    />
+  </head>
+  <body>
     <div id="root"></div>
     <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.47.0/build/stlite.js"></script>
     <script>
-        stlite.mount(
-            {
-                requirements: ["AMDirT", "streamlit-aggrid"],
-                entrypoint: "streamlit_app.py",
-                files: {
-                    "streamlit_app.py": `import streamlit as st
+stlite.mount(
+  {
+    requirements: ["AMDirT", "streamlit-aggrid"],
+    entrypoint: "streamlit_app.py",
+    files: {
+"streamlit_app.py": `import streamlit as st
 import pandas as pd
-
+import os
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import argparse
 import zipfile
 import json
 import os
-import importlib
-from io import StringIO
-from packaging import version
-
 from AMDirT import __version__
 from AMDirT.core import (
+    prepare_bibtex_file,
     prepare_eager_table,
     prepare_mag_table,
     prepare_accession_table,
     prepare_aMeta_table,
     prepare_taxprofiler_table,
     is_merge_size_zero,
+    get_amdir_tags,
     get_libraries,
-    get_json_path
+    get_json_path,
 )
 
-
-
-if importlib.util.find_spec("pyodide") is not None:
-    from pyodide.http import open_url
-
-
-def doi2bib(doi: str) -> str:
-    """
-    Return a bibTeX string of metadata for a given DOI.
-    """
-
-
-    url = f"http://api.crossref.org/works/{doi}/transform/application/x-bibtex"
-
-    r = open_url(url)
-
-    return r.read()
-
-
-def read_dataframe(url:str, **kwargs):
-    """Read the CSV content from a URL"""
-
-    # If pyodide is available
-    if importlib.util.find_spec("pyodide") is not None:
-        url_contents = open_url(url)
-    else:
-        r = requests.get(url)
-        url_contents = StringIO(r.text)
-
-    return pd.read_csv(
-        url_contents,
-        **kwargs
-    )
-
-@st.cache_data
-def prepare_bibtex_file(samples: pd.DataFrame) -> str:
-    dois = set()
-    failed_dois = set()
-    dois_set = set(list(samples["publication_doi"]))
-    dois_set.add("10.1038/s41597-021-00816-y")
-    for doi in dois_set:
-        try:
-            bibtex_str = doi2bib(doi)
-            if len(bibtex_str) == 0:
-                failed_dois.add(doi)
-            else:
-                dois.add(bibtex_str)
-        except Exception as e:
-            pass
-    # Print warning for DOIs that do not have an entry
-    if len(failed_dois) > 0:
-        st.warning(
-            "Citation information could not be resolved for the "
-            "following DOIs: " + ", ".join(failed_dois) + ". Please "
-            "check how to cite these publications manually!"
-        )
-
-    dois_string = "\\n".join(list(dois))
-    return dois_string
-
-@st.cache_data
-def get_amdir_tags():
-    url = "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
-
-
-    if importlib.util.find_spec("pyodide") is not None:
-        url_contents = open_url(url)
-        r = json.load(url_contents)
-        if isinstance(r, list):
-            response = r
-    else:
-        r = requests.get(url)
-        if r.status_code == 200:
-            response = r
-    if response:
-        return [
-            tag["name"]
-            for tag in response
-            if version.parse(tag["name"]) >= version.parse("v22.09")
-        ]
-    else:
-        return []
 
 st.set_page_config(
     page_title="AMDirT viewer",
@@ -135,8 +55,10 @@ supported_archives = ["ENA", "SRA"]
 
 if "compute" not in st.session_state:
     st.session_state.compute = False
-if "force_validation" not in st.session_state:
-    st.session_state.force_validation = False
+if "force_samp_validation" not in st.session_state:
+    st.session_state.force_samp_validation = False
+if "force_lib_validation" not in st.session_state:
+    st.session_state.force_lib_validation = False
 if "table_name" not in st.session_state:
     st.session_state.table_name = None
 
@@ -144,10 +66,8 @@ if "table_name" not in st.session_state:
 def parse_args():
     parser = argparse.ArgumentParser("Run Streamlit app")
     parser.add_argument(
-        "-c", 
-        "--config", 
-        help="json config file", 
-        default=get_json_path())
+        "-c", "--config", help="json config file", default=get_json_path()
+    )
     try:
         args = parser.parse_args()
     except SystemExit as e:
@@ -173,21 +93,22 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) viewer tool")
-    st.write(f"Version: {__version__}")
+    st.write(f"\n Version: {__version__}")
     st.session_state.tag_name = st.selectbox(
         label="Select an AncientMetagenomeDir release", options=tags
     )
     options = ["No table selected"] + list(samples.keys())
     st.session_state.table_name = st.selectbox(label="Select a table", options=options)
     st.session_state.height = st.selectbox(
-        "Number of rows to display", (10, 20, 50, 100, 200), index=2
+        "Number of rows to display", (10, 20, 50, 100, 200), index=1
     )
     st.session_state.dl_method = st.selectbox(
-        label="Data download method", options=["curl", "nf-core/fetchngs", "aspera"]
+        label="Data download method",
+        options=["curl", "nf-core/fetchngs", "aspera", "sratookit"],
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
-            "You will need to set the ASPERA_PATH environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
+            "You will need to set the \`${ASPERA_PATH}\` environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
         )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
@@ -203,16 +124,16 @@ if st.session_state.table_name != "No table selected":
     lib_url = libraries[st.session_state.table_name].replace(
         "master", st.session_state.tag_name
     )
-    df = read_dataframe(
+    df = pd.read_csv(
         samp_url,
         sep="\t",
     )
-    library = read_dataframe(
+    library = pd.read_csv(
         lib_url,
         sep="\t",
     )
-    gb = GridOptionsBuilder.from_dataframe(df)
-    gb.configure_default_column(
+    gbs = GridOptionsBuilder.from_dataframe(df)
+    gbs.configure_default_column(
         groupable=True,
         value=True,
         enableRowGroup=True,
@@ -220,30 +141,54 @@ if st.session_state.table_name != "No table selected":
         editable=False,
         filterParams={"inRangeInclusive": "true"},
     )
-    gb.configure_selection(selection_mode="multiple", use_checkbox=True)
-    gb.configure_grid_options(checkboxSelection=True)
+    gbs.configure_selection(selection_mode="multiple", use_checkbox=True)
+    gbs.configure_grid_options(checkboxSelection=True)
 
-    gb.configure_pagination(
+    gbs.configure_pagination(
         enabled=True,
         paginationAutoPageSize=False,
         paginationPageSize=st.session_state.height,
     )
-    gb.configure_column(
+    gbs.configure_column(
         "project_name",
         headerCheckboxSelection=True,
         headerCheckboxSelectionFilteredOnly=True,
     )
-    gridOptions = gb.build()
+    gridOptions_sample = gbs.build()
+
+    gbl = GridOptionsBuilder.from_dataframe(library)
+    gbl.configure_default_column(
+        groupable=True,
+        value=True,
+        enableRowGroup=True,
+        aggFunc="sum",
+        editable=False,
+        filterParams={"inRangeInclusive": "true"},
+    )
+    gbl.configure_selection(selection_mode="multiple", use_checkbox=True)
+    gbl.configure_grid_options(checkboxSelection=True)
+
+    gbl.configure_pagination(
+        enabled=True,
+        paginationAutoPageSize=False,
+        paginationPageSize=st.session_state.height,
+    )
+    gbl.configure_column(
+        "project_name",
+        headerCheckboxSelection=True,
+        headerCheckboxSelectionFilteredOnly=True,
+    )
+    gridOptions_library = gbl.build()
 
     with st.form("Samples table") as f:
         st.markdown("Select samples to filter")
         df_mod = AgGrid(
             df,
-            gridOptions=gridOptions,
+            gridOptions=gridOptions_sample,
             data_return_mode="filtered",
             update_mode="selection_changed",
         )
-        if st.form_submit_button("Validate selection", type="primary"):
+        if st.form_submit_button("Validate sample selection", type="primary"):
             if len(df_mod["selected_rows"]) == 0:
                 st.error(
                     "You didn't select any sample! Please select at least one sample."
@@ -262,28 +207,64 @@ if st.session_state.table_name != "No table selected":
     ):
         nb_sel_samples = pd.DataFrame(df_mod["selected_rows"]).shape[0]
         st.write(f"{nb_sel_samples } sample{'s'[:nb_sel_samples^1]} selected")
-        st.session_state.force_validation = True
+        st.session_state.force_samp_validation = True
 
-        placeholder = st.empty()
+        placeholder_lib_table = st.empty()
+        with placeholder_lib_table.container():
+            if st.session_state.force_samp_validation:
+                with st.form("Library table"):
+                    st.markdown("Select libraries to filter")
+                    libs = get_libraries(
+                        table_name=st.session_state.table_name,
+                        libraries=library,
+                        samples=pd.DataFrame(df_mod["selected_rows"]),
+                        supported_archives=supported_archives,
+                    )
+                    lib_sel = AgGrid(
+                        libs,
+                        gridOptions=gridOptions_library,
+                        data_return_mode="filtered",
+                        update_mode="selection_changed",
+                    )
+                    try:
+                        lib_mod = pd.DataFrame(lib_sel["selected_rows"]).drop(
+                            "_selectedRowNodeInfo", axis=1
+                        )
+                    except KeyError:
+                        lib_mod = pd.DataFrame(lib_sel["selected_rows"])
 
-        with placeholder.container():
-            
-            (   
+                    if st.form_submit_button(
+                        "Validate library selection", type="primary"
+                    ):
+                        if len(lib_mod) == 0:
+                            st.error(
+                                "You didn't select any library! Please select at least one library."
+                            )
+                        else:
+                            st.session_state.force_lib_validation = True
+
+        placeholder_buttons = st.empty()
+
+        with placeholder_buttons.container():
+            (
                 button_sample_table,
                 button_libraries,
-                button_fastq, 
-                button_samplesheet_eager, 
+                button_fastq,
+                button_samplesheet_eager,
                 button_samplesheet_mag,
-                button_samplesheet_taxprofiler, 
+                button_samplesheet_taxprofiler,
                 button_samplesheet_ameta,
-                button_bibtex
+                button_bibtex,
             ) = st.columns(8)
-            
-            if st.session_state.force_validation:
+
+            if (
+                st.session_state.force_samp_validation
+                and st.session_state.force_lib_validation
+            ):
                 # Calculate the fastq file size of the selected libraries
                 acc_table = prepare_accession_table(
                     pd.DataFrame(df_mod["selected_rows"]),
-                    library,
+                    lib_mod,
                     st.session_state.table_name,
                     supported_archives,
                 )["df"]
@@ -297,7 +278,7 @@ if st.session_state.table_name != "No table selected":
                     total_size_str = f"{total_size / 1e12:.2f}TB"
                 else:
                     total_size_str = f"{total_size / 1e9:.2f}GB"
-                
+
                 ###################
                 ## SAMPLE TABLE ##
                 ###################
@@ -307,11 +288,11 @@ if st.session_state.table_name != "No table selected":
                         label="Download AncientMetagenomeDir Sample Table",
                         data=(
                             pd.DataFrame(df_mod["selected_rows"])
-                            .drop('_selectedRowNodeInfo', axis=1)
-                            .to_csv(sep=",", index=False)
+                            .drop("_selectedRowNodeInfo", axis=1)
+                            .to_csv(sep="\t", index=False)
                             .encode("utf-8")
-                            ),
-                            file_name="AncientMetagenomeDir_filtered_samples.csv",
+                        ),
+                        file_name="AncientMetagenomeDir_filtered_samples.tsv",
                     )
 
                 ###################
@@ -326,17 +307,10 @@ if st.session_state.table_name != "No table selected":
                 with button_libraries:
                     st.download_button(
                         label="Download AncientMetagenomeDir Library Table",
-                        data=get_libraries(
-                            table_name=st.session_state.table_name,
-                            libraries=library,
-                            samples=pd.DataFrame(df_mod["selected_rows"]),
-                            supported_archives=supported_archives,
-                        ).drop(
-                            col_drop, axis=1
-                        )
-                        .to_csv(sep=",", index=False)
-                        .encode("utf-8"),
-                        file_name="AncientMetagenomeDir_filtered_libraries.csv",
+                        data=(
+                            lib_mod.drop(col_drop, axis=1).to_csv(sep="\t", index=False)
+                        ).encode("utf-8"),
+                        file_name="AncientMetagenomeDir_filtered_libraries.tsv",
                     )
 
                 ############################
@@ -349,10 +323,10 @@ if st.session_state.table_name != "No table selected":
                             help=f"approx. {total_size_str} of sequencing data selected",
                             data=prepare_accession_table(
                                 pd.DataFrame(df_mod["selected_rows"]),
-                                library,
+                                lib_mod,
                                 st.session_state.table_name,
                                 supported_archives,
-                            )["df"]['archive_accession']
+                            )["df"]["archive_accession"]
                             .to_csv(sep="\t", header=False, index=False)
                             .encode("utf-8"),
                             file_name="AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv",
@@ -363,11 +337,23 @@ if st.session_state.table_name != "No table selected":
                             help=f"approx. {total_size_str} of sequencing data selected",
                             data=prepare_accession_table(
                                 pd.DataFrame(df_mod["selected_rows"]),
-                                library,
+                                lib_mod,
                                 st.session_state.table_name,
                                 supported_archives,
                             )["aspera_script"],
                             file_name="AncientMetagenomeDir_aspera_download_script.sh",
+                        )
+                    elif st.session_state.dl_method == "sratookit":
+                        st.download_button(
+                            label="Download SRAtoolkit/fasterq-dump sample download script",
+                            help=f"approx. {total_size_str} of sequencing data selected",
+                            data=prepare_accession_table(
+                                pd.DataFrame(df_mod["selected_rows"]),
+                                lib_mod,
+                                st.session_state.table_name,
+                                supported_archives,
+                            )["fasterq_dump_script"],
+                            file_name="AncientMetagenomeDir_sratoolkit_download_script.sh",
                         )
                     else:
                         st.download_button(
@@ -375,7 +361,7 @@ if st.session_state.table_name != "No table selected":
                             help=f"approx. {total_size_str} of sequencing data selected",
                             data=prepare_accession_table(
                                 pd.DataFrame(df_mod["selected_rows"]),
-                                library,
+                                lib_mod,
                                 st.session_state.table_name,
                                 supported_archives,
                             )["curl_script"],
@@ -390,7 +376,7 @@ if st.session_state.table_name != "No table selected":
                         label="Download nf-core/eager input TSV",
                         data=prepare_eager_table(
                             pd.DataFrame(df_mod["selected_rows"]),
-                            library,
+                            lib_mod,
                             st.session_state.table_name,
                             supported_archives,
                         )
@@ -399,40 +385,52 @@ if st.session_state.table_name != "No table selected":
                         file_name="AncientMetagenomeDir_nf_core_eager_input_table.tsv",
                     )
 
-                #######################
-                ## NF-CORE/MAG TABLE ##
-                #######################
-                mag_table_single, mag_table_paired = prepare_mag_table(
+                    #######################
+                    ## NF-CORE/MAG TABLE ##
+                    #######################
+                with button_samplesheet_mag:
+                    mag_table_single, mag_table_paired = prepare_mag_table(
                         pd.DataFrame(df_mod["selected_rows"]),
-                        library,
+                        lib_mod,
                         st.session_state.table_name,
                         supported_archives,
                     )
-                zip_file = zipfile.ZipFile(
-                    'ancientMetagenomeDir_mag_input.zip', mode='w')
-                if not mag_table_single.empty:
-                    mag_table_single.to_csv(
-                        "nf_core_mag_input_single_table.csv", index=False
+                    zip_file = zipfile.ZipFile(
+                        "AncientMetagenomeDir_nf_core_mag_input.zip", mode="w"
+                    )
+                    if not mag_table_single.empty:
+                        mag_table_single.to_csv(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv",
+                            index=False,
                         )
-                    zip_file.write(
-                        'nf_core_mag_input_single_table.csv'
+                        zip_file.write(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv"
                         )
-                if not mag_table_paired.empty:
-                    mag_table_paired.to_csv(
-                        "nf_core_mag_input_paired_table.csv", index=False
+                        os.remove(
+                            "AncientMetagenomeDir_nf_core_mag_input_single_table.csv"
                         )
-                    zip_file.write(
-                        'nf_core_mag_input_paired_table.csv'
+                    if not mag_table_paired.empty:
+                        mag_table_paired.to_csv(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv",
+                            index=False,
                         )
-                zip_file.close()
-                with open("ancientMetagenomeDir_mag_input.zip", "rb") as zip_file:
-                    with button_samplesheet_mag:
+                        zip_file.write(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv"
+                        )
+                        os.remove(
+                            "AncientMetagenomeDir_nf_core_mag_input_paired_table.csv"
+                        )
+                    zip_file.close()
+                    with open(
+                        "AncientMetagenomeDir_nf_core_mag_input.zip", "rb"
+                    ) as zip_file:
                         st.download_button(
                             label="Download nf-core/mag input CSV",
                             data=zip_file,
                             file_name="AncientMetagenomeDir_nf_core_mag_input.zip",
                             mime="application/zip",
                         )
+                    os.remove("AncientMetagenomeDir_nf_core_mag_input.zip")
 
                 #######################
                 ## TAXPROFILER TABLE ##
@@ -442,7 +440,7 @@ if st.session_state.table_name != "No table selected":
                         label="Download nf-core/taxprofiler input CSV",
                         data=prepare_taxprofiler_table(
                             pd.DataFrame(df_mod["selected_rows"]),
-                            library,
+                            lib_mod,
                             st.session_state.table_name,
                             supported_archives,
                         )
@@ -459,7 +457,7 @@ if st.session_state.table_name != "No table selected":
                         label="Download aMeta input TSV",
                         data=prepare_aMeta_table(
                             pd.DataFrame(df_mod["selected_rows"]),
-                            library,
+                            lib_mod,
                             st.session_state.table_name,
                             supported_archives,
                         )
@@ -477,24 +475,43 @@ if st.session_state.table_name != "No table selected":
                         data=prepare_bibtex_file(pd.DataFrame(df_mod["selected_rows"])),
                         file_name="AncientMetagenomeDir_bibliography.bib",
                     )
-                
-                st.markdown("ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples.  Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
-                st.markdown("⚠️ _We provide no warranty to the accuracy of the generated input sheets._")
+
+                st.markdown(
+                    "ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_"
+                )
+                st.markdown(
+                    "⚠️ _We provide no warranty to the accuracy of the generated input sheets._"
+                )
 
                 if st.button("Start New Selection", type="primary"):
                     st.session_state.compute = False
                     st.session_state.table_name = "No table selected"
-                    st.session_state.force_validation = False
-                    placeholder.empty()
+                    st.session_state.force_samp_validation = False
+                    st.session_state.force_lib_validation = False
+                    placeholder_buttons.empty()
+                    placeholder_lib_table.empty()
 `,
+"pages/🎈_subpage.py.py": `import streamlit as st
 
-                },
-            },
-            document.getElementById("root")
-        )
+st.title("Sub page")
 
+st.markdown("""
+_stlite_ supports **Multi Page Apps (MPA)**, of course!
+
+Create \`pages/*.py\` like this file to add new pages.
+
+If you are new to MPA, read the official tutorial about it [🔗 here](https://docs.streamlit.io/library/get-started/multipage-apps)
+""")
+`,
+"data/logo.png": Ut("iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABmJLR0QA/wD/AP+gvaeTAAAM7UlEQVR42u2da2wU5xWG3QSSoKo0SSuK0uZCaJWEqKWtC1QqVFaLwHNZ27tma4gC4WoIQXIQhNv6MipVRH9UCpBKdapGFX/SGGNKIGlJ2oYEpIaGVumPACFNSpQqIdyJsdc2tqdndrmY9YX17uzufDPPIx1ZiChY873nm3POvPNNUREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAPuajrYyXmXDTNNW2GsbBV0yZwVcD3fB4KffWiYfxeolvCTonDkhDr46HQPVwp8B1tZWV3iciPDSD81OiReF2SYcEZTRvNlQN/lD2G8bc0xJ8a7RIvtJmmbpeUjOAqgqrin56B+FPjhPQNz0jPUMwVBdUS4EUXEuC6fqHVNK0Ow7ifqwuexqnjL5cydg6iR+4IBySq6RfAm82vYSzKkfhTIy6N8+5Ww4jaxcUjufLgjfJH1/flKQH6xhlJhEYZu05lBaBgxHX93stjTbuAkegX5PnCOFYE8l3+xAos/gH7hVNlZV9idSAf058jHkqA6/oFSYQmeb4Qol+A3Oz+odAkj4o/NU7TL0Auyp8tiiRA33iXfgGyxrEtJJ7cqpcA9Avgwu4vtbXC4qdf8OSualk3SZTYDQ0bJRolfiV/rrBXrhzlwfKnyUcJ0Dc+kYdtm+kX8i3+urpvi9gPiejtAeKC/N3zieSQJCn075pj64P3+oXS0vtQaG53/u9LnB9E/Knxkfy3T9u1tQ8VbPfX9cUBED/9Ql7EX109UkT9fpriT4237fr6GkmIMfn8nUUQbwQsAQbuF3h/wZXdf16G4u8bl+T/s0eSoSrX/cJl60NvgBOAfsHlBNjnQgKk9gvbJBlCdjR6cw7Kn1qET7/gjvhjsXtFsD0uJ0Df+FhisyTEd10rf0zzKGIfMrrFHbtXYq6USLeh8qESoL4+lkPxp8a78u+ttTds+Fqmv2+7aU5G4MOKT52jYVD6YAnQ0HAkjwmQDMvqlp+vJXqP1au/OMzZ/1ZEnVGsRu395/6T8i7+/slwPtEvWNZ0u6joC0P+vvKEVBbyJGLObIzarutTUP31ze+WgifAQP1CXd3EAXd/f1kfChF7UP018Y+QOOGxBBiyX/Cx9SFf0SVTuVtQf7L5DXlY/P36hZ5YbJl4/+OIOLs4r2njUX/yDtCkRAL0id7aWvvSihV2fM4cxJxhOEdHIn7LGi3RrloCXJcM69fbXUuX2u2VlQg73TDNz240aAhKAixWWfyp0bNmjd25aJHdVlGByIcIeSXzOWqf5Oz/DT8lQN/oXrnS7pg3z74YCiH6lPjcMKYhfsf6UF/f69cEoF8YNI5T/iTLn1q/i79fMmzYEPh+QUxyG6l9CmV9oF8ofPkTCj2I+C1rcpDFH+B+4S22/uTuvxXhB69faNX1JxC/89qjZZ1E8IHrF7qcjwaSAKpYH7zUL6xebXcuWGC3KVwiyex/F7WPotYHz9wVYjG747HHVJ3+zEL8lnW7LGQcMWcXnYsXq5YA58X9OYoEqK9fgoBdiPp6u72qSqXyp5HaJ3kHeBMBuzQ6ffJJlWb/HJUip7eNC4L1IZ93AXFVYn3A+hDcaAuHVSh/fk7tk3z49R6idTkBysu9X/6Ulj6A+OvqpiBYl0ei69apMPr8O1t/svx5FtG6G13LlqlQ/ixH/MkTn08hWnejfdYsrA+KzP7LEazL1oi1a1XY/f9I7ZMsf5oRrctPguU9AgWcn5WIf+3aL6t+6gPjz4zirK1pt5IAllWNYN1/eUaB8uc31D7J2f9+ROtuJN4c8/rsX9N+hPgt6z6sDy5HXZ3n3wk4ZZj2Dr3yULNeWbM7yFMgSYB6ROtuOK9Len33f8colwSIXIkOSYTdLUY42hS0w3AlAY4iWndDhXeF/6xX9E2APlF5Vn5u22FUTve9OU7E/0ME6/47wl4X//8S5U8knTi+Q6vc1DQz+k2/Nr+/RrQuWx/kBXmvJ8A/ri9/0gyf9QtYH4JpfZDzPu2Xhi3+iP/6BSl/KhBs8KwPH+ihbMTfv1/QIo0tpeGpyvULsmA7EG3wrA/7B21+sw51+gV73bo75A7QgWiDZX04L7EzN+JXq1+QB19LEWzwrA9HXC1/FO4XZPc/gGiDZ334a+7KH3X6BawPQbY+RDwRLXr4qPy0dmoV4wtR/jQg2sBbH7wSvTuMyMstZnhiPu8AxxBt8KwPf9LDXkyAKxGX8ij3Z5LKoVfjEWzwrA8fGyEvi/9qw5zzO4Hs/qWINojWhwoVEsDpDfbmOgGmI1qsDx6OnpYZ4TG5TICxsmg9CNe9D+h53vqgRvlz7S6ghX+S67vAq4g3ONaHA3qFUgngvIeQ2wSoq/seNgiXrA8e/3TqOZn971RJ/BJNoei4fDwLiPIFmCBYH8rU2v31yLF8Pg/4jsQengr72foQVioBmo3K+kJYI74hSVAjP99B2FgfCvlUuCDWiJT+4GFJhE0SJxC62taHf6tW/hiR/d5xi0ajNyeeGVjWNomLiB7rQx6mP9XefHcgeW7oPFn41+gXVDn1IaRa+dPZEg5/xftvksVid0sSrA3yWUJKWB/0ctUSoFm9l+qv9AsNDZ9hfcD6kKUHqFzd0yX69gsNDW1YHwobH6pX/pzxzXGMfu8XOhcu9L71wVDL+iDvDD/rz1PnrvQLPvrsKtaHnCTAlCK/I/1CsQhos8r9ghLWB0O52f/7gfo6vcr9QsfcuZz64HZokbqioJLSL2B9yDJO6upZH+Th1/1FQUe+UTvVqa0db71ztibWh2BYH2T0+WYRFBXJh9oa+y5kezSa+Lq688QV60P68Ypi1gd582tJ4MUvPcEtsninB1tUR3jO7uuUIFgfhrA+qFf+xHdWVNzO7m+as9JZ4LaysoT/3pnE5LtfwPqQk+nPdmqfZPmza7iL7ZzAnOgX1q3D+qCo9UESoCzw4r8wc+adsoCd2Sz+1X4hFsuN9eGppxQ49aFMtdHn6cB9iXLA3V/Xn3BNCKZpxx95xPV+QQXrw37lTn2IbKX2EWTx3sqFINrKy+3O+fPt7lWrsuoXep3Zv/QeWB+wPrhf/pjmt2QBe3MtkPZIxO5asiSjfkGFM3+Usz7okffY+pPTn435Fku8qsq+tHx5Wv1C1+OPe178Slof9Egts38xP8n054OCCUf6hY5HH7W7a2r69QuO39/5OxXEr6L1IS+HXnne+mAY0zwjJPH3OJOk+OzZnrc6K/LBC6wPacz+n1NJaJz64FospvwpKblNFu8cAg7EBy+wPgyw+0cRcPZx0FCt+a1sovZxZv+6/hICzi4uyOx/l2qzf60yRPMrBx9la30gxPqgh7A+KDr7X4GAA2h90CJbqH2S1oeDCDhb64OhnPVhR2lkEtaHPFkf/B6H+eCFstOfXyDg7OMv6n3wIsbsX6wPsngfIuAsrQ8G1gc1d39d/zECdsH6oF75s4/aJzn9+S0CDuIHLyKLKH+S5c8JBIz1IZC0l5ffjYCDZ30Q5+eL1D7Xxp+IOLuI7zXCsx0/jfMpIUUSwET919yflxBxFu84G8ZVI9kew7jD+ZiciOxA4mxNbybAycbi6pGo/9oT4JcRchYJYJoDGsmaSqMPiNgsif947KX3zai+bx+g61NkIXsQc0Zx0i4uvuFuutOoKHaE5xjPPJAAP0D1/e8CqxBzRuXPsM7QeUXTbnWsx5f7hS5OffCWHWK2LOonCHsYx7qY5uRMr3dB+gUtsgGl36gp1vW5EntlgbsR+ZCnVxx167o3hyofzEO/gPVhOMipa3fJItfIYh9C8AOWP64bySzLuqmlNDw1F/2CnPf/OqrOtDwKhR4Wy4QlC/9fxJ+I3ngolNPdVN7SGiVJUCXi3SNxyYUEmIeSsy2RZIdyPpnkfDVGdsDWwCaArufVSNYyIzxG7go1IuS3M0yAI8z+3U4G2aESp0iY5u6gPUyT5C+YkazFCD8kgn5a4qM0T3w422KGJ6LY/PQL/wyC9eGcB4xkTr+w3ZxVIiJ/vlkPXxgkAQ42adEJKLQw/cJxnyaA54xkTr8g/p5yEfwvpW9odCZK241Z05wkQZH0C+6WP7qOkQwC2y+kZX0A8Ge/YJoYycDdfkGEtUkVC4aUPxjJILD9AkYyCG6/IImJkQzyi7gtv57oF0zzX363PgCk2y98WoAEwEgG3ukXRJDT5a6wLV/9gvw7C7ny4PV+odvP1geAwvQLuv4Hri4ohZQsxSLcZ1w59c40f8oVBTVLpJKSEXJsiS5CfkGiPYMEeJWrCL7gjKaNlt18gTPRSfMYmCNyFxnLlQPfITP9eyQZ1ovIDw8gfOfh2+8uzJx5J1cKfE+rpk2QnX6+czaSfCvhZ60zZozhqgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgB/5P58WvRSYZ4lmAAAAAElFTkSuQmCC"),
+
+},
+  },
+  document.getElementById("root")
+)
+
+function Ut(e){const t=window.atob(e),n=t.length,r=new Uint8Array(n);for(let a=0;a<n;a++)r[a]=t.charCodeAt(a);return r}
     </script>
-</body>
-<!-- Generated from stlite sharing (https://edit.share.stlite.net/), and the source version is 5a218baf08caf57d7dbe6872effe2415cb85efcf  # 5a218baf08caf57d7dbe6872effe2415cb85efcf is available on GitHub Actions: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables -->
-
+  </body>
+  <!-- Generated from stlite sharing (https://edit.share.stlite.net/), and the source version is 0ff29dc4b8c2ee38a99e007f4a0a91b42580eb89 -->
 </html>
