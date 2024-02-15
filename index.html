@@ -93,7 +93,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.write(f"# [AMDirT](https://github.com/SPAAM-community/AMDirT) viewer tool")
-    st.write(f"\n Version: {__version__}")
+    st.write("Version "+str(__version__))
     st.session_state.tag_name = st.selectbox(
         label="Select an AncientMetagenomeDir release", options=tags
     )
@@ -108,7 +108,7 @@ with st.sidebar:
     )
     if st.session_state.dl_method == "aspera":
         st.warning(
-            "You will need to set the \`${ASPERA_PATH}\` environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
+            "You will need to set the $ASPERA_PATH environment variable. See [documentation](https://amdirt.readthedocs.io) for more information."
         )
     st.warning(
         f"Only {' and '.join(supported_archives)} archives are supported for now"
@@ -476,9 +476,7 @@ if st.session_state.table_name != "No table selected":
                         file_name="AncientMetagenomeDir_bibliography.bib",
                     )
 
-                st.markdown(
-                    "ℹ️ _By default all download scripts/inputs include ALL libraries of the selected samples. \n Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_"
-                )
+                st.markdown("⚠️ _By default all download scripts/inputs include ALL libraries of the selected samples. Review the AncientMetagenomeDir library table prior using any other table, to ensure usage of relevant libraries!_")
                 st.markdown(
                     "⚠️ _We provide no warranty to the accuracy of the generated input sheets._"
                 )
