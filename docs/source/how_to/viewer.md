@@ -13,6 +13,7 @@ The purpose of the `viewer` command is to provide a easy-to-use graphical-user i
 > ⚠️ _The `viewer` tool was previously named `filter`, and might still be referred as such in some parts of the documentation._
 
 For video based walkthroughs please see [Tutorials](/tutorials/viewer.md).
+
 ## When
 
 You should use this tool when you wish to find particular types of ancient metagenomic data, but wish to explore the dataset manually and interactively (i.e., don't know exactly what you're looking for yet), and/or if you do not wish to download the AncientMetagenomeDir full tables yourself and filter them within languages such as R or Python (with pandas).
@@ -87,7 +88,15 @@ Now validate your selection! Press the 'Validate selection' button at the bottom
 
 > ⚠️ _If you wish to download the data, make sure you have already selected your 'Data download method' in the sidebar before pressing 'Validate selection'!_
 
-Once the select is validated, more buttons will appear allowing you to download different files
+Once the selection is validated, the library filtering table will appear below
+
+![AMDirT libraries filtering table](images/amdirt-filter-libraries-table.png)
+
+You can proceed to select your libraries of choice (or all of them) in the same way as the samples table. Once happy, you can then click on 'Validate library selection'
+
+Your different download options will finally appear:
+
+![AMDirT output download options](images/amdirt-filter-download-buttons.png)
 
 In this case we suggest you press:
 
@@ -96,8 +105,6 @@ In this case we suggest you press:
 - Download citations as BibTex: citation information in BibTex format for selected samples
 
 See [Output](#output) for descriptions of all output possible files.
-
-![AMDirT buttons after selection validation](images/amdirt-filter-validate-buttons.png)
 
 To use the **download** script, you can simply run:
 
