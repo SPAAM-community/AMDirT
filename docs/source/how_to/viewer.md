@@ -92,7 +92,7 @@ Once the selection is validated, the library filtering table will appear below
 
 ![AMDirT libraries filtering table](images/amdirt-filter-libraries-table.png)
 
-You can proceed to select your libraries of choice (or all of them), and then click on 'Validate library selection'
+You can proceed to select your libraries of choice (or all of them) in the same way as the samples table. Once happy, you can then click on 'Validate library selection'
 
 Your different download options will finally appear:
 
