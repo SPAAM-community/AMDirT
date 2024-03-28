@@ -8,6 +8,8 @@ The purpose of the `autofill` command is to help AncientMetagenomeDir contributo
 
 You should use these commands when you want to contribute to AncientMetagenomeDir, by adding a newly published dataset, if it's already available on a sequencing archive (ENA/SRA).
 
+It is normally executed for you by a 'bot' on GitHub when you have opened a pull-request with a samplesheet, by leaving a comment of `@spaam-bot autofill <ancientmetagenomedir table name> <project id>`. Thus, you should also only run this command if you want to do your AncientMetagenomeDir _entirely_ locally.
+
 ## How
 
 ### `autofill`
