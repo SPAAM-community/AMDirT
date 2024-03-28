@@ -1,8 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4003825.svg)](https://doi.org/10.5281/zenodo.4003825) [![PyPI version](https://badge.fury.io/py/AMDirT.svg)](https://pypi.org/project/AMDirT) [![Documentation Status](https://readthedocs.org/projects/amdirt/badge/?version=dev)](https://amdirt.readthedocs.io/en/dev/?badge=dev) [![AMDirT-CI](https://github.com/SPAAM-community/AMDirT/actions/workflows/ci_test.yml/badge.svg)](https://github.com/SPAAM-community/AMDirT/actions/workflows/ci_test.yml)
 
   <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/SPAAM-community/AMDirT/master/assets/logo_rectangular_dark.png">
-    <img alt="AMDirT Logo" src="https://raw.githubusercontent.com/SPAAM-community/AMDirT/master/assets/logo_rectangular.png">
+    <img alt="AMDirT Logo" src="https://raw.githubusercontent.com/SPAAM-community/AMDirT/master/assets/logo_rectangular_transparent.png">
   </picture>
 
 **AMDirT**: [**A**ncient**M**etagenome**Dir**](https://github.com/SPAAM-community/ancientmetagenomedir) **T**oolkit
