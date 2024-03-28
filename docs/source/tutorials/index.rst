@@ -12,3 +12,4 @@ All tutorials assume you have already installed AMDirT following the installatio
     :caption: Tutorials:
 
     viewer
+    convert
