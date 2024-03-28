@@ -2,7 +2,7 @@
 
 ## What
 
-The purpose of the `validate` command is to check that a AncientMetagenomeDir metadata file confirms the specifications of the project.
+The purpose of the `validate` command is to check that an AncientMetagenomeDir metadata file confirms the specifications of the project.
 
 ## When
 
