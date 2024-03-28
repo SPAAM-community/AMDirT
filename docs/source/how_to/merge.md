@@ -2,7 +2,7 @@
 
 ## What
 
-Merges a user-supplied metadata table with the latest AncientMetagenomeDir master metadata tables, with on-the-fly [validation](validation.md).
+Merges a user-supplied metadata table with the latest AncientMetagenomeDir master metadata tables, with on-the-fly [validation](/how_to/validate).
 
 ## When
 
@@ -12,7 +12,7 @@ You typically only do this if preparing a pull request to the AncientMetagenomeD
 
 ## How
 
-The following description assumes you have already prepared a AncientMetagenomeDir **samples** or **libraries** table whose rows only consist of the header and new samples to be added.
+The following description assumes you have already prepared an AncientMetagenomeDir **samples** or **libraries** table whose rows only consist of the header and new samples to be added.
 
 > ⚠️ _The header, and present columns etc. should match exactly that on the corresponding AncientMetagenomeDir table_
 

@@ -52,7 +52,7 @@ project_name publication_year data_publication_doi sample_name archive archive_p
 
 You will notice that some columns are missing information, especially in the sample metadata table (in this example, `samples.tsv`). Despite our best efforts, not all information is made available through ENA, and it will be up to you to fill these missing columns, from the original publication, its supplementary material, or elsewhere.
 You can do it in your favorite text editor, or table editor (like LibreOffice Calc, or Excel).
-Please refer to the AncientMetagenomeDir wiki for information on this process: [https://github.com/SPAAM-community/AncientMetagenomeDir/wiki](github.com/SPAAM-community/AncientMetagenomeDir/wiki).
+Please refer to the AncientMetagenomeDir wiki for information on this process: [https://github.com/SPAAM-community/AncientMetagenomeDir/wiki](https://github.com/SPAAM-community/AncientMetagenomeDir/wiki).
 
 > ⚠️ The sample and library names reported on sequencing archives (ENA, SRA, ...) might not be the same as the one list in the original article. Please double check before proceeding further.
 

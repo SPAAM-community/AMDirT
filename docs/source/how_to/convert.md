@@ -12,7 +12,7 @@ You typically will use `convert` if you are a command-line power user, and have 
 
 ## How
 
-The following description assumes that you have already have a AncientMetagenomeDir **samples** table that has been filtered to the samples you wish to run through a given pipeline(s).
+The following description assumes that you have already have an AncientMetagenomeDir **samples** table that has been filtered to the samples you wish to run through a given pipeline(s).
 
 > ⚠️ _The header, and present columns etc. should match exactly that on AncientMetagenomeDir, only rows may be removed._
 
