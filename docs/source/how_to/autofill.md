@@ -8,6 +8,8 @@ The purpose of the `autofill` command is to help AncientMetagenomeDir contributo
 
 You should use these commands when you want to contribute to AncientMetagenomeDir, by adding a newly published dataset, if it's already available on a sequencing archive (ENA/SRA).
 
+It is normally executed for you by a 'bot' on GitHub when you have opened a pull-request with a samplesheet, by leaving a comment of `@spaam-bot autofill <ancientmetagenomedir table name> <project id>`. Thus, you should also only run this command if you want to do your AncientMetagenomeDir _entirely_ locally.
+
 ## How
 
 ### `autofill`
@@ -50,7 +52,7 @@ project_name publication_year data_publication_doi sample_name archive archive_p
 
 You will notice that some columns are missing information, especially in the sample metadata table (in this example, `samples.tsv`). Despite our best efforts, not all information is made available through ENA, and it will be up to you to fill these missing columns, from the original publication, its supplementary material, or elsewhere.
 You can do it in your favorite text editor, or table editor (like LibreOffice Calc, or Excel).
-Please refer to the AncientMetagenomeDir wiki for information on this process: [https://github.com/SPAAM-community/AncientMetagenomeDir/wiki](github.com/SPAAM-community/AncientMetagenomeDir/wiki).
+Please refer to the AncientMetagenomeDir wiki for information on this process: [https://github.com/SPAAM-community/AncientMetagenomeDir/wiki](https://github.com/SPAAM-community/AncientMetagenomeDir/wiki).
 
 > ⚠️ The sample and library names reported on sequencing archives (ENA, SRA, ...) might not be the same as the one list in the original article. Please double check before proceeding further.
 
