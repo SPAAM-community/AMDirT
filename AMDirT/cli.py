@@ -4,9 +4,10 @@ from AMDirT import __version__
 from AMDirT.validate import run_validation
 from AMDirT.viewer import run_app
 from AMDirT.convert import run_convert
-from AMDirT.core import get_json_path
+from AMDirT.core import get_json_path, get_amdir_tags, get_latest_tag
 from AMDirT.autofill import run_autofill
 from AMDirT.merge import merge_new_df
+from AMDirT.download import download as download_amdir
 from json import load
 
 
@@ -292,6 +293,46 @@ def merge(ctx, no_args_is_help=True, **kwargs):
     DATASET: path to tsv file of new dataset to merge
     """
     merge_new_df(**kwargs, **ctx.obj)
+
+
+@cli.command()
+@click.option(
+    "-t",
+    "--table",
+    help="AncientMetagenomeDir table to download",
+    type=click.Choice(get_table_list()),
+    default="ancientmetagenome-hostassociated",
+    show_default=True,
+)
+@click.option(
+    "-y",
+    "--table_type",
+    help="Type of table to download",
+    type=click.Choice(["samples", "libraries"]),
+    default="samples",
+    show_default=True,
+)
+@click.option(
+    "-r",
+    "--release",
+    help="Release tag to download",
+    type=click.Choice(get_amdir_tags()),
+    default=get_latest_tag(get_amdir_tags()),
+    show_default=True,
+)
+@click.option(
+    "-o",
+    "--output",
+    help="Output directory",
+    type=click.Path(writable=True),
+    default=".",
+    show_default=True,
+)
+def download(no_args_is_help=True, **kwargs):
+    """\b
+    Download a table from the AMDirT repository
+    """
+    download_amdir(**kwargs)
 
 
 if __name__ == "__main__":

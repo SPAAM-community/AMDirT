@@ -5,6 +5,7 @@ from numpy import where
 import pandas as pd
 import streamlit as st
 from packaging import version
+from packaging.version import InvalidVersion
 from importlib.resources import files as get_module_dir
 import os
 import logging
@@ -65,7 +66,34 @@ def get_amdir_tags():
             if version.parse(tag["name"]) >= version.parse("v22.09")
         ]
     else:
-        return []
+        logger.warning(
+            "Could not fetch tags from AncientMetagenomeDir. Defaulting to master"
+        )
+        return ["master"]
+
+
+@st.cache_data
+def get_latest_tag(tags):
+    try:
+        return sorted(tags, key=lambda x: version.Version(x))[-1]
+    except InvalidVersion:
+        if "master" in tags:
+            return "master"
+        else:
+            raise InvalidVersion("No valid tags found")
+
+
+def check_allowed_values(ref: list, test: str):
+    """
+    Check if test is in ref
+    Args:
+        ref(list): List of allowed values
+        test(str): value to check
+    """
+
+    if test in ref:
+        return True
+    return False
 
 
 def get_colour_chemistry(instrument: str) -> int:
