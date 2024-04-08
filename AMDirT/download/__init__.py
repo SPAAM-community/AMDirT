@@ -14,7 +14,7 @@ def download(table: str, table_type: str, release: str, output: str = ".") -> st
     Parameters
     ----------
     table : str
-        The table to download.
+        The AncientMetagenomeDir table to download.
     table_type : str
         The type of table to download. Allowed values are ['samples', 'libraries'].
     release : str
