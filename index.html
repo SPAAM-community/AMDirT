@@ -10,16 +10,16 @@
     <title>stlite app</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.47.0/build/stlite.css"
+      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.52.1/build/stlite.css"
     />
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.47.0/build/stlite.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.52.1/build/stlite.js"></script>
     <script>
 stlite.mount(
   {
-    requirements: ["streamlit-aggrid", "AMDirT"],
+    requirements: ["streamlit-aggrid==0.3.4.post3", "AMDirT==1.6.0"],
     entrypoint: "streamlit_app.py",
     files: {
 "streamlit_app.py": `import streamlit as st
