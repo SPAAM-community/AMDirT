@@ -71,7 +71,3 @@ The output from `AMDirT viewer`/`convert` will contain a list of accessions in a
 nextflow pull nf-core/fetchngs
 nextflow run nf-core/fetchngs --input AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv`
 ```
-
-#### Supported hardware/OS
-
-AMDirT has been tested on different Unix systems (macOS and Ubuntu) using Intel and AMD chips. If you suspect that AMDirT isn't working properly because you use a different hardware/OS, please open an [issue on GitHub](https://github.com/SPAAM-community/AMDirT/issues).

@@ -14,6 +14,8 @@ For documentation on using the tool, please see [How Tos](https://amdirt.readthe
 
 ## Install
 
+AMDirT has been tested on different Unix systems (macOS and Ubuntu) using Intel and AMD chips. If you suspect that AMDirT isn't working properly because you use a different hardware/OS, please open an [issue on GitHub](https://github.com/SPAAM-community/AMDirT/issues).
+
 ### 1. With [pip](https://pip.pypa.io/en/stable/getting-started/)
 
 ```bash
