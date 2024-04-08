@@ -15,8 +15,7 @@ We will take use one of the previous releases of AncientMetagenomeDir as an exam
 ```bash
 mkdir amdirt-convert-tutorial
 cd amdirt-convert-tutorial
-curl -LO https://github.com/SPAAM-community/AncientMetagenomeDir/releases/download/v23.09.0/AncientMetagenomeDir_v23.09.0.zip
-unzip AncientMetagenomeDir_v23.09.0.zip
+AMDirT download --table ancientmetagenome-hostassociated --table_type samples -r v23.09.0
 ```
 
 ## Filter a sample metadata table
@@ -24,7 +23,7 @@ unzip AncientMetagenomeDir_v23.09.0.zip
 Next we can filter the ancient metagenome 'host-associated' sample sheet for all dental calculus tables from Germany.
 
 ```bash
-cat ancientmetagenome-hostassociated/samples/ancientmetagenome-hostassociated_samples.tsv | grep -e '^project_name' -e 'dental calculus' | grep -e '^project_name' -e 'Germany' > germany_dentalcalculus.tsv
+cat ancientmetagenome-hostassociated_samples_v23.09.0.tsv | grep -e '^project_name' -e 'dental calculus' | grep -e '^project_name' -e 'Germany' > germany_dentalcalculus.tsv
 ```
 
 > ⚠ _The command above is not robust and is only used for system portability and demonstration purposes. For example the `Germany` string could be in a site name. In practice, you should use more robust filtering methods such more specific `grep` expressions or in R_.
