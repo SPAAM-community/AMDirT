@@ -67,7 +67,7 @@ def get_amdir_tags():
         ]
     else:
         logger.warning(
-            "Could not fetch tags from AncientMetagenomeDir. Defaulting to master"
+            "Could not fetch tags from AncientMetagenomeDir. Defaulting to master. Metadata may not yet be officially released."
         )
         return ["master"]
 
