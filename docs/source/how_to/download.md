@@ -18,4 +18,4 @@ AMDirT download --table ancientsinglegenome-hostassociated --table_type samples 
 
 ## Output
 
-This command will download the `ancientsinglegenome-hostassociated` `sample` table from the `v23.12.0` AncientMetagenomeDir release, and save it locally to `ancientmetagenome-hostassociated_samples_v23.12.0.tsv`
+This example command above will download the `ancientsinglegenome-hostassociated` `sample` table from the `v23.12.0` AncientMetagenomeDir release, and save it locally to `ancientmetagenome-hostassociated_samples_v23.12.0.tsv`
