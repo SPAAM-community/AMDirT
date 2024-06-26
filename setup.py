@@ -33,7 +33,7 @@ setup(
         "tabulate",
         "jsonschema",
         "rich",
-        "streamlit",
+        "streamlit<=1.35.0",
         "streamlit-aggrid",
         "numpy",
         "requests",
