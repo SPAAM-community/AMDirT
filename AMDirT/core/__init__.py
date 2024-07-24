@@ -60,9 +60,14 @@ def get_amdir_tags():
         "https://api.github.com/repos/SPAAM-community/AncientMetagenomeDir/tags"
     )
     if r.status_code == 200:
+        tags = [
+            tag['name']
+            for tag in r.json()
+            if tag['name'] != 'latest'
+        ]
         return [
             tag["name"]
-            for tag in r.json()
+            for tag in tags
             if version.parse(tag["name"]) >= version.parse("v22.09")
         ]
     else:
