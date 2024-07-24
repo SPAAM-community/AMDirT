@@ -11,6 +11,8 @@ All 'How Tos' assume you have already installed AMDirT following the installatio
 
     viewer
     convert
+    download
     validate
     autofill
+    merge
     miscellaneous

@@ -71,9 +71,3 @@ The output from `AMDirT viewer`/`convert` will contain a list of accessions in a
 nextflow pull nf-core/fetchngs
 nextflow run nf-core/fetchngs --input AncientMetagenomeDir_nf_core_fetchngs_input_table.tsv`
 ```
-
-<!--
- TODO add more URLs
- TODO describe output
- TODO mention if on HPC that worker nodes need to have internet connection
- -->

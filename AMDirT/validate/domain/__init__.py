@@ -316,19 +316,11 @@ class DatasetValidator:
         Raises:
             SystemExit: If dataset is invalid
         """
-        df = pd.DataFrame(columns=["Error", "Source", "Column", "Row", "Message"])
-        for error in self.errors:
-            df = pd.concat(
-                [
-                    df,
-                    pd.Series(error.to_dict())
-                ],
-                ignore_index=True
-            )
-        if len(df) > 0:
+        if len(self.errors) > 0:
+            df = pd.concat([pd.Series(error.to_dict()).to_frame().transpose() for error in self.errors])
             raise SystemExit(
                 f"Invalid dataset `{self.dataset_name}`\n\n{df.to_markdown(index=False)}"
             )
         else:
-            logger.info(f"{self.dataset_name} is valid")
+            print(f"`{self.dataset_name}` is valid")
             return True

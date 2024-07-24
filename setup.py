@@ -33,7 +33,7 @@ setup(
         "tabulate",
         "jsonschema",
         "rich",
-        "streamlit",
+        "streamlit<=1.35.0",
         "streamlit-aggrid",
         "numpy",
         "requests",
@@ -41,6 +41,6 @@ setup(
     ],
     packages=find_packages(exclude="test"),
     entry_points={"console_scripts": ["AMDirT = AMDirT.cli:cli"]},
-    include_package_data=True,
-    package_data={"": ["assets/tables.json"]},
+    package_dir={"AMDirT": "AMDirT"},
+    package_data={"AMDirT.assets": ["tables.json"]},
 )

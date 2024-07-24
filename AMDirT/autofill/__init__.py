@@ -108,6 +108,8 @@ def run_autofill(accession, table_name=None, schema=None, dataset=None, sample_o
             lib_out[col] = None
     lib_out = lib_out[libraries_df.columns]
     lib_out = lib_out.loc[:,~lib_out.columns.duplicated()].copy()
+    lib_out['read_count'] = lib_out['read_count'].str.replace(",", "",
+                                                              regex=False)
     lib_out = lib_out.astype(libraries_df.dtypes.to_dict())
 
     if library_output:
