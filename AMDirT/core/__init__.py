@@ -66,9 +66,9 @@ def get_amdir_tags():
             if tag['name'] != 'latest'
         ]
         return [
-            tag["name"]
+            tag
             for tag in tags
-            if version.parse(tag["name"]) >= version.parse("v22.09")
+            if version.parse(tag) >= version.parse("v22.09")
         ]
     else:
         logger.warning(
