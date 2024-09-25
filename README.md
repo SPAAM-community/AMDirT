@@ -56,6 +56,17 @@ To locally render documentation:
 - Build the HTML `make html`
 - Open the `build/html/README.html` file in your browser
 
+## Cite
+
+AMDirT has been published in F1000 with the following DOI: [10.12688/f1000research.134798.2](https://doi.org/10.12688/f1000research.134798.2). You can cite it like so:
+
+```
+Borry M, Forsythe A, Andrades Valtueña A et al. Facilitating accessible, rapid, and appropriate processing of ancient metagenomic data with AMDirT. F1000Research 2024, 12:926
+```
+
+A bibtex file is also available here: [amdirt.bib](amdirt.bib)
+
+
 ## More information
 
 For more information, please see the AMDirT Documentation
