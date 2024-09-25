@@ -58,7 +58,9 @@ To locally render documentation:
 
 ## Cite
 
-AMDirT has been published in F1000 with the following DOI: [10.12688/f1000research.134798.2](https://doi.org/10.12688/f1000research.134798.2). You can cite it like so:
+AMDirT has been published in F1000 with the following _DOI_: [10.12688/f1000research.134798.2](https://doi.org/10.12688/f1000research.134798.2).  
+
+You can cite AMDirT like so:
 
 ```
 Borry M, Forsythe A, Andrades Valtueña A et al. Facilitating accessible, rapid, and appropriate processing of ancient metagenomic data with AMDirT. F1000Research 2024, 12:926
