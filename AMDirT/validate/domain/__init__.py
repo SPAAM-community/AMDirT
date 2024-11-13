@@ -1,5 +1,4 @@
 import json
-from numpy import int64
 import pandas as pd
 from AMDirT.validate import exceptions
 from AMDirT.core import logger

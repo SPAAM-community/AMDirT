@@ -1,4 +1,3 @@
-from numpy import ALLOW_THREADS
 import streamlit as st
 import pandas as pd
 import os
