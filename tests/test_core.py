@@ -1,6 +1,6 @@
 import pytest
 
-from AMDirT.core import (
+from amdirt.core import (
     get_colour_chemistry,
     doi2bib,
     ena,

@@ -1,7 +1,7 @@
 import json
 import pandas as pd
-from AMDirT.validate import exceptions
-from AMDirT.core import logger
+from amdirt.validate import exceptions
+from amdirt.core import logger
 from io import StringIO
 from pathlib import Path
 from rich.table import Table
@@ -291,7 +291,7 @@ class DatasetValidator:
         """
 
         table = Table(
-            title=f"AMDirT Validation Report of {self.dataset_name} against {self.schema_name}"
+            title=f"amdirt Validation Report of {self.dataset_name} against {self.schema_name}"
         )
         columns = ["Error", "Source", "Column", "Row", "Message"]
         for column in columns:

@@ -22,7 +22,7 @@ handler.setFormatter(
     colorlog.ColoredFormatter("%(log_color)s%(name)s [%(levelname)s]: %(message)s")
 )
 
-logger = colorlog.getLogger("AMDirT")
+logger = colorlog.getLogger("amdirt")
 logger.addHandler(handler)
 logger.propagate = False
 
@@ -44,7 +44,7 @@ st.runtime.caching._data_caches.get_storage_manager = monkeypatch_get_storage_ma
 
 
 def get_json_path():
-    path = get_module_dir("AMDirT.assets").joinpath("tables.json")
+    path = get_module_dir("amdirt.assets").joinpath("tables.json")
     return path
 
 

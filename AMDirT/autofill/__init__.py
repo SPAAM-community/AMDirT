@@ -1,7 +1,7 @@
-from AMDirT.validate.domain import DatasetValidator
-from AMDirT.core import get_json_path, logger
-from AMDirT.core.ena import ENAPortalAPI
-from AMDirT.validate.exceptions import NetworkError
+from amdirt.validate.domain import DatasetValidator
+from amdirt.core import get_json_path, logger
+from amdirt.core.ena import ENAPortalAPI
+from amdirt.validate.exceptions import NetworkError
 import json
 
 import sys

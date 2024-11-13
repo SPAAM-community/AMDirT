@@ -1,4 +1,4 @@
-name: AMDirT-CI
+name: amdirt-CI
 
 on: [push, pull_request]
 

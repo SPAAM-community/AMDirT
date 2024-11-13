@@ -1,8 +1,8 @@
 from typing import Iterable, AnyStr, Union
-from AMDirT.validate.domain import DatasetValidator, DFError
-from AMDirT.core import get_json_path
-from AMDirT.core.diff import get_sample_diff
-from AMDirT.core.ena import ENAPortalAPI
+from amdirt.validate.domain import DatasetValidator, DFError
+from amdirt.core import get_json_path
+from amdirt.core.diff import get_sample_diff
+from amdirt.core.ena import ENAPortalAPI
 from rich.progress import track
 from pathlib import Path
 import pandas as pd
