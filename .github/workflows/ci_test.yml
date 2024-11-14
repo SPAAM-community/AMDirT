@@ -20,6 +20,8 @@ jobs:
         echo github.event_name: ${{ github.event_name }}
         echo github.workspace: ${{ github.workspace }}
         echo github.action_repository: ${{github.action_repository}}
+        echo github.env: ${{ github.env }}
+        echo github.workflow: ${{ github.workflow }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -35,4 +37,4 @@ jobs:
       if: always()
       with:
         name: artifacts
-        path: /home/runner/work/amdirt
+        path: /home/runner
