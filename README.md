@@ -74,4 +74,4 @@ A bibtex file is also available here: [amdirt.bib](amdirt.bib)
 For more information, please see the amdirt Documentation
 
 - Stable: [amdirt.readthedocs.io/en/latest/](https://amdirt.readthedocs.io/en/latest/)
-- Development version: [amdirt.readthedocs.io/en/dev/](https://amdirt.readthedocs.io/en/dev/)
+- Development version: [amdirt.readthedocs.io/en/dev/](https://amdirt.readthedocs.io/en/dev/) 
