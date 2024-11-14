@@ -1,5 +1,3 @@
-import pytest
-
 from amdirt.core import (
     get_colour_chemistry,
     doi2bib,
