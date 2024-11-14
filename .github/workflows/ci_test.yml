@@ -23,7 +23,9 @@ jobs:
         python -m pip install tox tox-gh-actions
     - name: Test with tox
       run: tox
-    - uses: actions/upload-artifact@v4
+    - name: Save artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: save artifacts
+        name: artifacts
         path: /home/runner/**
