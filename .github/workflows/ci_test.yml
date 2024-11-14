@@ -37,4 +37,4 @@ jobs:
       if: always()
       with:
         name: artifacts
-        path: /home/runner
+        path: /home/runner/work
